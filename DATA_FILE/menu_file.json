@@ -6,11 +6,13 @@
             "titre": "ouvrir une caisse",
             "contenu": ["label.selection", "listbox.10"],
             "bouton": "Nouvelle caisse"
-        },   
+        },  
+        "separator" : {},
+        
         "état" : 
         {
             "titre": "état de la caisse",
-            "contenu": ["Label.caisse.Label.8", "Label.2.Label.8.Label.2.Label.8.2.Label.2.Label.8", "Label.Total.Label.8"],
+            "contenu": ["Label.caisse.Label.8", "Label.2.Label.8.Label.2.Label.8.Label.2.Label.8", "Label.Total.Label.8"],
             "bouton": ["back"]
         },
         "cloturer" :
@@ -34,6 +36,15 @@
             "titre": "Employés",
             "contenu": ["label", "essai"],
             "bouton": ["aris", "Confirmer"]
+        }
+    },
+    "thème" : 
+    {
+        "modifier le thème" : 
+        {
+            "titre": "modifier le thème",
+            "contenu": ["label.selection", "essai"],
+            "bouton": ["ret", "Confirmer"]
         }
     }
 }

@@ -1,0 +1,20 @@
+{
+    "thème1":
+    {
+        "bg":"Grey40"
+    },
+    "thème2":
+    {
+        "bg":"Grey15",
+        "fg":"Grey80",
+        "activebackgroundMenuButton":"Grey15",
+        "activeforegroundMenuButton":"green",
+        "activebackgroundMenu":"green",
+        "activeforegroundMenu":"black",
+        "fg_fermeture":"green",
+        "activebackgroundFermeture":"Grey15",
+        "activeforegroundFermeture":"green",
+        "fg_barre":"green"
+
+    }
+}

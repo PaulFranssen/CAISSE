@@ -12,6 +12,8 @@ class PF(Frame):
         Frame.__init__(self, boss)
         # self.master.colormap = 'red'
         
+        
+        
         # configuration
         self.master.configure()
         self.master.wm_attributes('-fullscreen', 'true')
@@ -21,6 +23,7 @@ class PF(Frame):
         
         # attributs
         self.base = base
+        self.base.add_frame(self)
         self.cadreGestion = CadreGestion(self)
         
     def display(self, cadre):
@@ -50,7 +53,11 @@ class CadreGestion(Frame):
     
     def __init__(self, boss=None):
         Frame.__init__(self, boss)
+        
+        # configuration
         self.configure()
+        boss.base.add_frame(self)
+       
         
         # attributs
         self.item = StringVar()
@@ -81,6 +88,8 @@ class Entete(Frame):
         # attributs
         self.boss = boss
         self.root = boss.master
+        self.root.base.add_frame(self)
+       
         
         # construction des menus
         with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
@@ -90,38 +99,73 @@ class Entete(Frame):
         lst = []
         for dic in list(data.values()):
             lst += list(dic.keys())
-            
+        nbr_item = len(lst) # separator inclus
+        
+        menuButton_lst=[] # liste des menubutton
+        menu_lst=[] # liste des menus associés aux menubutton
+        barre_lst  = [] # liste es barres verticales
         for key, value in data.items():
             # titre du menu
-            mb= Menubutton(self, text=key.upper(), **kw_1)
-            mb.pack(**pad_1)
+            mb= Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
+            menuButton_lst.append(mb)
+            mb.pack(**PAD_MENUBUTTON)
             
             # lien du menu avec le menuButton
-            me = Menu(mb, **kw_3)
+            me = Menu(mb, **KW_MENU)
+            menu_lst.append(me)
             mb.configure(menu=me)
-            Label(self, **kw_50).pack(side='left') # séparateur vertical entre les menus
+            barre_verticale = Label(self, **KW_BARRE_VERTICALE)
+            barre_lst.append(barre_verticale)
+            barre_verticale.pack(side='left') # séparateur vertical entre les menus
             
             # ajout des items de chaque menu
             for cle, item in value.items():
                 if cle == "separator":
                     me.add_separator()
                 else:
-                        if cle == lst[0]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[0]), **kw_2)
-                        elif cle == lst[1]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[1]), **kw_2)
-                        elif cle == lst[2]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[2]), **kw_2) 
-                        elif cle == lst[3]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[3]), **kw_2)
-                        elif cle == lst[4]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[4]), **kw_2)    
-                        
+                        if nbr_item > 0 and cle == lst[0]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[0]))
+                        elif nbr_item > 1 and cle == lst[1]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[1]))
+                        elif nbr_item > 2 and cle == lst[2]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[2])) 
+                        elif nbr_item > 3 and cle == lst[3]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[3]))
+                        elif nbr_item > 4 and cle == lst[4]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[4]))    
+                        elif nbr_item > 5 and cle == lst[5]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[5])) 
+                        elif nbr_item > 6 and cle == lst[6]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[6]))
+                        elif nbr_item > 7 and cle == lst[7]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[7]))
+                        elif nbr_item > 8 and cle == lst[8]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[8]))    
+                        elif nbr_item > 9 and cle == lst[9]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[9])) 
+                        elif nbr_item > 10 and cle == lst[10]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[10]))
+                        elif nbr_item > 11 and cle == lst[11]:
+                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[11]))
+        
+        # ajout des menu et menuButton à la base
+        self.root.base.add_menuButton(menuButton_lst)
+        self.root.base.add_menu(menu_lst)
+        
+        
         # ajout à droite de la gestion de fenêtre   
-        b1 = Button(self, text="X ", command=self.root.croix, **kw_51)
-        b1.pack(padx=5, side=RIGHT)
-        b2 = Button(self, text=" —", command=self.root.barre, **kw_51)
-        b2.pack(padx=5, side=RIGHT)
+        b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
+        b1.pack(**PAD_FERMETURE)
+        b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
+        b2.pack(**PAD_FERMETURE)
+        
+        # ajout des widgets à la base
+        self.root.base.add_menuButton(menuButton_lst)
+        self.root.base.add_menu(menu_lst)
+        self.root.base.add_fermeture(b1)
+        self.root.base.add_fermeture(b2)
+        self.root.base.add_barre(barre_lst)
+        
         
         
 class Corps(Frame):
@@ -134,6 +178,8 @@ class Corps(Frame):
         
         #attributs
         self.boss = boss
+        self.root = boss.master
+        self.root.base.add_frame(self)
         self.titre = {}
         self.contenu = {}
         self.bouton = {}
@@ -178,6 +224,10 @@ class Titre(Frame):
         Frame.__init__(self, boss)
         self.configure()
         
+        # attributs
+        self.root = boss.master.master
+        self.root.base.add_frame(self)
+        
         # construction du corps
         Label(self, text = titre).pack()
         
@@ -192,6 +242,10 @@ class Contenu(Frame):
         Frame.__init__(self, boss)
         self.configure()
         
+        # attributs
+        self.root = boss.master.master
+        self.root.base.add_frame(self)
+        
         # construction du corps
         Label(self, text = contenu[0]).pack(side=LEFT)
     
@@ -205,6 +259,10 @@ class Bouton(Frame):
     def __init__(self, boss, bouton):
         Frame.__init__(self, boss)
         self.configure()
+        
+        # attributs
+        self.root = boss.master.master
+        self.root.base.add_frame(self)
         
         # construction du bouton
         Button(self, text= bouton[0]).pack()
@@ -224,6 +282,9 @@ class Comment(Frame):
         self.pack()
         
         # attributs
+        self.root = boss.master
+        self.root.base.add_frame(self)
+        
         self.com = StringVar()
         self.com.set('')
         

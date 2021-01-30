@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 
-
-# nom de fichier
 # directory
 DATA_FILE = "DATA_FILE"
 
 # file_name
 MENU_FILE = "menu_file.json"
-CORPS_FILE = "corps_file.json"
+THEME_FILE = "theme_file.json"
+LAST_THEME_FILE = "last_theme.txt"
 
+# tailles des caractères
+TAILLE_TITRE = 22
+TAILLE_CAR = 18
+TAILLE_MENU = 16
 
-
-
-
+# police
+POLICE = "Consolas"
 
 
 
@@ -126,6 +128,8 @@ taille_3 = 16       # taille de l'exercice et de la base en haut à droite et du
 taille_5 = 22       # taille du titre
 taille_7 = 13       # taille petit checkbutton (par défaut)
 taille_8 = 100       # taille logo
+
+
 
 # distanciation entre cadres selon paramètres d'affichage
 if h == 1080:
