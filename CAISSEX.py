@@ -5,6 +5,7 @@
 # importation des modules
 import CTRL  # les vues sont contrôlées par la base se trouvant dans control
 import VIEW
+
 if __name__ == '__main__':
    
     # création de la DATABASE
@@ -13,8 +14,6 @@ if __name__ == '__main__':
     # création du cadre principal et du lien : cadre > database
     pf = VIEW.PF(base)
     
-    # installation du thème
-    base.modify_theme("")
 
     # fixation du lien : base > cadre_principal
     # base.fix_cp(pf)

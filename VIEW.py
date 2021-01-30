@@ -23,8 +23,12 @@ class PF(Frame):
         
         # attributs
         self.base = base
-        self.base.add_frame(self)
+        self.th = Theme()
+        self.th.add_frame(self)
         self.cadreGestion = CadreGestion(self)
+        
+        # fixation du theme initial
+        self.th.modify_theme("")
         
     def display(self, cadre):
         if cadre == "cadreGestion":
@@ -56,7 +60,7 @@ class CadreGestion(Frame):
         
         # configuration
         self.configure()
-        boss.base.add_frame(self)
+        boss.th.add_frame(self)
        
         
         # attributs
@@ -88,7 +92,7 @@ class Entete(Frame):
         # attributs
         self.boss = boss
         self.root = boss.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
        
         
         # construction des menus
@@ -149,8 +153,8 @@ class Entete(Frame):
                             me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[11]))
         
         # ajout des menu et menuButton à la base
-        self.root.base.add_menuButton(menuButton_lst)
-        self.root.base.add_menu(menu_lst)
+        self.root.th.add_menuButton(menuButton_lst)
+        self.root.th.add_menu(menu_lst)
         
         
         # ajout à droite de la gestion de fenêtre   
@@ -160,11 +164,11 @@ class Entete(Frame):
         b2.pack(**PAD_FERMETURE)
         
         # ajout des widgets à la base
-        self.root.base.add_menuButton(menuButton_lst)
-        self.root.base.add_menu(menu_lst)
-        self.root.base.add_fermeture(b1)
-        self.root.base.add_fermeture(b2)
-        self.root.base.add_barre(barre_lst)
+        self.root.th.add_menuButton(menuButton_lst)
+        self.root.th.add_menu(menu_lst)
+        self.root.th.add_fermeture(b1)
+        self.root.th.add_fermeture(b2)
+        self.root.th.add_barre(barre_lst)
         
         
         
@@ -179,7 +183,7 @@ class Corps(Frame):
         #attributs
         self.boss = boss
         self.root = boss.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
         self.titre = {}
         self.contenu = {}
         self.bouton = {}
@@ -226,14 +230,14 @@ class Titre(Frame):
         
         # attributs
         self.root = boss.master.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
         
         # construction du corps
         label = Label(self, text = titre.upper(), **KW_TITRE)
-        label.pack()
+        label.pack(**PAD_TITRE)
         
         # ajout widget à la base
-        self.root.base.add_titre(label)
+        self.root.th.add_titre(label)
         
     def display(self):
         self.pack()
@@ -248,7 +252,7 @@ class Contenu(Frame):
         
         # attributs
         self.root = boss.master.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
         
         # construction du corps
         Label(self, text = contenu[0]).pack(side=LEFT)
@@ -266,7 +270,7 @@ class Bouton(Frame):
         
         # attributs
         self.root = boss.master.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
         
         # construction du bouton
         Button(self, text= bouton[0]).pack()
@@ -287,13 +291,18 @@ class Comment(Frame):
         
         # attributs
         self.root = boss.master
-        self.root.base.add_frame(self)
+        self.root.th.add_frame(self)
         
         self.com = StringVar()
         self.com.set('')
         
         # structure
-        Label(self, textvariable= self.com).pack()
+        label =  Label(self, textvariable= self.com, **KW_COMMENT)
+        label.pack(**PAD_COMMENT)
+        
+        # ajout du label dans le theme
+        self.root.th.add_com(label)
+       
         
     def fix_comment(self, com):
         self.com.set(com)

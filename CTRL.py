@@ -21,14 +21,9 @@ class Base:
 
     def __init__(self):
         
+        pass
         # attributs
-        self.frame_list = []
-        self.menuButton_list = []
-        self.menu_list = []
-        self.fermeture_list = []
-        self.barre_list = []
-        self.label_list = []
-        self.titre_list = []
+       
     
         # self.database = None
         # self.database_path = None
@@ -36,80 +31,7 @@ class Base:
         # self.curseur = None
         # self.cp = None
         
-        # récupération du dictionnaire des thèmes dans le fichier json
-        with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
-            self.dic_theme = json.load(read_file)
-
-        # création du fichier mémoire du thème le cas échéant
-        if not os.path.exists(os.path.join(DATA_FILE, LAST_THEME_FILE)):
-            with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
-                write_file.write(list(self.dic_theme.keys())[0])
-            
-        # récupération du thème courant dans le fichier txt:
-        with open(os.path.join(DATA_FILE, LAST_THEME_FILE), 'r', encoding = "utf-8") as read_file:
-            self.theme = read_file.read().strip()
-
-        
-    def add_frame(self, frame):
-        self.frame_list.append(frame)
-        
-    def add_menuButton(self, lst):
-        self.menuButton_list += lst
-        
-    def add_menu(self, lst):
-        self.menu_list += lst
-        
-    def add_fermeture(self, button):
-        self.fermeture_list.append(button)
-        
-    def add_barre(self, lst):
-        self.barre_list += lst
-        
-    def add_label(self, label):
-        self.label_list.append(label)
-        
-    def add_titre(self, label):
-        self.titre_list.append(label)
-        
-    def modify_theme(self, theme):
-        """modifie le thème et crée, si inexistant, un fichier pour le thème courant
-
-        Args:
-            theme (str): nom du thème à appliquer (si chaine vide, alors fixer le thème actuel)
-        """        
-        if theme:
-            self.theme=theme
-            with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
-                write_file.write(list(self.dic_theme.keys())[0])
-        dic = self.dic_theme[self.theme]
-        for frame in self.frame_list:
-            frame.configure(bg=dic["bg"])
-        for mb in self.menuButton_list:
-            mb.configure(bg = dic['bg'], 
-                         fg=dic['fg'], 
-                         activebackground = dic['activebackgroundMenuButton'],
-                         activeforeground = dic['activeforegroundMenuButton'])
-        for me in self.menu_list:
-             me.configure(bg = dic['bg'], 
-                         fg=dic['fg'], 
-                         activebackground = dic['activebackgroundMenu'],
-                         activeforeground = dic['activeforegroundMenu'])
-        for fermeture in self.fermeture_list:
-            fermeture.configure(bg = dic['bg'],
-                                fg=dic['fg_fermeture'],
-                                activebackground =dic['activebackgroundFermeture'],
-                                activeforeground =dic['activeforegroundFermeture'])
-        for barre in self.barre_list:
-            barre.configure(bg = dic['bg'],
-                            fg = dic['fg_barre'])
-            
-        for label in self.label_list:
-            label.configure(bg = dic['bg'],
-                            fg = dic['fg'])
-            
-        for titre in self.titre_list:
-            titre.configure(bg = dic['bg'],
-                            fg = dic['fg_titre'])
+       
              
     def fermer(self):
         pass

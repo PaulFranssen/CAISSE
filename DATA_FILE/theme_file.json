@@ -15,7 +15,7 @@
         "activebackgroundFermeture":"Grey15",
         "activeforegroundFermeture":"green",
         "fg_barre":"green",
-        "fg_titre":"green"
-
+        "fg_titre":"green",
+        "fg_com": "green"
     }
 }
