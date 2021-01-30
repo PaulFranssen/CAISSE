@@ -9,7 +9,7 @@ THEME_FILE = "theme_file.json"
 LAST_THEME_FILE = "last_theme.txt"
 
 # tailles des caractères
-TAILLE_TITRE = 22
+TAILLE_TITRE = 25
 TAILLE_CAR = 18
 TAILLE_MENU = 16
 

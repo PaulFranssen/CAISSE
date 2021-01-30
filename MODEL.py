@@ -110,7 +110,6 @@ from CONST import *
 
 # menubutton
 KW_MENUBUTTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0)
-
 PAD_MENUBUTTON = dict(padx=5, side='left')
 
 # menu
@@ -125,6 +124,8 @@ KW_FERMETURE = dict(font=(POLICE, TAILLE_CAR),
                     bd=0, 
                     takefocus=0)
 PAD_FERMETURE = dict(padx=5, side=RIGHT)
+
+KW_TITRE = dict(font = (POLICE, TAILLE_TITRE, "italic"))
 
 # kw_10 = {'font': (police_1, taille_4)}
 # pad_10 = {'padx': 0, 'pady': 0}
@@ -247,4 +248,3 @@ PAD_FERMETURE = dict(padx=5, side=RIGHT)
 #         for cle, valeur in dico.items():
 #             if type(valeur) == str and valeur == color_6:
 #                 dico[cle] = x
-

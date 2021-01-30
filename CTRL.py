@@ -27,6 +27,8 @@ class Base:
         self.menu_list = []
         self.fermeture_list = []
         self.barre_list = []
+        self.label_list = []
+        self.titre_list = []
     
         # self.database = None
         # self.database_path = None
@@ -63,6 +65,12 @@ class Base:
     def add_barre(self, lst):
         self.barre_list += lst
         
+    def add_label(self, label):
+        self.label_list.append(label)
+        
+    def add_titre(self, label):
+        self.titre_list.append(label)
+        
     def modify_theme(self, theme):
         """modifie le thème et crée, si inexistant, un fichier pour le thème courant
 
@@ -94,6 +102,14 @@ class Base:
         for barre in self.barre_list:
             barre.configure(bg = dic['bg'],
                             fg = dic['fg_barre'])
+            
+        for label in self.label_list:
+            label.configure(bg = dic['bg'],
+                            fg = dic['fg'])
+            
+        for titre in self.titre_list:
+            titre.configure(bg = dic['bg'],
+                            fg = dic['fg_titre'])
              
     def fermer(self):
         pass

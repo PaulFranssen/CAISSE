@@ -229,7 +229,11 @@ class Titre(Frame):
         self.root.base.add_frame(self)
         
         # construction du corps
-        Label(self, text = titre).pack()
+        label = Label(self, text = titre.upper(), **KW_TITRE)
+        label.pack()
+        
+        # ajout widget à la base
+        self.root.base.add_titre(label)
         
     def display(self):
         self.pack()
