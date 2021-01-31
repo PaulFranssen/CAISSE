@@ -31,11 +31,15 @@ class Clic:
              
     def displayContenu(self, **KW):
         if KW['item'] == "modifier le thème":
-            theme_lst = list(self.boss.th.dic_theme.keys())
-            theme = self.boss.th.theme
+            theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
+            theme = " " + self.boss.th.theme
             KW['listBox_lst'].clear()
             KW['listBox_lst'].extend(theme_lst)
-            KW['listBox'].configure(height=len(theme_lst), width=LENGTH_CODE) # width à modifier
+            wth=0
+            for item in theme_lst:
+                if len(item)>wth:
+                    wth = len(item)
+            KW['listBox'].configure(height=len(theme_lst), width=wth+1)
             KW['listBox_var'].set(theme_lst)
             KW['listBox'].selection_set(theme_lst.index(theme))
             KW['listBox'].focus_set()
@@ -43,7 +47,7 @@ class Clic:
     def commandListBox(self, **KW):
         if KW['item'] == "modifier le thème":
             index = int(KW['listBox'].curselection()[0])
-            theme = KW['listBox'].get(index)
+            theme = KW['listBox'].get(index).strip()
             self.boss.th.modify_theme(theme)
              
     def fermer(self):

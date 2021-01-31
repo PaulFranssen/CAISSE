@@ -49,6 +49,9 @@ PAD_LISTBOX = dict(pady=0)
 KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
 PAD_LABEL = dict(padx=5, pady=5)
 
+KW_BOUTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0) 
+PAD_BUTTON = dict(padx=20, side=LEFT)
+
 
 class Theme():
     
@@ -64,6 +67,7 @@ class Theme():
         self.titre_list = []
         self.com_label = None
         self.listBox_list = []
+        self.button_list = []
     
         # récupération du dictionnaire des thèmes dans le fichier json
         with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
@@ -105,6 +109,11 @@ class Theme():
         
     def add_listBox(self, listBox):
         self.listBox_list.append(listBox)
+        
+    def add_listBox(self, listBox):
+        self.listBox_list.append(listBox)
+        
+    
         
     def modify_theme(self, theme):
         """modifie le thème

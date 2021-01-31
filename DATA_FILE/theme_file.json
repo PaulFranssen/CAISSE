@@ -20,8 +20,16 @@
 
         "fg_barre":"tomato",
         "fg_titre":"tomato",
-        "fg_com": "tomato"
+        "fg_com": "tomato",
+
+        "bg_button": "grey30", 
+        "fg_button": "grey80", 
+        "activeforegroundButton": "grey80", 
+        "activebackgroundButton": "tomato",
+        "highlightcolorButton": "tomato"
+    
     },
+
     "thème2":
     {
         "bg":"Grey15",
@@ -43,7 +51,13 @@
 
         "fg_barre":"green",
         "fg_titre":"green",
-        "fg_com": "green"
+        "fg_com": "green",
+
+        "bg_button": "grey30", 
+        "fg_button": "grey80", 
+        "activeforegroundButton": "grey80", 
+        "activebackgroundButton": "tomato",
+        "highlightcolorButton": "tomato"
     },
     "thème3":
     {
@@ -66,6 +80,12 @@
 
         "fg_barre":"purple",
         "fg_titre":"purple",
-        "fg_com": "purple"
+        "fg_com": "purple",
+
+        "bg_button": "grey30", 
+        "fg_button": "grey80", 
+        "activeforegroundButton": "grey80", 
+        "activebackgroundButton": "tomato",
+        "highlightcolorButton": "tomato"
     }
 }

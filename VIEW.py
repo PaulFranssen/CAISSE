@@ -290,12 +290,16 @@ class Contenu(Frame):
         self.pack_forget()
         
 class Bouton(Frame):
-    def __init__(self, boss, bouton):
+    def __init__(self, boss, item):
         Frame.__init__(self, boss)
         self.configure()
         
         # attributs
         self.root = boss.master.master
+        self.item = item
+        bouton11 = Button(self, )
+        
+        # ajout des widgets aux thèmes
         self.root.th.add_frame(self)
         
         # construction du bouton
