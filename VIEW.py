@@ -252,8 +252,10 @@ class Contenu(Frame):
         cadre = Frame(self) #cadre adapté au contenu
         cadre.pack(side=LEFT)
         label1 = Label(cadre,text = "sélection".upper(), **KW_LABEL)
-        self.listBox = Listbox(cadre, listvariable=self.listBox_var, 
-                               command=self.commandListBox, **KW_LISTBOX)
+        self.listBox = Listbox(cadre, listvariable=self.listBox_var, **KW_LISTBOX)
+        self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
+       
+        
         
         # ajout des widgets aux themes
         self.root.th.add_frame(self)
@@ -278,8 +280,10 @@ class Contenu(Frame):
                                       item=self.item)
         self.pack(fill=Y, expand=Y)
         
-    def commandListBox(self):
-        self.root.clic.commandListBox(self.item)
+    def commandListBox(self, evt):
+        w = evt.widget
+        self.root.clic.commandListBox(item = self.item,
+                                      listBox = w)
         
         
     def hide(self):

@@ -1,7 +1,26 @@
 {
     "thème1":
     {
-        "bg":"Grey40"
+        "bg":"Grey15",
+        "fg":"Grey80",
+
+        "activebackgroundMenuButton":"Grey15",
+        "activeforegroundMenuButton":"tomato",
+
+        "activebackgroundListBox":"Grey25",
+        "activeforegroundListBox":"tomato",
+        "bg_listBox" : "Grey50",
+
+        "activebackgroundMenu":"tomato",
+        "activeforegroundMenu":"black",
+
+        "fg_fermeture":"tomato",
+        "activebackgroundFermeture":"Grey15",
+        "activeforegroundFermeture":"tomato",
+
+        "fg_barre":"tomato",
+        "fg_titre":"tomato",
+        "fg_com": "tomato"
     },
     "thème2":
     {
@@ -25,5 +44,28 @@
         "fg_barre":"green",
         "fg_titre":"green",
         "fg_com": "green"
+    },
+    "thème3":
+    {
+        "bg":"Grey15",
+        "fg":"Grey80",
+
+        "activebackgroundMenuButton":"Grey15",
+        "activeforegroundMenuButton":"purple",
+
+        "activebackgroundListBox":"Grey25",
+        "activeforegroundListBox":"purple",
+        "bg_listBox" : "Grey50",
+
+        "activebackgroundMenu":"purple",
+        "activeforegroundMenu":"black",
+
+        "fg_fermeture":"purple",
+        "activebackgroundFermeture":"Grey15",
+        "activeforegroundFermeture":"purple",
+
+        "fg_barre":"purple",
+        "fg_titre":"purple",
+        "fg_com": "purple"
     }
 }

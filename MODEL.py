@@ -69,14 +69,14 @@ class Theme():
         with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
             self.dic_theme = json.load(read_file)
 
-        # création du fichier mémoire du thème le cas échéant
+        # création du fichier mémoire du thème le cas échéant en y fixant le premier thème
         if not os.path.exists(os.path.join(DATA_FILE, LAST_THEME_FILE)):
             with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
                 write_file.write(list(self.dic_theme.keys())[0])
             
         # récupération du thème courant dans le fichier txt:
         with open(os.path.join(DATA_FILE, LAST_THEME_FILE), 'r', encoding = "utf-8") as read_file:
-            self.theme = read_file.read().strip()
+            self.theme = read_file.read().strip() # à vérifier si ce theme est bien dans la liste du dic_theme.keys()
 
         
     def add_frame(self, frame):
@@ -107,7 +107,7 @@ class Theme():
         self.listBox_list.append(listBox)
         
     def modify_theme(self, theme):
-        """modifie le thème et crée, si inexistant, un fichier pour le thème courant
+        """modifie le thème
 
         Args:
             theme (str): nom du thème à appliquer (si chaine vide, alors fixer le thème actuel)
@@ -115,7 +115,7 @@ class Theme():
         if theme:
             self.theme=theme
             with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
-                write_file.write(list(self.dic_theme.keys())[0])
+                write_file.write(self.theme)
         dic = self.dic_theme[self.theme]
         for frame in self.frame_list:
             frame.configure(bg=dic["bg"])
