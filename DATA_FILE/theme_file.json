@@ -7,13 +7,21 @@
     {
         "bg":"Grey15",
         "fg":"Grey80",
+
         "activebackgroundMenuButton":"Grey15",
         "activeforegroundMenuButton":"green",
+
+        "activebackgroundListBox":"Grey25",
+        "activeforegroundListBox":"green",
+        "bg_listBox" : "Grey50",
+
         "activebackgroundMenu":"green",
         "activeforegroundMenu":"black",
+
         "fg_fermeture":"green",
         "activebackgroundFermeture":"Grey15",
         "activeforegroundFermeture":"green",
+
         "fg_barre":"green",
         "fg_titre":"green",
         "fg_com": "green"

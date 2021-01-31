@@ -1,51 +1,21 @@
 {
     "caisse": 
-    {
-        "ouvrir" : 
-        {
-            "titre": "ouvrir une caisse",
-            "contenu": ["label.selection", "listbox.10"],
-            "bouton": "Nouvelle caisse"
-        },  
-        "separator" : {},
-        
-        "état" : 
-        {
-            "titre": "état de la caisse",
-            "contenu": ["Label.caisse.Label.8", "Label.2.Label.8.Label.2.Label.8.Label.2.Label.8", "Label.Total.Label.8"],
-            "bouton": ["back"]
-        },
-        "cloturer" :
-        {
-            "titre": "Cloturer la caisse",
-            "contenu": ["Label.date.Label.10"],
-            "bouton": ["back", "cloturer", "ticket"]
-        }
-    },
-    "données" : 
-    {
-        
-        "Articles" : 
-        {
-            "titre": "Articles",
-            "contenu": ["artc", "essai"],
-            "bouton": ["ret", "Confirmer"]
-        },
+    [
+        "ouvrir",  
+        "separator",
+        "état",
+        "cloturer"
+    ],
 
-        "Employés" :
-        {
-            "titre": "Employés",
-            "contenu": ["label", "essai"],
-            "bouton": ["aris", "Confirmer"]
-        }
-    },
+    "données" : 
+    [
+        "articles",
+
+        "employés"
+    ],
+
     "thème" : 
-    {
-        "modifier le thème" : 
-        {
-            "titre": "modifier le thème",
-            "contenu": ["label.selection", "essai"],
-            "bouton": ["ret", "Confirmer"]
-        }
-    }
+    [
+        "modifier le thème"
+    ]
 }

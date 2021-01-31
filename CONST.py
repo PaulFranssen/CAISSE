@@ -13,6 +13,11 @@ TAILLE_TITRE = 25
 TAILLE_CAR = 18
 TAILLE_MENU = 16
 
+# largeur et hauteur widgets
+HEIGHT_LISTBOX = 20
+LENGTH_CODE = 15
+
+
 # police
 POLICE = "Consolas"
 

@@ -66,6 +66,12 @@ class CadreGestion(Frame):
         # attributs
         self.item = StringVar()
         self.item.set("ouvrir")
+        with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
+                self.item_dic = json.load(read_file)
+        self.item_lst = []
+        for liste in self.item_dic.values():
+            self.item_lst += liste
+            
         
         ## structure générale : entete, cadre, comment
         self.entete = Entete(self)
@@ -94,21 +100,15 @@ class Entete(Frame):
         self.root = boss.master
         self.root.th.add_frame(self)
        
-        
-        # construction des menus
-        with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
-            data = json.load(read_file)
-        
         ## liste des items du menu
-        lst = []
-        for dic in list(data.values()):
-            lst += list(dic.keys())
+        
+        lst = self.boss.item_lst
         nbr_item = len(lst) # separator inclus
         
         menuButton_lst=[] # liste des menubutton
         menu_lst=[] # liste des menus associés aux menubutton
         barre_lst  = [] # liste es barres verticales
-        for key, value in data.items():
+        for key, value in self.boss.item_dic.items():
             # titre du menu
             mb= Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
             menuButton_lst.append(mb)
@@ -123,39 +123,34 @@ class Entete(Frame):
             barre_verticale.pack(side='left') # séparateur vertical entre les menus
             
             # ajout des items de chaque menu
-            for cle, item in value.items():
-                if cle == "separator":
+            for item in value:
+                if item == "separator":
                     me.add_separator()
                 else:
-                        if nbr_item > 0 and cle == lst[0]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[0]))
-                        elif nbr_item > 1 and cle == lst[1]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[1]))
-                        elif nbr_item > 2 and cle == lst[2]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[2])) 
-                        elif nbr_item > 3 and cle == lst[3]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[3]))
-                        elif nbr_item > 4 and cle == lst[4]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[4]))    
-                        elif nbr_item > 5 and cle == lst[5]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[5])) 
-                        elif nbr_item > 6 and cle == lst[6]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[6]))
-                        elif nbr_item > 7 and cle == lst[7]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[7]))
-                        elif nbr_item > 8 and cle == lst[8]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[8]))    
-                        elif nbr_item > 9 and cle == lst[9]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[9])) 
-                        elif nbr_item > 10 and cle == lst[10]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[10]))
-                        elif nbr_item > 11 and cle == lst[11]:
-                            me.add_command(label = cle, underline=0, command=lambda : self.boss.corps.display(lst[11]))
-        
-        # ajout des menu et menuButton à la base
-        self.root.th.add_menuButton(menuButton_lst)
-        self.root.th.add_menu(menu_lst)
-        
+                        if nbr_item > 0 and item == lst[0]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[0]))
+                        elif nbr_item > 1 and item == lst[1]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[1]))
+                        elif nbr_item > 2 and item == lst[2]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[2])) 
+                        elif nbr_item > 3 and item == lst[3]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[3]))
+                        elif nbr_item > 4 and item == lst[4]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[4]))    
+                        elif nbr_item > 5 and item == lst[5]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[5])) 
+                        elif nbr_item > 6 and item == lst[6]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[6]))
+                        elif nbr_item > 7 and item == lst[7]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[7]))
+                        elif nbr_item > 8 and item == lst[8]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[8]))    
+                        elif nbr_item > 9 and item == lst[9]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[9])) 
+                        elif nbr_item > 10 and item == lst[10]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[10]))
+                        elif nbr_item > 11 and item == lst[11]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[11]))
         
         # ajout à droite de la gestion de fenêtre   
         b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
@@ -169,9 +164,7 @@ class Entete(Frame):
         self.root.th.add_fermeture(b1)
         self.root.th.add_fermeture(b2)
         self.root.th.add_barre(barre_lst)
-        
-        
-        
+   
 class Corps(Frame):
     def __init__(self, boss):
         Frame.__init__(self, boss)
@@ -189,14 +182,12 @@ class Corps(Frame):
         self.bouton = {}
         
         # construction des titres, boutons et contenu
-        with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
-                data = json.load(read_file)
-        for _ , value in data.items():
-            for cle, valeur in value.items():
-                if cle != "separator":
-                    self.titre[cle] = Titre(self, valeur['titre'])
-                    self.contenu[cle] = Contenu(self, valeur['contenu'])
-                    self.bouton[cle] = Bouton(self, valeur['bouton'])   
+        for lst in self.boss.item_dic.values():
+            for item in lst:
+                if item != "separator":
+                    self.titre[item] = Titre(self, item)
+                    self.contenu[item] = Contenu(self, item)
+                    self.bouton[item] = Bouton(self, item)   
         
         # affichage du titre, du contenu et du bouton initiaux
         self.titre[boss.item.get()].display()
@@ -224,7 +215,7 @@ class Corps(Frame):
         self.bouton[item].display()
         
 class Titre(Frame):
-    def __init__(self, boss, titre):
+    def __init__(self, boss, item):
         Frame.__init__(self, boss)
         self.configure()
         
@@ -233,7 +224,7 @@ class Titre(Frame):
         self.root.th.add_frame(self)
         
         # construction du corps
-        label = Label(self, text = titre.upper(), **KW_TITRE)
+        label = Label(self, text = item.upper(), **KW_TITRE)
         label.pack(**PAD_TITRE)
         
         # ajout widget à la base
@@ -246,18 +237,35 @@ class Titre(Frame):
         self.pack_forget()
                 
 class Contenu(Frame):
-    def __init__(self, boss, contenu):
+    def __init__(self, boss, item):
         Frame.__init__(self, boss)
         self.configure()
         
         # attributs
+        self.boss = boss
         self.root = boss.master.master
-        self.root.th.add_frame(self)
+        self.cadre = Frame(self)
+        self.lst_listbox = [3, 4]
+        self.var_listbox = StringVar(value=self.lst_listbox)
         
-        # construction du corps
-        Label(self, text = contenu[0]).pack(side=LEFT)
+        
+        
+        # widgets dans l'ordre du fichier json, en commençant par 0 et en incluant les séparateurs
+        if item == self.boss.master.item_lst[6]: # modifier theme
+            label1 = Label(self.cadre,text = "sélection".upper(), **KW_LABEL)
+            label1.pack(**PAD_LABEL)
+            listBox = Listbox(self.cadre, listvariable=self.var_listbox, width=LENGTH_CODE + 2, height=HEIGHT_LISTBOX, **KW_LISTBOX)
+            listBox.pack(**PAD_LISTBOX)
+            # ajout des widgets aux themes
+            self.root.th.add_label(label1)
+            self.root.th.add_listBox(listBox)
+        
+        # ajout des widgets aux themes
+        self.root.th.add_frame(self)
+        self.root.th.add_frame(self.cadre)
     
     def display(self):
+        self.cadre.pack(side=LEFT)
         self.pack(fill=Y, expand=Y)
         
     def hide(self):

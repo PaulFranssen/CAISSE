@@ -39,6 +39,17 @@ PAD_TITRE = dict(pady=10)
 KW_COMMENT = dict(font=(POLICE, TAILLE_CAR, 'italic'))
 PAD_COMMENT = dict(pady=10)
 
+KW_LISTBOX = dict(selectmode='browse', 
+                  font=(POLICE, TAILLE_CAR),
+                  takefocus=0,
+                  activestyle= 'none', 
+                  highlightthickness= 0,
+                  relief='flat')
+PAD_LISTBOX = dict(pady=0)
+KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
+PAD_LABEL = dict(padx=5, pady=5)
+
+
 class Theme():
     
     def __init__(self):
@@ -52,6 +63,7 @@ class Theme():
         self.label_list = []
         self.titre_list = []
         self.com_label = None
+        self.listBox_list = []
     
         # récupération du dictionnaire des thèmes dans le fichier json
         with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
@@ -91,6 +103,9 @@ class Theme():
     def add_com(self, label):
         self.com_label = label
         
+    def add_listBox(self, listBox):
+        self.listBox_list.append(listBox)
+        
     def modify_theme(self, theme):
         """modifie le thème et crée, si inexistant, un fichier pour le thème courant
 
@@ -117,8 +132,8 @@ class Theme():
         for fermeture in self.fermeture_list:
             fermeture.configure(bg = dic['bg'],
                                 fg=dic['fg_fermeture'],
-                                activebackground =dic['activebackgroundFermeture'],
-                                activeforeground =dic['activeforegroundFermeture'])
+                                activebackground = dic['activebackgroundFermeture'],
+                                activeforeground = dic['activeforegroundFermeture'])
         for barre in self.barre_list:
             barre.configure(bg = dic['bg'],
                             fg = dic['fg_barre'])
@@ -133,6 +148,12 @@ class Theme():
             
         self.com_label.configure(bg = dic['bg'],
                       fg = dic['fg_com'])
+        
+        for listBox in self.listBox_list:
+            listBox.configure(bg = dic['bg_listBox'],
+                              fg = dic['fg'],
+                              selectbackground = dic['activebackgroundListBox'],
+                              selectforeground = dic['activeforegroundListBox'])
         
              
 
