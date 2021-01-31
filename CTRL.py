@@ -17,21 +17,24 @@ class E(Exception):
     pass
 
 
-class Base:
+class Clic:
 
-    def __init__(self):
+    def __init__(self, boss=None):
+        self.boss = boss
         
-        pass
-        # attributs
-       
-    
         # self.database = None
         # self.database_path = None
         # self.connexion = None
         # self.curseur = None
         # self.cp = None
-        
-       
+        pass
+             
+    def displayContenu(self, **KW):
+        if KW['self.item'] == "modifier le thème":
+            lst = [elem for elem in self.boss.cadreGestion.item_lst if elem != 'separator']
+            KW['listBox_lst'].extend(lst)
+            KW['listBox'].configure(height=len(lst), width=LENGTH_CODE + 2)
+            KW['listBox_var'].set(lst)
              
     def fermer(self):
         pass

@@ -6,13 +6,12 @@ import json
 import os.path
 import CONST
 from MODEL import *
+from CTRL import *
 
 class PF(Frame):
-    def __init__(self, base, boss=None):
+    def __init__(self, boss=None):
         Frame.__init__(self, boss)
         # self.master.colormap = 'red'
-        
-        
         
         # configuration
         self.master.configure()
@@ -22,10 +21,12 @@ class PF(Frame):
         self.pack(fill=BOTH, expand=Y)
         
         # attributs
-        self.base = base
+        self.clic = Clic(self)
         self.th = Theme()
-        self.th.add_frame(self)
         self.cadreGestion = CadreGestion(self)
+        
+        # ajout du cadre au thème
+        self.th.add_frame(self)
         
         # fixation du theme initial
         self.th.modify_theme("")
@@ -47,7 +48,7 @@ class PF(Frame):
         #     self.database.set(database)
         
     def croix(self):
-        self.base.fermer()
+        # self.base.fermer()
         self.master.destroy()
 
     def barre(self):
@@ -158,7 +159,7 @@ class Entete(Frame):
         b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
         b2.pack(**PAD_FERMETURE)
         
-        # ajout des widgets à la base
+        # ajout des widgets au thème
         self.root.th.add_menuButton(menuButton_lst)
         self.root.th.add_menu(menu_lst)
         self.root.th.add_fermeture(b1)
@@ -244,29 +245,42 @@ class Contenu(Frame):
         # attributs
         self.boss = boss
         self.root = boss.master.master
-        self.cadre = Frame(self)
-        self.lst_listbox = [3, 4]
-        self.var_listbox = StringVar(value=self.lst_listbox)
-        
-        
-        
-        # widgets dans l'ordre du fichier json, en commençant par 0 et en incluant les séparateurs
-        if item == self.boss.master.item_lst[6]: # modifier theme
-            label1 = Label(self.cadre,text = "sélection".upper(), **KW_LABEL)
-            label1.pack(**PAD_LABEL)
-            listBox = Listbox(self.cadre, listvariable=self.var_listbox, width=LENGTH_CODE + 2, height=HEIGHT_LISTBOX, **KW_LISTBOX)
-            listBox.pack(**PAD_LISTBOX)
-            # ajout des widgets aux themes
-            self.root.th.add_label(label1)
-            self.root.th.add_listBox(listBox)
+        self.item = item
+        self.listBox_lst = []
+        self.listBox_var = StringVar(value=self.listBox_lst)
+        # widgets
+        cadre = Frame(self) #cadre adapté au contenu
+        cadre.pack(side=LEFT)
+        label1 = Label(cadre,text = "sélection".upper(), **KW_LABEL)
+        self.listBox = Listbox(cadre, listvariable=self.listBox_var, 
+                               command=self.commandListBox, **KW_LISTBOX)
         
         # ajout des widgets aux themes
         self.root.th.add_frame(self)
-        self.root.th.add_frame(self.cadre)
+        self.root.th.add_frame(cadre)
+        self.root.th.add_label(label1)
+        self.root.th.add_listBox(self.listBox)
+        
+        
+        # affichage des widgets selon l'item
+        if self.item == "modifier le thème": 
+            
+            label1.pack(**PAD_LABEL)   
+            self.listBox.pack(**PAD_LISTBOX)
+           
+        
+        
     
-    def display(self):
-        self.cadre.pack(side=LEFT)
+    def display(self):    
+        self.root.clic.displayContenu(listBox=self.listBox,
+                                      listBox_lst=self.listBox_lst,
+                                      listBox_var=self.listBox_var,
+                                      item=self.item)
         self.pack(fill=Y, expand=Y)
+        
+    def commandListBox(self):
+        self.root.clic.commandListBox(self.item)
+        
         
     def hide(self):
         self.pack_forget()

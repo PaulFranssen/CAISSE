@@ -3,20 +3,20 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
-import CTRL  # les vues sont contrôlées par la base se trouvant dans control
+# import CTRL  # les vues sont contrôlées par la base se trouvant dans control
 import VIEW
 
 if __name__ == '__main__':
    
     # création de la DATABASE
-    base = CTRL.Base()
+    # base = CTRL.Base()
 
     # création du cadre principal et du lien : cadre > database
-    pf = VIEW.PF(base)
+    pf = VIEW.PF()
     
 
+
     # fixation du lien : base > cadre_principal
-    # base.fix_cp(pf)
 
     # affichage écran d'accueil 
     pf.display("cadreGestion")
