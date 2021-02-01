@@ -26,7 +26,7 @@ class PF(Frame):
         self.cadreGestion = CadreGestion(self)
         
         # ajout du cadre au thème
-        self.th.add_frame(self)
+        self.th.add_widget("frame", self)
         
         # fixation du theme initial
         self.th.modify_theme("")
@@ -61,7 +61,7 @@ class CadreGestion(Frame):
         
         # configuration
         self.configure()
-        boss.th.add_frame(self)
+        boss.th.add_widget("frame", self)
        
         
         # attributs
@@ -99,7 +99,7 @@ class Entete(Frame):
         # attributs
         self.boss = boss
         self.root = boss.master
-        self.root.th.add_frame(self)
+        self.root.th.add_widget("frame", self)
        
         ## liste des items du menu
         
@@ -160,11 +160,14 @@ class Entete(Frame):
         b2.pack(**PAD_FERMETURE)
         
         # ajout des widgets au thème
-        self.root.th.add_menuButton(menuButton_lst)
-        self.root.th.add_menu(menu_lst)
-        self.root.th.add_fermeture(b1)
-        self.root.th.add_fermeture(b2)
-        self.root.th.add_barre(barre_lst)
+        for mb in menuButton_lst:
+            self.root.th.add_widget("menuButton", mb)
+        for me in menu_lst:
+            self.root.th.add_widget("menu", me)
+        self.root.th.add_widget("exit", b1)
+        self.root.th.add_widget("exit", b2)
+        for barre in barre_lst:
+            self.root.th.add_widget("barre", barre)
    
 class Corps(Frame):
     def __init__(self, boss):
@@ -177,7 +180,7 @@ class Corps(Frame):
         #attributs
         self.boss = boss
         self.root = boss.master
-        self.root.th.add_frame(self)
+        self.root.th.add_widget("frame", self)
         self.titre = {}
         self.contenu = {}
         self.bouton = {}
@@ -222,14 +225,14 @@ class Titre(Frame):
         
         # attributs
         self.root = boss.master.master
-        self.root.th.add_frame(self)
+        self.root.th.add_widget("frame", self)
         
         # construction du corps
         label = Label(self, text = item.upper(), **KW_TITRE)
         label.pack(**PAD_TITRE)
         
         # ajout widget à la base
-        self.root.th.add_titre(label)
+        self.root.th.add_widget("titre", label)
         
     def display(self):
         self.pack()
@@ -255,14 +258,11 @@ class Contenu(Frame):
         self.listBox = Listbox(cadre, listvariable=self.listBox_var, **KW_LISTBOX)
         self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
        
-        
-        
         # ajout des widgets aux themes
-        self.root.th.add_frame(self)
-        self.root.th.add_frame(cadre)
-        self.root.th.add_label(label1)
-        self.root.th.add_listBox(self.listBox)
-        
+        self.root.th.add_widget("frame", self)
+        self.root.th.add_widget("frame", cadre)
+        self.root.th.add_widget("label", label1)
+        self.root.th.add_widget("listBox", self.listBox)
         
         # affichage des widgets selon l'item
         if self.item == "modifier le thème": 
@@ -270,9 +270,6 @@ class Contenu(Frame):
             label1.pack(**PAD_LABEL)   
             self.listBox.pack(**PAD_LISTBOX)
            
-        
-        
-    
     def display(self):    
         self.root.clic.displayContenu(listBox=self.listBox,
                                       listBox_lst=self.listBox_lst,
@@ -285,7 +282,6 @@ class Contenu(Frame):
         self.root.clic.commandListBox(item = self.item,
                                       listBox = w)
         
-        
     def hide(self):
         self.pack_forget()
         
@@ -297,16 +293,19 @@ class Bouton(Frame):
         # attributs
         self.root = boss.master.master
         self.item = item
-        bouton11 = Button(self, )
+        
+        # widgets
+        self.bouton1 = Button(self, text=item)
         
         # ajout des widgets aux thèmes
-        self.root.th.add_frame(self)
+        self.root.th.add_widget("frame", self)
         
         # construction du bouton
-        Button(self, text= bouton[0]).pack()
+        
            
     def display(self):
-        self.pack()
+        self.bouton1.pack()
+        self.pack(side=LEFT)
         
     def hide(self):
         self.pack_forget()
@@ -321,7 +320,7 @@ class Comment(Frame):
         
         # attributs
         self.root = boss.master
-        self.root.th.add_frame(self)
+        self.root.th.add_widget("frame", self)
         
         self.com = StringVar()
         self.com.set('')
@@ -331,91 +330,12 @@ class Comment(Frame):
         label.pack(**PAD_COMMENT)
         
         # ajout du label dans le theme
-        self.root.th.add_com(label)
+        self.root.th.add_widget("com", label)
        
         
     def fix_comment(self, com):
         self.com.set(com)
     
-               
-            
-            
-    
-        
-
-                
-                
-#         # DONNEES
-#         mb = Menubutton(self, text="données".upper(), **kw_1)
-#         mb.pack(**pad_1)
-#         Label(self, **kw_50).pack(side='left')
-#         me = Menu(mb, **kw_3)
-#         me.add_command(label='Articles', underline=0, command=self.command10, **kw_2)
-#         me.add_command(label='Employés', command=self.command22, **kw_2)
-#         me.add_command(label='Pin', command=self.command13, **kw_2)
-#         mb.configure(menu=me)
-
-#         # ENCODAGE
-#         mb = Menubutton(self, text="CAISSE", **kw_1)
-#         mb.pack(**pad_1)
-#         Label(self, **kw_50).pack(side='left')
-#         me = Menu(mb, **kw_3)
-#         me.add_command(label='Nouvelle', underline=0, command=self.command3, **kw_2)
-#         me.add_command(label='Sélection', underline=0, command=self.command12, **kw_2)
-#         me.add_command(label='Cloture', underline=0, command=self.command9, **kw_2)
-#         me.add_command(label='état', underline=0, command=self.command9, **kw_2)
-#         mb.configure(menu=me)
-
-#         # PARAMETRES
-#         mb = Menubutton(self, text="paramètres".upper(), **kw_1)
-#         mb.pack(**pad_1)
-#         Label(self, **kw_50).pack(side='left')
-#         me = Menu(mb, **kw_3)
-#         me.add_command(label='Thèmes', underline=0, command=self.command9, **kw_2)
-#         self.me2.add_separator()
-#         me.add_command(label="Créer database", underline=0, command=self.command16, **kw_2)
-#         me.add_command(label='Sélectioner database', underline=0, command=self.command9, **kw_2)
-#         self.me2.add_separator()
-#         me.add_command(label='Modifier PIN', underline=0, command=self.command9, **kw_2)
-#         mb.configure(menu=me)
-
-#         # EXIT
-#         b1 = Button(self, text="X ", command=self.command40, **kw_51)
-#         b1.pack(padx=5, side=RIGHT)
-#         b2 = Button(self, text=" —", command=self.command41, **kw_51)
-#         b2.pack(padx=5, side=RIGHT)
-
-#     def active(self, year):
-#         # if year != date.today().year:
-#         if True:
-#             # le premier paramètre me donne l'indice de l'élément dans le menu
-#             self.me1.entryconfig(0, foreground=color_33, activeforeground=color_33)
-#             self.me1.entryconfig(3, foreground=color_33, activeforeground=color_33)
-#             self.me1.entryconfig(5, foreground=color_33, activeforeground=color_33)
-#             self.me2.entryconfig(0, foreground=color_33, activeforeground=color_33)
-#             self.me2.entryconfig(1, foreground=color_33, activeforeground=color_33)
-#         else:
-#             self.me1.entryconfig(0, foreground=color_37, activeforeground=color_30)
-#             self.me1.entryconfig(3, foreground=color_37, activeforeground=color_30)
-#             self.me1.entryconfig(5, foreground=color_37, activeforeground=color_30)
-#             self.me2.entryconfig(0, foreground=color_37, activeforeground=color_30)
-#             self.me2.entryconfig(1, foreground=color_37, activeforeground=color_30)
-
-#     def add_display(self, number, dis):
-#         self.list_display[number] = dis
-
-#     def command0(self):
-#         self.list_display[0].display()
-
-#     def command4(self, arg):
-#         self.list_display[self.num_display].hide()
-#         self.num_display = 4
-#         self.list_display[4].display(arg)
-
-#     def command5(self, arg=False):
-#         self.list_display[self.num_display].hide()
-#         self.num_display = 5
-#         self.list_display[5].display(arg)
         
 
 
