@@ -60,7 +60,6 @@ class Theme():
         # attributs
         self.widget_dic={}
         
-    
         # récupération du dictionnaire des thèmes dans le fichier json
         with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
             self.dic_theme = json.load(read_file)
@@ -78,8 +77,6 @@ class Theme():
             with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
                 write_file.write(list(self.dic_theme.keys())[0])
             
-            
-     
     def add_widget(self, key, wgt):
         """ajoute un widget au dictionnaire
 
@@ -108,44 +105,7 @@ class Theme():
             for wgt in lst:
                 wgt.configure(**self.dic_theme[self.theme][key])
                 
-        # for frame in self.frame_list:
-        #     frame.configure(bg=dic["bg"])
-        # for mb in self.menuButton_list:
-        #     mb.configure(bg = dic['bg'], 
-        #                  fg=dic['fg'], 
-        #                  activebackground = dic['activebackgroundMenuButton'],
-        #                  activeforeground = dic['activeforegroundMenuButton'])
-        # for me in self.menu_list:
-        #      me.configure(bg = dic['bg'], 
-        #                  fg=dic['fg'], 
-        #                  activebackground = dic['activebackgroundMenu'],
-        #                  activeforeground = dic['activeforegroundMenu'])
-        # for fermeture in self.fermeture_list:
-        #     fermeture.configure(bg = dic['bg'],
-        #                         fg=dic['fg_fermeture'],
-        #                         activebackground = dic['activebackgroundFermeture'],
-        #                         activeforeground = dic['activeforegroundFermeture'])
-        # for barre in self.barre_list:
-        #     barre.configure(bg = dic['bg'],
-        #                     fg = dic['fg_barre'])
-            
-        # for label in self.label_list:
-        #     label.configure(bg = dic['bg'],
-        #                     fg = dic['fg'])
-            
-        # for titre in self.titre_list:
-        #     titre.configure(bg = dic['bg'],
-        #                     fg = dic['fg_titre'])
-            
-        # self.com_label.configure(bg = dic['bg'],
-        #               fg = dic['fg_com'])
-        
-        # for listBox in self.listBox_list:
-        #     listBox.configure(bg = dic['bg_listBox'],
-        #                       fg = dic['fg'],
-        #                       selectbackground = dic['activebackgroundListBox'],
-        #                       selectforeground = dic['activeforegroundListBox'])
-        
+       
              
 
 # ##################################################

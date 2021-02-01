@@ -1,43 +1,43 @@
 {
     "tomato":
     {
-        "frame":{"bg":"Grey15","fg":"Grey80"},
+        "frame":{"bg":"Grey15"},
         "menuButton":{"bg":"Grey15","fg":"Grey80", "activebackground":"Grey15", "activeforeground":"tomato"},
-        "listBox":{"bg":"Grey50", "fg":"Grey80", "activebackground":"Grey25", "activeforeground":"tomato"},
+        "listBox":{"bg":"Grey50", "fg":"Grey80","selectforeground":"tomato","selectbackground":"Grey25"},
         "menu":{"bg":"Grey50", "fg":"Grey80", "activebackground":"tomato", "activeforeground":"black"},
         "exit":{"bg":"Grey15", "fg":"tomato", "activebackground":"Grey15", "activeforeground":"tomato"},
         "label":{"bg":"Grey15","fg":"Grey80"},
         "barre":{"bg":"Grey15", "fg":"tomato"},
         "titre":{"bg":"Grey15", "fg":"tomato"},
         "com": {"bg":"Grey15", "fg":"tomato"},
-        "button":{"bg": "grey30","fg":"tomato", "activebackground":"tomato", "activeforeground":"Grey80", "highlightcolorButton": "tomato"}
+        "button":{"bg": "grey30","fg":"tomato", "activebackground":"tomato", "activeforeground":"Grey80", "highlightcolor": "tomato"}
     },
 
     "green":
     {
-        "frame":{"bg":"Grey15","fg":"Grey80"},
+        "frame":{"bg":"Grey15"},
         "menuButton":{"bg":"Grey15","fg":"Grey80", "activebackground":"Grey15", "activeforeground":"green"},
-        "listBox":{"bg":"Grey50", "fg":"Grey80", "activebackground":"Grey25", "activeforeground":"green"},
+        "listBox":{"bg":"Grey50", "fg":"Grey80","selectforeground":"green","selectbackground":"Grey25"},
         "menu":{"bg":"Grey50", "fg":"Grey80", "activebackground":"green", "activeforeground":"black"},
         "exit":{"bg":"Grey15", "fg":"green", "activebackground":"Grey15", "activeforeground":"green"},
         "label":{"bg":"Grey15","fg":"Grey80"},
         "barre":{"bg":"Grey15", "fg":"green"},
         "titre":{"bg":"Grey15", "fg":"green"},
         "com": {"bg":"Grey15", "fg":"green"},
-        "button":{"bg": "grey30","fg":"green", "activebackground":"green", "activeforeground":"Grey80", "highlightcolorButton": "green"}
+        "button":{"bg": "grey30","fg":"green", "activebackground":"green", "activeforeground":"Grey80", "highlightcolor": "green"}
     },
     "purple":
     {
-        "frame":{"bg":"Grey15","fg":"Grey80"},
+        "frame":{"bg":"Grey15"},
         "menuButton":{"bg":"Grey15","fg":"Grey80", "activebackground":"Grey15", "activeforeground":"purple"},
-        "listBox":{"bg":"Grey50", "fg":"Grey80", "activebackground":"Grey25", "activeforeground":"purple"},
+        "listBox":{"bg":"Grey50", "fg":"Grey80","selectforeground":"purple","selectbackground":"Grey25"},
         "menu":{"bg":"Grey50", "fg":"Grey80", "activebackground":"purple", "activeforeground":"black"},
         "exit":{"bg":"Grey15", "fg":"purple", "activebackground":"Grey15", "activeforeground":"purple"},
         "label":{"bg":"Grey15","fg":"Grey80"},
         "barre":{"bg":"Grey15", "fg":"purple"},
         "titre":{"bg":"Grey15", "fg":"purple"},
         "com": {"bg":"Grey15", "fg":"purple"},
-        "button":{"bg": "grey30","fg":"purple", "activebackground":"purple", "activeforeground":"Grey80", "highlightcolorButton": "purple"}
+        "button":{"bg": "grey30","fg":"purple", "activebackground":"purple", "activeforeground":"Grey80", "highlightcolor": "purple"}
     }
     
 }
