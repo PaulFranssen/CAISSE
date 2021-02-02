@@ -20,7 +20,7 @@ HEIGHT_LISTBOX = 20  # à moduler suivant les dimensions de l'écran
 LENGTH_CODE = 15
 
 # écarts
-ECART_DOUBLE_CADRE_VERTICAL = 150
+ECART_DOUBLE_CADRE_VERTICAL = 120
 
 # police
 POLICE = "Consolas"

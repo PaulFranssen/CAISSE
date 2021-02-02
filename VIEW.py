@@ -291,7 +291,6 @@ class Contenu(Frame):
             
         elif self.item == "ajouter un employé":
             cadre.pack(side=LEFT)
-            
             label1.configure(text="nom de l'employé".upper())
             label1.pack(side=LEFT,**PAD_LABEL)
             self.entry1.configure(width = LENGTH_CODE)
@@ -302,14 +301,17 @@ class Contenu(Frame):
             canvas.pack(side=LEFT)
             cadre2.pack(side=LEFT)
             
-            label1.configure(text = "sélection > enter".upper())
+            label1.configure(text = "sélection + enter".upper())
             label1.pack(**PAD_LABEL)   
             self.listBox.configure(width=LENGTH_CODE)
             self.listBox.pack(**PAD_LISTBOX)
             label2.configure(text="employé".upper())
             label2.pack(**PAD_LABEL)
             self.entry2.configure(width = LENGTH_CODE)
-            self.entry2.pack(**PAD_ENTRY)
+            self.entry2.pack()
+            
+            # canvas2.configure(width =ECART_DOUBLE_CADRE_VERTICAL + self.listBox.winfo_reqwidth())
+            
             
     def display(self):    
         # display selon l'item

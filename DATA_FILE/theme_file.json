@@ -12,7 +12,7 @@
         "com": {"bg":"grey15", "fg":"tomato"},
         "button":{"bg": "grey30","fg":"tomato", "activebackground":"tomato", "activeforeground":"grey80", "highlightcolor": "tomato"},
         "entry":{"bg":"grey80","fg":"black","disabledbackground":"grey30","disabledforeground":"grey30","insertbackground":"black","selectbackground":"tomato","selectforeground":"black"},
-        "canvas":{"bg":"grey20"}
+        "canvas":{"bg":"grey15"}
     },
 
     "green":
