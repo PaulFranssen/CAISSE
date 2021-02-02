@@ -45,8 +45,8 @@ class Clic:
             KW['listBox'].focus_set()
             
         elif KW['item'] == "ajouter un employé":
-            KW['entry1_var'].set('')
-            KW['entry1'].focus_set()
+            KW['entry2_var'].set('')
+            KW['entry2'].focus_set()
             
         elif KW['item'] == "éditer les employés":
             KW['entry2_var'].set('')
@@ -58,8 +58,12 @@ class Clic:
             KW['listBox_var'].set(employe_lst)
             KW['listBox'].selection_set(0)
             KW['listBox'].focus_set()
-            
-            
+          
+        elif KW['item'] == "ajouter un article":
+            KW['entry2_var'].set('')
+            KW['entry3_var'].set('')
+            KW['entry4_var'].set('')
+            KW['entry2'].focus_set()  
             
     def commandBouton(self, **KW):
         pass

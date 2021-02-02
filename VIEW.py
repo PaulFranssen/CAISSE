@@ -129,29 +129,29 @@ class Entete(Frame):
                     me.add_separator()
                 else:
                         if nbr_item > 0 and item == lst[0]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[0]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[0]))
                         elif nbr_item > 1 and item == lst[1]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[1]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[1]))
                         elif nbr_item > 2 and item == lst[2]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[2])) 
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[2])) 
                         elif nbr_item > 3 and item == lst[3]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[3]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[3]))
                         elif nbr_item > 4 and item == lst[4]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[4]))    
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[4]))    
                         elif nbr_item > 5 and item == lst[5]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[5])) 
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[5])) 
                         elif nbr_item > 6 and item == lst[6]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[6]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[6]))
                         elif nbr_item > 7 and item == lst[7]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[7]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[7]))
                         elif nbr_item > 8 and item == lst[8]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[8]))    
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[8]))    
                         elif nbr_item > 9 and item == lst[9]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[9])) 
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[9])) 
                         elif nbr_item > 10 and item == lst[10]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[10]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[10]))
                         elif nbr_item > 11 and item == lst[11]:
-                            me.add_command(label = item.capitalize(), underline=0, command=lambda : self.boss.corps.display(lst[11]))
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[11]))
         
         # ajout à droite de la gestion de fenêtre   
         b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
@@ -255,63 +255,99 @@ class Contenu(Frame):
         self.listBox_var = StringVar(value=self.listBox_lst)
         self.entry1_var = StringVar()
         self.entry2_var = StringVar()
+        self.entry3_var = StringVar()
+        self.entry4_var = StringVar()
         
         # widgets
-        cadre = Frame(self) #cadre adapté au contenu
-        canvas = Canvas(self, width=ECART_DOUBLE_CADRE_VERTICAL, **KW_CANVAS) #séparateur
-        label1 = Label(cadre, **KW_LABEL)
-        self.entry1 = Entry(cadre, textvariable=self.entry1_var,**KW_ENTRY)
-        # self.entry1.bind('<Return>', )
-        self.listBox = Listbox(cadre, listvariable=self.listBox_var, **KW_LISTBOX)
+        ## cadreBox parallèle avec listbox
+        cadreBox = Frame(self) 
+        label1 = Label(cadreBox, **KW_LABEL)
+        self.entry1 = Entry(cadreBox, textvariable=self.entry1_var,**KW_ENTRY)
+        self.listBox = Listbox(cadreBox, listvariable=self.listBox_var, **KW_LISTBOX)
         self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
         self.listBox.bind('<Return>', self.returnListBox)   
-        cadre2 = Frame(self)   
-        label2 = Label(cadre2,**KW_LABEL)
-        self.entry2 = Entry(cadre2, textvariable=self.entry2_var,**KW_ENTRY)
-        # self.entry1.bind('<Return>', )
-       
+        
+        # séparateur des cadres parallèles
+        canvas = Canvas(self, width=ECART_DOUBLE_CADRE_VERTICAL, **KW_CANVAS) #séparateur
+        
+        # cadre  
+        cadre = Frame(self)  
+        label2 = Label(cadre,**KW_LABEL)
+        self.entry2 = Entry(cadre, textvariable=self.entry2_var,**KW_ENTRY)
+        label3 = Label(cadre,**KW_LABEL)
+        self.entry3 = Entry(cadre, textvariable=self.entry3_var,**KW_ENTRY)
+        label4 = Label(cadre,**KW_LABEL)
+        self.entry4 = Entry(cadre, textvariable=self.entry4_var,**KW_ENTRY)
+        
+        canvas2 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
+        canvas3 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
+        
+        
         # ajout des widgets aux themes
         self.root.th.add_widget("frame", self)
+        self.root.th.add_widget("frame", cadreBox)
         self.root.th.add_widget("frame", cadre)
-        self.root.th.add_widget("frame", cadre2)
         self.root.th.add_widget("canvas", canvas)
+        self.root.th.add_widget("canvas", canvas2)
+        self.root.th.add_widget("canvas", canvas3)
         self.root.th.add_widget("label", label1)
         self.root.th.add_widget("label", label2)
+        self.root.th.add_widget("label", label3)
+        self.root.th.add_widget("label", label4)
         self.root.th.add_widget("entry", self.entry1)
         self.root.th.add_widget("entry", self.entry2)
+        self.root.th.add_widget("entry", self.entry3)
+        self.root.th.add_widget("entry", self.entry4)
         self.root.th.add_widget("listBox", self.listBox)
         
         # widgets selon l'item
         if self.item == "modifier le thème": 
-            cadre.pack(side=LEFT)
-            
+            cadreBox.pack(side=LEFT)
             label1.configure(text = "sélection".upper())
             label1.pack(**PAD_LABEL)   
             self.listBox.pack(**PAD_LISTBOX)
             
         elif self.item == "ajouter un employé":
             cadre.pack(side=LEFT)
-            label1.configure(text="nom de l'employé".upper())
-            label1.pack(side=LEFT,**PAD_LABEL)
-            self.entry1.configure(width = LENGTH_CODE)
-            self.entry1.pack(side=LEFT, **PAD_ENTRY)
+            
+            label2.configure(text="nom de l'employé".upper())
+            label2.pack(**PAD_LABEL)
+            self.entry2.configure(width = LENGTH_CODE)
+            self.entry2.pack(**PAD_ENTRY)
             
         elif self.item == "éditer les employés":
-            cadre.pack(side=LEFT)           
+            cadreBox.pack(side=LEFT)           
             canvas.pack(side=LEFT)
-            cadre2.pack(side=LEFT)
+            cadre.pack(side=LEFT)
             
             label1.configure(text = "sélection + enter".upper())
             label1.pack(**PAD_LABEL)   
             self.listBox.configure(width=LENGTH_CODE)
             self.listBox.pack(**PAD_LISTBOX)
-            label2.configure(text="employé".upper())
+            label2.configure(text="nom de l'employé".upper())
             label2.pack(**PAD_LABEL)
             self.entry2.configure(width = LENGTH_CODE)
             self.entry2.pack()
             
-            # canvas2.configure(width =ECART_DOUBLE_CADRE_VERTICAL + self.listBox.winfo_reqwidth())
+        elif self.item == "ajouter un article":
+            cadre.pack(side=LEFT)
             
+            label2.configure(text="code de l'article".upper())
+            label2.pack(**PAD_LABEL)
+            self.entry2.configure(width = LENGTH_CODE)
+            self.entry2.pack(**PAD_ENTRY)
+            canvas2.pack()
+            
+            label3.configure(text="description".upper())
+            label3.pack(**PAD_LABEL)
+            self.entry3.configure(width = LENGTH_DESCRIPTION)
+            self.entry3.pack(**PAD_ENTRY)
+            canvas3.pack()
+            
+            label4.configure(text="prix de vente".upper())
+            label4.pack(**PAD_LABEL)
+            self.entry4.configure(width = LENGTH_PRIX)
+            self.entry4.pack(**PAD_ENTRY)
             
     def display(self):    
         # display selon l'item
@@ -322,6 +358,10 @@ class Contenu(Frame):
                                       entry1_var=self.entry1_var,
                                       entry2=self.entry2,
                                       entry2_var=self.entry2_var,
+                                      entry3=self.entry3,
+                                      entry3_var=self.entry3_var,
+                                      entry4=self.entry4,
+                                      entry4_var=self.entry4_var,
                                       item=self.item)
         self.pack(fill=Y, expand=Y)
         
@@ -353,9 +393,9 @@ class Bouton(Frame):
         
         # widgets
         self.bouton1 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
-        self.bouton1.bind('<Return>', lambda:self.commandBouton(1))
+        self.bouton1.bind('<Return>', lambda:(self.commandBouton(1)))
         self.bouton2 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
-        self.bouton1.bind('<Return>', lambda:self.commandBouton(2))
+        self.bouton1.bind('<Return>', lambda:(self.commandBouton(2)))
         canvas = Canvas(self, height=self.bouton1.winfo_reqheight(), **KW_CANVAS)  # cas de l'absence de button
         
         # ajout des widgets aux thèmes
@@ -378,7 +418,10 @@ class Bouton(Frame):
             self.bouton2.configure(text="modifier".upper())
             self.bouton2.pack(**PAD_BUTTON)
             
-    
+        if self.item == "ajouter un article":
+            self.bouton1.configure(text="ajouter".upper())
+            self.bouton1.pack(**PAD_BUTTON)
+            
     def display(self):
         self.pack()
         
@@ -387,11 +430,11 @@ class Bouton(Frame):
         
     def commandBouton(self, numeroBouton):
         self.root.clic.commandBouton(entry1_var=self.entry1_var, 
-                                     entry2_var=self.entry1_var,
+                                     entry2_var=self.entry2_var,
+                                     entry3_var=self.entry3_var, 
+                                     entry4_var=self.entry4_var,
                                      numeroBouton=numeroBouton)
         
-    
-
 class Comment(Frame):
     def __init__(self, boss=None):
         Frame.__init__(self, boss)

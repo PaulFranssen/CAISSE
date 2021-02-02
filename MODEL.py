@@ -12,6 +12,7 @@
 #h_15i, h_27i, h_08i, h_09i, h_10i = IntVar(), IntVar(), IntVar(), IntVar(), IntVar(), IntVar() 
 
 
+from tkinter.font import BOLD
 from CONST import *
 
 import os.path
@@ -49,7 +50,7 @@ PAD_LISTBOX = dict(pady=0)
 KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
 PAD_LABEL = dict(padx=5, pady=5)
 
-KW_BUTTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0, height=HEIGHT_BUTTON) 
+KW_BUTTON = dict(font=(POLICE, TAILLE_CAR, BOLD), relief='flat', bd=0, height=HEIGHT_BUTTON) 
 PAD_BUTTON = dict(padx=20, side=LEFT)
 KW_ENTRY = dict(font=(POLICE, TAILLE_CAR),         
                 bd=0, 
