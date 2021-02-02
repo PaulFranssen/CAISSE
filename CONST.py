@@ -14,9 +14,13 @@ TAILLE_CAR = 18
 TAILLE_MENU = 16
 
 # largeur et hauteur widgets
+HEIGHT_BUTTON = 1
+WIDTH_BUTTON = 12
 HEIGHT_LISTBOX = 20  # à moduler suivant les dimensions de l'écran
 LENGTH_CODE = 15
 
+# écarts
+ECART_DOUBLE_CADRE_VERTICAL = 150
 
 # police
 POLICE = "Consolas"

@@ -29,7 +29,7 @@ class PF(Frame):
         self.th.add_widget("frame", self)
         
         # fixation du theme initial
-        self.th.modify_theme("")
+        self.th.set_theme("")
         
     def display(self, cadre):
         if cadre == "cadreGestion":
@@ -225,16 +225,18 @@ class Titre(Frame):
         
         # attributs
         self.root = boss.master.master
-        self.root.th.add_widget("frame", self)
+        self.item = item
         
         # construction du corps
-        label = Label(self, text = item.upper(), **KW_TITRE)
-        label.pack(**PAD_TITRE)
+        self.label = Label(self, **KW_TITRE)
+        self.label.pack(**PAD_TITRE)
         
         # ajout widget à la base
-        self.root.th.add_widget("titre", label)
-        
+        self.root.th.add_widget("titre", self.label)
+        self.root.th.add_widget("frame", self)
+         
     def display(self):
+        self.label.configure(text=self.item.upper())
         self.pack()
         
     def hide(self):
@@ -251,36 +253,89 @@ class Contenu(Frame):
         self.item = item
         self.listBox_lst = []
         self.listBox_var = StringVar(value=self.listBox_lst)
+        self.entry1_var = StringVar()
+        self.entry2_var = StringVar()
+        
         # widgets
         cadre = Frame(self) #cadre adapté au contenu
-        cadre.pack(side=LEFT)
-        label1 = Label(cadre,text = "sélection".upper(), **KW_LABEL)
+        canvas = Canvas(self, width=ECART_DOUBLE_CADRE_VERTICAL, **KW_CANVAS) #séparateur
+        label1 = Label(cadre, **KW_LABEL)
+        self.entry1 = Entry(cadre, textvariable=self.entry1_var,**KW_ENTRY)
+        # self.entry1.bind('<Return>', )
         self.listBox = Listbox(cadre, listvariable=self.listBox_var, **KW_LISTBOX)
         self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
+        self.listBox.bind('<Return>', self.returnListBox)   
+        cadre2 = Frame(self)   
+        label2 = Label(cadre2,**KW_LABEL)
+        self.entry2 = Entry(cadre2, textvariable=self.entry2_var,**KW_ENTRY)
+        # self.entry1.bind('<Return>', )
        
         # ajout des widgets aux themes
         self.root.th.add_widget("frame", self)
         self.root.th.add_widget("frame", cadre)
+        self.root.th.add_widget("frame", cadre2)
+        self.root.th.add_widget("canvas", canvas)
         self.root.th.add_widget("label", label1)
+        self.root.th.add_widget("label", label2)
+        self.root.th.add_widget("entry", self.entry1)
+        self.root.th.add_widget("entry", self.entry2)
         self.root.th.add_widget("listBox", self.listBox)
         
-        # affichage des widgets selon l'item
+        # widgets selon l'item
         if self.item == "modifier le thème": 
+            cadre.pack(side=LEFT)
             
+            label1.configure(text = "sélection".upper())
             label1.pack(**PAD_LABEL)   
             self.listBox.pack(**PAD_LISTBOX)
-           
+            
+        elif self.item == "ajouter un employé":
+            cadre.pack(side=LEFT)
+            
+            label1.configure(text="nom de l'employé".upper())
+            label1.pack(side=LEFT,**PAD_LABEL)
+            self.entry1.configure(width = LENGTH_CODE)
+            self.entry1.pack(side=LEFT, **PAD_ENTRY)
+            
+        elif self.item == "éditer les employés":
+            cadre.pack(side=LEFT)           
+            canvas.pack(side=LEFT)
+            cadre2.pack(side=LEFT)
+            
+            label1.configure(text = "sélection > enter".upper())
+            label1.pack(**PAD_LABEL)   
+            self.listBox.configure(width=LENGTH_CODE)
+            self.listBox.pack(**PAD_LISTBOX)
+            label2.configure(text="employé".upper())
+            label2.pack(**PAD_LABEL)
+            self.entry2.configure(width = LENGTH_CODE)
+            self.entry2.pack(**PAD_ENTRY)
+            
     def display(self):    
+        # display selon l'item
         self.root.clic.displayContenu(listBox=self.listBox,
                                       listBox_lst=self.listBox_lst,
                                       listBox_var=self.listBox_var,
+                                      entry1=self.entry1,
+                                      entry1_var=self.entry1_var,
+                                      entry2=self.entry2,
+                                      entry2_var=self.entry2_var,
                                       item=self.item)
         self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):
         w = evt.widget
         self.root.clic.commandListBox(item = self.item,
+                                      entry2 = self.entry2,
+                                      entry2_var = self.entry2_var,
                                       listBox = w)
+        
+    def returnListBox(self, evt):
+        w = evt.widget
+        self.root.clic.returnListBox(item = self.item,
+                                     entry2 = self.entry2,
+                                     entry2_var = self.entry2_var,
+                                     listBox = w)
         
     def hide(self):
         self.pack_forget()
@@ -295,20 +350,45 @@ class Bouton(Frame):
         self.item = item
         
         # widgets
-        self.bouton1 = Button(self, text=item)
+        self.bouton1 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
+        self.bouton1.bind('<Return>', lambda:self.commandBouton(1))
+        self.bouton2 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
+        self.bouton1.bind('<Return>', lambda:self.commandBouton(2))
+        canvas = Canvas(self, height=self.bouton1.winfo_reqheight(), **KW_CANVAS)  # cas de l'absence de button
         
         # ajout des widgets aux thèmes
         self.root.th.add_widget("frame", self)
+        self.root.th.add_widget("button", self.bouton1)
+        self.root.th.add_widget("button", self.bouton2)
+        self.root.th.add_widget("canvas", canvas)
         
-        # construction du bouton
-        
-           
+        # widgets selon item
+        if self.item == "modifier le thème":
+            canvas.pack(side=LEFT)
+            
+        if self.item == "ajouter un employé":
+            self.bouton1.configure(text="ajouter".upper())
+            self.bouton1.pack(**PAD_BUTTON)
+            
+        if self.item == "éditer les employés":
+            self.bouton1.configure(text="supprimer".upper())
+            self.bouton1.pack(**PAD_BUTTON)
+            self.bouton2.configure(text="modifier".upper())
+            self.bouton2.pack(**PAD_BUTTON)
+            
+    
     def display(self):
-        self.bouton1.pack()
-        self.pack(side=LEFT)
+        self.pack()
         
     def hide(self):
         self.pack_forget()
+        
+    def commandBouton(self, numeroBouton):
+        self.root.clic.commandBouton(entry1_var=self.entry1_var, 
+                                     entry2_var=self.entry1_var,
+                                     numeroBouton=numeroBouton)
+        
+    
 
 class Comment(Frame):
     def __init__(self, boss=None):

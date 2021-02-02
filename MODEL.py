@@ -34,10 +34,10 @@ KW_FERMETURE = dict(font=(POLICE, TAILLE_CAR),
 PAD_FERMETURE = dict(padx=5, side=RIGHT)
 
 KW_TITRE = dict(font = (POLICE, TAILLE_TITRE, "italic"))
-PAD_TITRE = dict(pady=10)
+PAD_TITRE = dict(pady=15)
 
 KW_COMMENT = dict(font=(POLICE, TAILLE_CAR, 'italic'))
-PAD_COMMENT = dict(pady=10)
+PAD_COMMENT = dict(pady=30)
 
 KW_LISTBOX = dict(selectmode='browse', 
                   font=(POLICE, TAILLE_CAR),
@@ -49,8 +49,14 @@ PAD_LISTBOX = dict(pady=0)
 KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
 PAD_LABEL = dict(padx=5, pady=5)
 
-KW_BOUTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0) 
+KW_BUTTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0, height=HEIGHT_BUTTON) 
 PAD_BUTTON = dict(padx=20, side=LEFT)
+KW_ENTRY = dict(font=(POLICE, TAILLE_CAR),         
+                bd=0, 
+                relief='flat',
+                justify="center")
+PAD_ENTRY = dict(padx=5, pady=0)
+KW_CANVAS = dict(relief=FLAT, highlightthickness= 0, bd=0)
 
 
 class Theme():
@@ -90,19 +96,24 @@ class Theme():
             self.widget_dic[key] = [wgt]
             
         
-    def modify_theme(self, theme):
+    def set_theme(self, theme):
         """modifie le thème
 
         Args:
             theme (str): nom du thème à appliquer (si chaine vide, alors fixer le thème actuel)
-        """        
+        """       
+
         if theme:
             self.theme=theme
             with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
                 write_file.write(self.theme)
         
         for key, lst in self.widget_dic.items():
+            
             for wgt in lst:
+                # for option, valeur in self.dic_theme[self.theme][key].items():
+                #     wgt[option]=valeur
+                
                 wgt.configure(**self.dic_theme[self.theme][key])
                 
        

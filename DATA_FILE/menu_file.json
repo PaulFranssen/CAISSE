@@ -9,9 +9,11 @@
 
     "données" : 
     [
-        "articles",
-
-        "employés"
+        "ajouter un article",
+        "éditer les articles",
+        "separator",
+        "ajouter un employé",
+        "éditer les employés"
     ],
 
     "thème" : 

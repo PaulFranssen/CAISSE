@@ -39,19 +39,54 @@ class Clic:
             for item in theme_lst:
                 if len(item)>wth:
                     wth = len(item)
-            KW['listBox'].configure(height=len(theme_lst), width=wth+1)
+            KW['listBox'].configure(height=min(len(theme_lst), HEIGHT_LISTBOX), width=wth+1)
             KW['listBox_var'].set(theme_lst)
             KW['listBox'].selection_set(theme_lst.index(theme))
             KW['listBox'].focus_set()
             
-    def commandListBox(self, **KW):
+        elif KW['item'] == "ajouter un employé":
+            KW['entry1_var'].set('')
+            KW['entry1'].focus_set()
+            
+        elif KW['item'] == "éditer les employés":
+            KW['entry2_var'].set('')
+            KW['entry2']['state']=DISABLED
+            employe_lst = [' Jacques', ' Norbert', ' Andrea']
+            KW['listBox_lst'].clear()
+            KW['listBox_lst'].extend(employe_lst)
+            KW['listBox'].configure(height=min(len(employe_lst), HEIGHT_LISTBOX), width=LENGTH_CODE+2)
+            KW['listBox_var'].set(employe_lst)
+            KW['listBox'].selection_set(0)
+            KW['listBox'].focus_set()
+            
+            
+            
+    def commandBouton(self, **KW):
+        pass
+            
+    def commandListBox(self, **KW):    
+        print(KW['listBox'].curselection(), KW['item'])
+        if not KW['listBox'].curselection():
+            return
         if KW['item'] == "modifier le thème":
             index = int(KW['listBox'].curselection()[0])
             theme = KW['listBox'].get(index).strip()
-            self.boss.th.modify_theme(theme)
+            self.boss.th.set_theme(theme)
+        
+        if KW['item'] == "éditer les employés":
+            KW['entry2_var'].set('')
+            KW['entry2']['state'] = DISABLED
+            
+    def returnListBox(self, **KW):
+        if KW['item'] == "éditer les employés":
+            index = int(KW['listBox'].curselection()[0])
+            employe = KW['listBox'].get(index).strip()
+            KW['entry2']['state'] = NORMAL
+            KW['entry2_var'].set(employe)
+            KW['entry2'].focus_set()
              
-    def fermer(self):
-        pass
+    # def fermer(self):
+    #     pass
 
     # def fix_cp(self, cp):
     #     self.cp = cp
