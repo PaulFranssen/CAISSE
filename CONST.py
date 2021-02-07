@@ -13,6 +13,16 @@ TAILLE_TITRE = 25
 TAILLE_CAR = 18
 TAILLE_MENU = 16
 
+# dimensions dans la salle
+HAUTEUR_TEXTE_SALLE = 10
+MARGE_SALLE = 10
+MARGE_HAUTE_SALLE = 10
+CURSOR = "crosshair"
+LENGTH_TABLE = 12
+LENGTH_DIMENSION_TABLE = 3
+PIXEL=36   # correspond à 1 unité
+LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
+HAUTEUR_MAX = 20
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
 WIDTH_BUTTON = 12

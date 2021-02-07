@@ -2,9 +2,11 @@
 
 # importation des modules
 from tkinter import Frame, StringVar, Menu, Menubutton, Label
+import tkinter.tix as TIX
 import json
 import os.path
 import CONST
+import SALLE
 from MODEL import *
 from CTRL import *
 
@@ -101,22 +103,22 @@ class Entete(Frame):
         self.root = boss.master
         self.root.th.add_widget("frame", self)
        
-        ## liste des items du menu
-        
+        ## liste des items du menu   
         lst = self.boss.item_lst
         nbr_item = len(lst) # separator inclus
         
         menuButton_lst=[] # liste des menubutton
         menu_lst=[] # liste des menus associés aux menubutton
-        barre_lst  = [] # liste es barres verticales
+        barre_lst  = [] # liste des barres verticales
+        
         for key, value in self.boss.item_dic.items():
             # titre du menu
-            mb= Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
+            mb= TIX.Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
             menuButton_lst.append(mb)
             mb.pack(**PAD_MENUBUTTON)
             
             # lien du menu avec le menuButton
-            me = Menu(mb, **KW_MENU)
+            me = TIX.Menu(mb, **KW_MENU)
             menu_lst.append(me)
             mb.configure(menu=me)
             barre_verticale = Label(self, **KW_BARRE_VERTICALE)
@@ -198,7 +200,6 @@ class Corps(Frame):
         self.contenu[boss.item.get()].display()
         self.bouton[boss.item.get()].display()
         
-       
     def display(self, item):
         """affiche les élements du corps relatif à l'item
 
@@ -229,14 +230,20 @@ class Titre(Frame):
         
         # construction du corps
         self.label = Label(self, **KW_TITRE)
-        self.label.pack(**PAD_TITRE)
+        self.canvas=Canvas(self, height=MARGE_HAUTE_SALLE,**KW_CANVAS)
         
         # ajout widget à la base
         self.root.th.add_widget("titre", self.label)
+        self.root.th.add_widget("canvas", self.canvas)
         self.root.th.add_widget("frame", self)
          
     def display(self):
-        self.label.configure(text=self.item.upper())
+        if self.item == "afficher la salle":
+            self.canvas.pack()
+        else:
+            self.label.configure(text=self.item.upper())
+            self.label.pack(**PAD_TITRE)
+        
         self.pack()
         
     def hide(self):
@@ -257,6 +264,7 @@ class Contenu(Frame):
         self.entry2_var = StringVar()
         self.entry3_var = StringVar()
         self.entry4_var = StringVar()
+        self.spinBox_var = StringVar()
         
         # widgets
         ## cadreBox parallèle avec listbox
@@ -267,10 +275,10 @@ class Contenu(Frame):
         self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
         self.listBox.bind('<Return>', self.returnListBox)   
         
-        # séparateur des cadres parallèles
+        ## séparateur des cadres parallèles
         canvas = Canvas(self, width=ECART_DOUBLE_CADRE_VERTICAL, **KW_CANVAS) #séparateur
         
-        # cadre  
+        ## cadre  
         cadre = Frame(self)  
         label2 = Label(cadre,**KW_LABEL)
         self.entry2 = Entry(cadre, textvariable=self.entry2_var,**KW_ENTRY)
@@ -278,22 +286,31 @@ class Contenu(Frame):
         self.entry3 = Entry(cadre, textvariable=self.entry3_var,**KW_ENTRY)
         label4 = Label(cadre,**KW_LABEL)
         self.entry4 = Entry(cadre, textvariable=self.entry4_var,**KW_ENTRY)
+        label5 = Label(cadre, **KW_LABEL)
+        self.spinBox=Spinbox(cadre, values=(), textvariable=self.spinBox_var, **KW_SPINBOX)
         
         canvas2 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         canvas3 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
+        canvas4 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         
-        
+        ## salle
+        self.bac = SALLE.Bac(self, width = self.root.master.winfo_screenwidth()-2*MARGE_SALLE)
+         
         # ajout des widgets aux themes
         self.root.th.add_widget("frame", self)
         self.root.th.add_widget("frame", cadreBox)
         self.root.th.add_widget("frame", cadre)
+        self.root.th.add_widget("bac", self.bac)
+        self.root.th.add_widget("spinBox", self.spinBox)   
         self.root.th.add_widget("canvas", canvas)
         self.root.th.add_widget("canvas", canvas2)
         self.root.th.add_widget("canvas", canvas3)
+        self.root.th.add_widget("canvas", canvas4)
         self.root.th.add_widget("label", label1)
         self.root.th.add_widget("label", label2)
         self.root.th.add_widget("label", label3)
         self.root.th.add_widget("label", label4)
+        self.root.th.add_widget("label", label5)
         self.root.th.add_widget("entry", self.entry1)
         self.root.th.add_widget("entry", self.entry2)
         self.root.th.add_widget("entry", self.entry3)
@@ -301,6 +318,36 @@ class Contenu(Frame):
         self.root.th.add_widget("listBox", self.listBox)
         
         # widgets selon l'item
+        if self.item == 'ajouter une table':
+            cadre.pack(side=LEFT)
+            
+            label2.configure(text="nom de la table".upper())
+            label2.pack(**PAD_LABEL)
+            self.entry2.configure(width = LENGTH_TABLE)
+            self.entry2.pack(**PAD_ENTRY)
+            canvas2.pack()
+            
+            label3.configure(text="largeur".upper())
+            label3.pack(**PAD_LABEL)
+            self.entry3.configure(width = LENGTH_DIMENSION_TABLE)
+            self.entry3_var.set("1")
+            self.entry3.pack(**PAD_ENTRY)
+            canvas3.pack()
+            
+            label4.configure(text="hauteur".upper())
+            label4.pack(**PAD_LABEL)
+            self.entry4.configure(width = LENGTH_DIMENSION_TABLE)
+            self.entry4_var.set("1")
+            self.entry4.pack(**PAD_ENTRY)
+            canvas4.pack()
+            
+            label5.configure(text="couleur".upper())
+            label5.pack(**PAD_LABEL)
+            self.spinBox.pack(**PAD_SPINBOX)
+            
+        if self.item == "afficher la salle":     
+            self.bac.pack(fill=BOTH, expand=1)
+            
         if self.item == "modifier le thème": 
             cadreBox.pack(side=LEFT)
             label1.configure(text = "sélection".upper())
@@ -362,7 +409,10 @@ class Contenu(Frame):
                                       entry3_var=self.entry3_var,
                                       entry4=self.entry4,
                                       entry4_var=self.entry4_var,
-                                      item=self.item)
+                                      item=self.item,
+                                      bac = self.bac,
+                                      spinBox = self.spinBox,
+                                      spinBox_var = self.spinBox_var)
         self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):
@@ -371,6 +421,12 @@ class Contenu(Frame):
                                       entry2 = self.entry2,
                                       entry2_var = self.entry2_var,
                                       listBox = w)
+    def commandSpinBox(self, evt):
+        w = evt.widget
+        self.root.clic.commandSpinBox(item = self.item,
+                                      spinBox_var = self.spinBox_var,
+                                      spinBox = w)
+        
         
     def returnListBox(self, evt):
         w = evt.widget
@@ -405,10 +461,11 @@ class Bouton(Frame):
         self.root.th.add_widget("canvas", canvas)
         
         # widgets selon item
+        
         if self.item == "modifier le thème":
             canvas.pack(side=LEFT)
             
-        if self.item == "ajouter un employé":
+        if self.item in {"ajouter un employé", "ajouter une table", "ajouter un article"}:
             self.bouton1.configure(text="ajouter".upper())
             self.bouton1.pack(**PAD_BUTTON)
             
@@ -417,10 +474,7 @@ class Bouton(Frame):
             self.bouton1.pack(**PAD_BUTTON)
             self.bouton2.configure(text="modifier".upper())
             self.bouton2.pack(**PAD_BUTTON)
-            
-        if self.item == "ajouter un article":
-            self.bouton1.configure(text="ajouter".upper())
-            self.bouton1.pack(**PAD_BUTTON)
+        
             
     def display(self):
         self.pack()
@@ -429,10 +483,7 @@ class Bouton(Frame):
         self.pack_forget()
         
     def commandBouton(self, numeroBouton):
-        self.root.clic.commandBouton(entry1_var=self.entry1_var, 
-                                     entry2_var=self.entry2_var,
-                                     entry3_var=self.entry3_var, 
-                                     entry4_var=self.entry4_var,
+        self.root.clic.commandBouton(contenu = self.boss.contenu[self.item],
                                      numeroBouton=numeroBouton)
         
 class Comment(Frame):

@@ -30,7 +30,24 @@ class Clic:
         pass
              
     def displayContenu(self, **KW):
-        if KW['item'] == "modifier le thème":
+        if KW['item'] == "ajouter une table":
+            KW['entry2_var'].set('')
+            KW['entry3_var'].set('1')
+            KW['entry4_var'].set('1')
+            KW['entry2'].focus_set()
+            
+            lst = self.boss.th.getColorTable()
+            wdth = 0
+            for elem in lst:
+                wdth = max(wdth, len(elem))
+            
+            KW['spinBox'].configure(values=lst, width = wdth + 2)
+            KW['spinBox_var'].set(value=lst[0])
+            
+        elif KW['item'] == "afficher la salle":
+            # KW['bac'].configure(width = KW['bac'].boss.winfo_reqwidth()-2*MARGE_SALLE, height=KW['bac'].boss.winfo_reqheight())
+            KW['bac'].focus_set()
+        elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
             theme = " " + self.boss.th.theme
             KW['listBox_lst'].clear()
@@ -65,7 +82,21 @@ class Clic:
             KW['entry4_var'].set('')
             KW['entry2'].focus_set()  
             
-    def commandBouton(self, **KW):
+    def commandBouton(self, contenu, numeroButton):
+        if contenu.item == "ajouter une table":
+            # le nom de la table doit être unique (utiliser la base de données ou le canvas)
+            
+            # largeur et hauteur conforme (voir les constantes)
+            
+            # récupérer la couleur par rapport aux thèmes (th se trouve dans le root)
+            
+            # ajouter une table au milieu du canvas (avoir accès au canvas, l'établir dans le root)
+            
+            # enregistrer la table dans la database
+            
+            # basculer l'affichage dans la table
+            pass
+            
         pass
             
     def commandListBox(self, **KW):    
@@ -81,6 +112,9 @@ class Clic:
             KW['entry2_var'].set('')
             KW['entry2']['state'] = DISABLED
             
+    def commandSpinBox(self, **KW):
+        pass
+                
     def returnListBox(self, **KW):
         if KW['item'] == "éditer les employés":
             index = int(KW['listBox'].curselection()[0])

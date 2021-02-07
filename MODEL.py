@@ -18,11 +18,11 @@ from CONST import *
 import os.path
 import json
 
-KW_MENUBUTTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', bd=0)
+KW_MENUBUTTON = dict(font=(POLICE, TAILLE_CAR), relief='flat', borderwidth=0)
 PAD_MENUBUTTON = dict(padx=5, side='left')
 
 
-KW_MENU = dict(font=(POLICE, TAILLE_MENU), tearoff=0, relief='flat')
+KW_MENU = dict(font=(POLICE, TAILLE_MENU), tearoff=0, relief='flat', bd=0, activeborderwidth=0)
 
 # séparateur entre les menuButton
 KW_BARRE_VERTICALE = dict(text="|", font=(POLICE, TAILLE_MENU))
@@ -38,7 +38,7 @@ KW_TITRE = dict(font = (POLICE, TAILLE_TITRE, "italic"))
 PAD_TITRE = dict(pady=15)
 
 KW_COMMENT = dict(font=(POLICE, TAILLE_CAR, 'italic'))
-PAD_COMMENT = dict(pady=30)
+PAD_COMMENT = dict(pady=10)
 
 KW_LISTBOX = dict(selectmode='browse', 
                   font=(POLICE, TAILLE_CAR),
@@ -58,9 +58,16 @@ KW_ENTRY = dict(font=(POLICE, TAILLE_CAR),
                 justify="center")
 PAD_ENTRY = dict(padx=5, pady=0)
 KW_CANVAS = dict(relief=FLAT, highlightthickness= 0, bd=0)
+PAD_SALLE = dict(padx=MARGE_SALLE)
+KW_SPINBOX = dict(font=(POLICE, TAILLE_CAR),justify='center',
+                    state='readonly', 
+                    relief='flat',
+                    buttondownrelief='flat',
+                    buttonuprelief='flat',
+                    wrap=TRUE)
+PAD_SPINBOX = dict(padx=5, pady=0)
 
-
-class Theme():
+class Theme:
     
     def __init__(self):
         
@@ -109,14 +116,23 @@ class Theme():
             with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
                 write_file.write(self.theme)
         
-        for key, lst in self.widget_dic.items():
+        for key, lst in self.widget_dic.items():  
+            if key == 'bac':
+                # opérations sur les id du bac
+                for canvas in lst:
+                    for color in self.dic_theme[self.theme]['table']:
+                        ids = canvas.find_withtag(color)
+                        for id in ids:
+                            canvas.itemconfigure(id, fill=self.dic_theme[self.theme]['table'][color])
             
             for wgt in lst:
-                # for option, valeur in self.dic_theme[self.theme][key].items():
-                #     wgt[option]=valeur
-                
                 wgt.configure(**self.dic_theme[self.theme][key])
-                
+                    
+    def getColorTable(self):
+        """renvoie les couleurs de la table
+        """
+        return list(self.dic_theme[self.theme]['table'].keys())
+               
        
              
 

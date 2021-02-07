@@ -19,5 +19,11 @@
     "thème" : 
     [
         "modifier le thème"
+    ],
+
+    "salle":
+    [
+        "afficher la salle",
+        "ajouter une table"
     ]
 }

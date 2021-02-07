@@ -12,7 +12,10 @@
         "com": {"bg":"grey15", "fg":"tomato"},
         "button":{"bg": "grey30","fg":"grey15", "activebackground":"tomato", "activeforeground":"grey15", "highlightcolor": "tomato"},
         "entry":{"bg":"grey60","fg":"black","disabledbackground":"grey30","disabledforeground":"grey30","insertbackground":"black","selectbackground":"tomato","selectforeground":"black"},
-        "canvas":{"bg":"grey15"}
+        "canvas":{"bg":"grey15"},
+        "bac":{"bg" :"grey17"},
+        "spinBox":{"fg": "grey15", "readonlybackground": "grey60","buttonbackground": "grey60"},
+        "table":{"rose":"yellow", "violet":"blue", "blé":"wheat3"}
     },
 
     "green":
@@ -28,7 +31,10 @@
         "com": {"bg":"grey15", "fg":"green"},
         "button":{"bg": "grey30","fg":"grey15", "activebackground":"green", "activeforeground":"grey15", "highlightcolor": "green"},
         "entry":{"bg":"grey60","fg":"black","disabledbackground":"grey30","disabledforeground":"grey30","insertbackground":"black","selectbackground":"green","selectforeground":"black"},
-        "canvas":{"bg":"grey20"}
+        "canvas":{"bg":"grey20"},
+        "bac":{"bg" :"grey17"},
+        "spinBox":{"fg": "grey15", "readonlybackground": "grey60","buttonbackground": "grey60"},
+        "table":{"rose":"red", "violet":"green", "blé":"wheat1"}
     },
     "purple":
     {
@@ -43,7 +49,10 @@
         "com": {"bg":"grey15", "fg":"purple"},
         "button":{"bg": "grey30","fg":"grey15", "activebackground":"purple", "activeforeground":"grey15", "highlightcolor": "purple"},
         "entry":{"bg":"grey60","fg":"black","disabledbackground":"grey30","disabledforeground":"grey30","insertbackground":"black","selectbackground":"purple","selectforeground":"black"},
-        "canvas":{"bg":"grey20"}
+        "canvas":{"bg":"grey20"},
+        "bac":{"bg" :"grey17"},
+        "spinBox":{"fg": "grey15", "readonlybackground": "grey60","buttonbackground": "grey60"},
+        "table":{"rose":"rose", "violet":"violet", "blé":"wheat2"}
     }
     
 }
