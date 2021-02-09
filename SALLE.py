@@ -7,49 +7,111 @@ from CONST import *
 # HAUTEUR_FENETRE = 400
 
 class Bac(Canvas):
-    def __init__(self, boss, width, bd=0, cursor=CURSOR):
-        Canvas.__init__(self, boss, width = width, bd=bd, cursor=cursor, highlightthickness=0)
-        # self.cadre = self.create_rectangle(0,0, width, height)
+    def __init__(self, boss, width, height, bd=0, cursor=CURSOR):
+        Canvas.__init__(self, boss, width = width, height = height, bd=bd, cursor=cursor, highlightthickness=0)
+        
+        # attributs
+        self.width = None
+        self.height = None
+        self.table_pixels = None
+        self.milieu = None
+        self.font_tableName = (POLICE_SALLE, int(HAUTEUR_TEXTE_SALLE*COEF_DILATATION), 'italic')
+        self.font_facture = (POLICE_SALLE, int(HEIGHT_FACTURE*COEF_DILATATION), 'bold')
+        self.tup_selected = None  # tuple d'id sélectionnés
+        self.number = 0  # numéro de la facture actuelle (0 donc pas de facture)
+        self.id_lastFacture = None
+        self.id_lastObject = None
+        self.autorisation = True
+        
+        # liens avec événements
         self.bind('<Button-1>', self.selectByClic)
         self.bind('<Button1-Motion>', self.motion)
         self.bind('<Button1-ButtonRelease>', self.release)
-        self.tup_selected = None
-        print('configuration de la salle')
+        self.bind('<Control-Key-F>', self.create_facture)
+        self.bind('<Control-Key-f>', self.create_facture)
+    
+    def setDimensions(self):
+        # attributs
+        self.width = self.winfo_reqwidth()
+        self.height = self.winfo_reqheight()
+        self.table_pixels = int(self.height/DECOUPAGE_HEIGHT*COEF_DILATATION)
+        self.milieu = (self.width/2, self.height/2)
         
-    def create_facture(self, number, x, y):
-        id = self.create_text(x, y, fill='green', font=('helvetica', 14, 'bold'), text=str(number), tags=("facture", "green", str(number)))
         
-        print('facture', id)
-        self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
-         
-    def create_table(self,x1, y1, x2, y2, coul, tableName):
+    def getNbrMaxTable(self, dim):
+        """retourne un le nombre max de tables en largeur ou en hauteur
+        """
+        dic = dict(width=int(self.width/self.table_pixels*COEF_REMPLISSAGE), 
+                   height=int(self.height/self.table_pixels*COEF_REMPLISSAGE))
         
-        id_tableName = self.create_text((x1+x2)/2, y1 - HAUTEUR_TEXTE_SALLE, font=('helvetica', 12, 'italic'), fill='black', text=tableName, tags=("tableName",))
-        id_table = self.create_rectangle(x1, y1, x2, y2, fill=coul, width=0,tags=("table",))
+        return dic[dim]
+    
+    def create_facture(self, evt):
         
-        print('tableName', id_tableName, 'table', id_table)
+        print('création de facture')
+        # vérifier si on autorise une nouvelle facture a être créée
+        ## vérifier si la caisse est ouverte
         
-        # créer le lien entre la table et son nom
-        self.addtag_withtag(str(id_tableName), id_table)
-        self.addtag_withtag(str(id_table), id_tableName)
-                              
-        self.lower(id_table)
-        self.lower(id_tableName)
+        ## vérifier si la facture précédente a bougé
+        if self.autorisation:
+            
+            self.id_lastFacture = self.create_text(self.milieu[0], self.milieu[1], 
+                                                    fill=VERT, 
+                                                    font = self.font_facture, 
+                                                    text=str(self.number + 1), 
+                                                    tags=("facture", VERT, str(self.number + 1)))   
+            self.id_lastObject = self.id_lastFacture
+            self.number +=1
+            self.autorisation = False
+            self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
         
-    def gofacture(self, id):  
-        print('accéder à la facture', self.gettags(id))
-        #self.delete(id)
+    def create_table(self,largeur, hauteur, couleur, tableName):
+        """crée une table et son nom au milieu du bac
+
+        Args:
+            largeur (int): largeur de la table en unités
+            hauteur (int): hauteur de la table en unités
+            couleur (str): code couleur de la table
+            tableName (str): nom de la table
+        """
+        if self.autorisation:
+            largeur = largeur*self.table_pixels
+            hauteur = hauteur*self.table_pixels
+            box = (int(self.milieu[0]-largeur/2), int(self.milieu[1]-hauteur/2), int(self.milieu[0]+largeur/2), int(self.milieu[1]+hauteur/2))
+            
+            id_tableName = self.create_text(self.milieu[0], 
+                                            int(self.milieu[1] - hauteur/2 - HAUTEUR_TEXTE_SALLE*COEF_DILATATION), 
+                                            font=self.font_tableName, 
+                                            fill=couleur, 
+                                            text=tableName, 
+                                            tags=("tableName",))
+            id_table = self.create_rectangle(*box, 
+                                                fill=couleur, 
+                                                width=0,
+                                                tags=("table",))
+            self.id_lastObject = id_table  
+            self.autorisation = False     
+                    # créer le lien entre la table et son nom
+            self.addtag_withtag(str(id_tableName), id_table)
+            self.addtag_withtag(str(id_table), id_tableName)
+                                
+            self.lower(id_table)
+            self.lower(id_tableName)
+        
+#     def gofacture(self, id):  
+#         print('accéder à la facture', self.gettags(id))
+#         #self.delete(id)
         
     def selectByClic(self, evt):
-        #self.tup_selected = None
+        # récupération de la position du clic et de l'id le plus proche
         self.x1, self.y1 = evt.x, evt.y
         self.tup_selected = self.find_closest(self.x1, self.y1)
             
+        # tag du tuple sélectionné
         tag = self.gettags(self.tup_selected[0])
-        print('objet sélectionné', self.tup_selected, "tags", tag)
-        #self.itemconfig(self.tup_selected, width = 20)
+        #self.itemconfig(self.tup_selected[0], width = 20)
+        
         if tag[0] == 'facture':
-            #print(f'une facture a été clickée une fois')
             self.lift(self.tup_selected)
              
         elif tag[0] == 'table'or tag[0] == 'tableName':
@@ -64,11 +126,11 @@ class Bac(Canvas):
             
             # détermination des factures dans la zone de la table
             box = self.bbox(id_table)
-            print('box', box)
-            insideBox_id = self.find_enclosed(*box)
-            print('inside_box', insideBox_id)
+            if CAPTURE_DANS_TABLE == "find_overlapping":
+                insideBox_id = self.find_overlapping(*box)
+            else:
+                insideBox_id = self.find_enclosed(*box)
             factures_id = self.find_withtag('facture')     
-            print('factures id', factures_id)
             for id in insideBox_id:
                 if id in factures_id:
                     self.tup_selected += (id,)
@@ -76,8 +138,15 @@ class Bac(Canvas):
             self.tup_selected = None
             
     def inFenetre(self, id, box):
-        
-        # print('in fenetre', id, self.find_enclosed(*box))
+        """détermine si id est dans une boite
+
+        Args:
+            id (int): id d'un objet
+            box (tuple): boite englobante
+
+        Returns:
+            bool: True si id se trouve enfermé dans la box, False sinon
+        """
         return id in self.find_enclosed(*box)
             
     def motion(self, evt):   
@@ -88,11 +157,11 @@ class Bac(Canvas):
             # valeur du déplacement potentiel
             dx, dy = x2-self.x1, y2-self.y1
             
-            # deplacement sous condition : chaque objet dans le cadre
+            # deplacement sous condition : chaque objet dans la fenètre
             i = 0
             inside = True
             while i < len(self.tup_selected) and inside:
-                inside = self.inFenetre(self.tup_selected[i], (0-dx , 0-dy, LARGEUR_FENETRE-dx,HAUTEUR_FENETRE-dy))
+                inside = self.inFenetre(self.tup_selected[i], (0-dx , 0-dy, self.width-dx, self.height-dy))
                 i +=1          
             if inside:    
                 # chaque objet lié se déplace 
@@ -101,8 +170,11 @@ class Bac(Canvas):
                     
                 # enregistrement de la nouvelle position 
                 self.x1, self.y1 = x2, y2 
-
-
+                
+                # vérification du movement de la dernière facture
+                if self.id_lastObject in self.tup_selected:
+                    self.autorisation = True 
+                
 
     def release(self, evt):
         self.x1, self.y1 = evt.x, evt.y
@@ -111,23 +183,23 @@ class Bac(Canvas):
                 print(f'la facture {self.gettags(self.tup_selected[0])[2]} a été déplacée à la position ({self.x1}, {self.y1})')
             self.tup_selected = None
             
-if __name__ == '__main__':
+# if __name__ == '__main__':
     
-    couleurs = ('grey80', 'wheat1', 'wheat2', 'wheat3')
-    fen = Tk()
-    bac = Bac(fen, width=LARGEUR_FENETRE, height=HAUTEUR_FENETRE, bg='ivory')
-    bac.pack(padx=5, pady=3)
-    b_fin = Button(fen, text='terminer', bg='royal blue', fg='white', font=("Helvetica", 10,'bold'), command=fen.quit)
-    b_fin.pack(pady=2)
+#     couleurs = ('grey80', 'wheat1', 'wheat2', 'wheat3')
+#     fen = Tk()
+#     bac = Bac(fen, width=LARGEUR_FENETRE, height=HAUTEUR_FENETRE, bg='ivory')
+#     bac.pack(padx=5, pady=3)
+#     b_fin = Button(fen, text='terminer', bg='royal blue', fg='white', font=("Helvetica", 10,'bold'), command=fen.quit)
+#     b_fin.pack(pady=2)
     
-    wgt = [None for _ in range(5)]
-    nbr = [None for _ in range(5)]
-    for i in range(1):
+#     wgt = [None for _ in range(5)]
+#     nbr = [None for _ in range(5)]
+#     for i in range(1):
         
-        coul = couleurs[randrange(len(couleurs))]
-        x1, y1 = randrange(30), randrange(20)
-        x2, y2 = x1 + randrange(20,50), y1 + randrange(30, 50)
-        bac.create_table(x1, y1, x2, y2, coul, "salon blanc" if i==0 else "table2")
-        bac.create_facture(20, 30, str(49+randrange(50)))
+#         coul = couleurs[randrange(len(couleurs))]
+#         x1, y1 = randrange(30), randrange(20)
+#         x2, y2 = x1 + randrange(20,50), y1 + randrange(30, 50)
+#         bac.create_table(x1, y1, x2, y2, coul, "salon blanc" if i==0 else "table2")
+#         bac.create_facture(20, 30, str(49+randrange(50)))
 
-    fen.mainloop()
+#     fen.mainloop()

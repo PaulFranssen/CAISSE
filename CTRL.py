@@ -14,39 +14,45 @@ import json
 import os.path
 
 class E(Exception):
-    pass
+    
+    def __init__(self, com, s, msg):
+        Exception.__init__(self, s, msg)
+        self.s = s
+        self.msg = msg
+        self.com = com
+        
+
+    def affiche(self):
+        print(f"Erreur {self.s} : {self.msg}")
+        self.com.set(f"Erreur {self.s} : {self.msg}")
 
 
 class Clic:
 
     def __init__(self, boss=None):
         self.boss = boss
-        
+    
+    def setCom(self, com):
+        self.com=com
+       
+    def setBac(self, bac):
+        self.bac = bac
+       
         # self.database = None
         # self.database_path = None
         # self.connexion = None
         # self.curseur = None
         # self.cp = None
-        pass
+       
              
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
             KW['entry2_var'].set('')
-            KW['entry3_var'].set('1')
-            KW['entry4_var'].set('1')
             KW['entry2'].focus_set()
-            
-            lst = self.boss.th.getColorTable()
-            wdth = 0
-            for elem in lst:
-                wdth = max(wdth, len(elem))
-            
-            KW['spinBox'].configure(values=lst, width = wdth + 2)
-            KW['spinBox_var'].set(value=lst[0])
-            
+
         elif KW['item'] == "afficher la salle":
-            # KW['bac'].configure(width = KW['bac'].boss.winfo_reqwidth()-2*MARGE_SALLE, height=KW['bac'].boss.winfo_reqheight())
             KW['bac'].focus_set()
+            
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
             theme = " " + self.boss.th.theme
@@ -82,22 +88,51 @@ class Clic:
             KW['entry4_var'].set('')
             KW['entry2'].focus_set()  
             
-    def commandBouton(self, contenu, numeroButton):
+    def commandBouton(self, contenu, numeroBouton):
         if contenu.item == "ajouter une table":
-            # le nom de la table doit être unique (utiliser la base de données ou le canvas)
             
-            # largeur et hauteur conforme (voir les constantes)
+            nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip(), contenu.spinBox_var.get()
+            table_names = self.bac.find_withtag(nom)
             
-            # récupérer la couleur par rapport aux thèmes (th se trouve dans le root)
+            try:
+                 # le nom de la table doit être unique (utiliser la base de données ou le canvas)
+                if nom in table_names:
+                    raise E(self.com, 'NOM', 'nom déjà utilisé')  
+                if not nom :
+                    raise E(self.com, 'NOM', 'pas de nom')
+                if len(nom) > LENGTH_TABLE:
+                    raise E(self.com, 'NOM', f"nom trop long (max {LENGTH_TABLE} caractères)")
+                
+                # largeur et hauteur conforme (voir les constantes)
+                if not largeur.isnumeric(): 
+                    raise E(self.com, 'LARGEUR', 'non-conforme')
+                if not 1 <= int(largeur) <= self.bac.getNbrMaxTable("width"):
+                    raise E(self.com, 'LARGEUR', f'largeur comprise entre 1 et {self.bac.getNbrMaxTable("width")}')
+                if not hauteur.isnumeric(): 
+                    raise E(self.com, 'LARGEUR', 'non-conforme')
+                if not 1 <= int(hauteur) <= self.bac.getNbrMaxTable("height"):
+                    raise E(self.com, 'HAUTEUR', f'hauteur comprise entre 1 et {self.bac.getNbrMaxTable("height")}')
             
-            # ajouter une table au milieu du canvas (avoir accès au canvas, l'établir dans le root)
+            except E as e:
+                e.affiche()
+                
+            else:    
+                # récupérer la couleur par rapport aux thèmes (th se trouve dans le root)
+                couleur = self.boss.th.getColorT(couleur)
+                self.boss.cadreGestion.corps.display("afficher la salle")
+                
+                # ajouter une table au milieu du canvas
+                self.bac.create_table(largeur=int(largeur),
+                                      hauteur=int(hauteur), 
+                                      couleur=couleur, 
+                                      tableName=nom)
+        
+                # enregistrer la table dans la database
             
-            # enregistrer la table dans la database
+                # basculer l'affichage dans la table
+               
             
-            # basculer l'affichage dans la table
-            pass
-            
-        pass
+        
             
     def commandListBox(self, **KW):    
         print(KW['listBox'].curselection(), KW['item'])

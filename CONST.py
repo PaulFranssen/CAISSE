@@ -13,16 +13,32 @@ TAILLE_TITRE = 25
 TAILLE_CAR = 18
 TAILLE_MENU = 16
 
-# dimensions dans la salle
-HAUTEUR_TEXTE_SALLE = 10
+# constantes dans la salle
+ROUGE = "#FF0000"
+VERT = "#00FF00"
+ORANGE = "#FF7E00"
+
+COEF_DILATATION = 1.5
+COEF_REMPLISSAGE = 0.95  # pourcentage de remplissage de l'écran pour une table de dimension maximale
+DECOUPAGE_HEIGHT = 18   # ce découpage me donnera le nombre de pixel par table , par la formule winfo_screenheight/découpage_height+coef_dilatation
+
+POLICE_SALLE = "Helvetica"
+HEIGHT_FACTURE = 24
+HAUTEUR_TEXTE_SALLE = 14
 MARGE_SALLE = 10
 MARGE_HAUTE_SALLE = 10
 CURSOR = "crosshair"
-LENGTH_TABLE = 12
+
+LENGTH_TABLE = 12  # longeur maximale d'un nom de table
 LENGTH_DIMENSION_TABLE = 3
-PIXEL=36   # correspond à 1 unité
-LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
-HAUTEUR_MAX = 20
+# PIXEL=36   # correspond à 1 unité
+# LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
+# HAUTEUR_MAX = 20
+CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
+
+
+
+
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
 WIDTH_BUTTON = 12

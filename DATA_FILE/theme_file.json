@@ -13,9 +13,12 @@
         "button":{"bg": "grey30","fg":"grey15", "activebackground":"tomato", "activeforeground":"grey15", "highlightcolor": "tomato"},
         "entry":{"bg":"grey60","fg":"black","disabledbackground":"grey30","disabledforeground":"grey30","insertbackground":"black","selectbackground":"tomato","selectforeground":"black"},
         "canvas":{"bg":"grey15"},
-        "bac":{"bg" :"grey17"},
+        "bac":{"bg" :"grey15"},
         "spinBox":{"fg": "grey15", "readonlybackground": "grey60","buttonbackground": "grey60"},
-        "table":{"rose":"yellow", "violet":"blue", "blé":"wheat3"}
+        "table":{"purple1": "purple1", "purple2": "purple2" ,"purple3":"purple3", "purple4":"purple4", 
+            "wheat1": "wheat1", "wheat2": "wheat2" ,"wheat3":"wheat3", "wheat4":"wheat4",
+            "SlateBlue1": "SlateBlue1", "SlateBlue2": "SlateBlue2" ,"SlateBlue3":"SlateBlue3", "SlateBlue4":"SlateBlue4",
+            "misty rose4":"misty rose4"}
     },
 
     "green":

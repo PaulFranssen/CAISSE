@@ -128,12 +128,15 @@ class Theme:
             for wgt in lst:
                 wgt.configure(**self.dic_theme[self.theme][key])
                     
-    def getColorTable(self):
-        """renvoie les couleurs de la table
+    def getColorTable(self):    
+        """renvoie la liste des couleurs de la table
         """
         return list(self.dic_theme[self.theme]['table'].keys())
                
-       
+    def getColorT(self, couleur):
+        """renvoie le code couleur pour une couleur de table
+        """
+        return  self.dic_theme[self.theme]['table'][couleur]
              
 
 # ##################################################

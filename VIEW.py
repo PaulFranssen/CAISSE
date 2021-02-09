@@ -20,19 +20,22 @@ class PF(Frame):
         self.master.wm_attributes('-fullscreen', 'true')
         self.master.resizable(width=False, height=False)
         self.configure()
-        self.pack(fill=BOTH, expand=Y)
         
         # attributs
-        self.clic = Clic(self)
         self.th = Theme()
-        self.cadreGestion = CadreGestion(self)
         
+        self.clic = Clic(self)
+        self.cadreGestion = CadreGestion(self)
+       
         # ajout du cadre au thème
         self.th.add_widget("frame", self)
         
         # fixation du theme initial
         self.th.set_theme("")
         
+        # affichage du cadre principal
+        self.pack(fill=BOTH, expand=Y)
+       
     def display(self, cadre):
         if cadre == "cadreGestion":
             self.cadreGestion.display()
@@ -67,6 +70,7 @@ class CadreGestion(Frame):
        
         
         # attributs
+        self.boss=boss
         self.item = StringVar()
         self.item.set("ouvrir")
         with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
@@ -81,7 +85,14 @@ class CadreGestion(Frame):
         self.corps = Corps(self)
         self.corps.display(self.item.get())
         self.comment = Comment(self)
-        self.comment.fix_comment('initial')
+        self.comment.fix_comment('commentaire')
+        
+        # calcul et fixation des dimensions du bac 
+        marge = self.entete.b1.winfo_reqheight() + MARGE_HAUTE_SALLE + self.comment.label.winfo_reqheight() + PAD_COMMENT["pady"]*2
+        height = self.boss.master.winfo_screenheight() - marge
+        self.corps.contenu['afficher la salle'].bac.configure(height = height,
+                                                              width =  self.boss.master.winfo_screenwidth()-2*MARGE_SALLE)
+        self.corps.contenu['afficher la salle'].bac.setDimensions()
         
     def display(self):
         self.pack(fill = BOTH, expand = Y)
@@ -97,12 +108,11 @@ class Entete(Frame):
         # configuration
         self.configure()
         self.pack(fill=X)
-        
-        # attributs
+    
         self.boss = boss
         self.root = boss.master
         self.root.th.add_widget("frame", self)
-       
+        
         ## liste des items du menu   
         lst = self.boss.item_lst
         nbr_item = len(lst) # separator inclus
@@ -116,6 +126,8 @@ class Entete(Frame):
             mb= TIX.Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
             menuButton_lst.append(mb)
             mb.pack(**PAD_MENUBUTTON)
+            
+            print('menu', mb.winfo_reqheight())
             
             # lien du menu avec le menuButton
             me = TIX.Menu(mb, **KW_MENU)
@@ -156,18 +168,20 @@ class Entete(Frame):
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[11]))
         
         # ajout à droite de la gestion de fenêtre   
-        b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
-        b1.pack(**PAD_FERMETURE)
-        b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
-        b2.pack(**PAD_FERMETURE)
+        self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
+        self.b1.pack(**PAD_FERMETURE)
+        
+        print('but1', self.b1.winfo_reqheight())
+        self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
+        self.b2.pack(**PAD_FERMETURE)
         
         # ajout des widgets au thème
         for mb in menuButton_lst:
             self.root.th.add_widget("menuButton", mb)
         for me in menu_lst:
             self.root.th.add_widget("menu", me)
-        self.root.th.add_widget("exit", b1)
-        self.root.th.add_widget("exit", b2)
+        self.root.th.add_widget("exit", self.b1)
+        self.root.th.add_widget("exit", self.b2)
         for barre in barre_lst:
             self.root.th.add_widget("barre", barre)
    
@@ -294,7 +308,8 @@ class Contenu(Frame):
         canvas4 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         
         ## salle
-        self.bac = SALLE.Bac(self, width = self.root.master.winfo_screenwidth()-2*MARGE_SALLE)
+        print(self.boss.master.entete.winfo_reqheight()) # .cadreGestion.entete.winfo_height())
+        self.bac = SALLE.Bac(self, width=0, height=0)
          
         # ajout des widgets aux themes
         self.root.th.add_widget("frame", self)
@@ -319,6 +334,7 @@ class Contenu(Frame):
         
         # widgets selon l'item
         if self.item == 'ajouter une table':
+            
             cadre.pack(side=LEFT)
             
             label2.configure(text="nom de la table".upper())
@@ -343,10 +359,19 @@ class Contenu(Frame):
             
             label5.configure(text="couleur".upper())
             label5.pack(**PAD_LABEL)
+            lst = self.root.th.getColorTable()
+            wdth = 0
+            for elem in lst:
+                wdth = max(wdth, len(elem))
+            self.spinBox.configure(values=lst, width = wdth + 2)
+            self.spinBox_var.set(value=lst[0])
             self.spinBox.pack(**PAD_SPINBOX)
             
         if self.item == "afficher la salle":     
             self.bac.pack(fill=BOTH, expand=1)
+            
+            # ajout du canvas au root.clic
+            self.root.clic.setBac(self.bac)
             
         if self.item == "modifier le thème": 
             cadreBox.pack(side=LEFT)
@@ -413,7 +438,11 @@ class Contenu(Frame):
                                       bac = self.bac,
                                       spinBox = self.spinBox,
                                       spinBox_var = self.spinBox_var)
-        self.pack(fill=Y, expand=Y)
+        
+        if self.item =="afficher la salle":
+            self.pack()
+        else:
+            self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):
         w = evt.widget
@@ -445,13 +474,14 @@ class Bouton(Frame):
         
         # attributs
         self.root = boss.master.master
+        self.boss = boss
         self.item = item
         
         # widgets
         self.bouton1 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
-        self.bouton1.bind('<Return>', lambda:(self.commandBouton(1)))
+        self.bouton1.bind('<Return>', lambda _:(self.commandBouton(1)))
         self.bouton2 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
-        self.bouton1.bind('<Return>', lambda:(self.commandBouton(2)))
+        self.bouton2.bind('<Return>', lambda _:(self.commandBouton(2)))
         canvas = Canvas(self, height=self.bouton1.winfo_reqheight(), **KW_CANVAS)  # cas de l'absence de button
         
         # ajout des widgets aux thèmes
@@ -475,7 +505,6 @@ class Bouton(Frame):
             self.bouton2.configure(text="modifier".upper())
             self.bouton2.pack(**PAD_BUTTON)
         
-            
     def display(self):
         self.pack()
         
@@ -496,19 +525,20 @@ class Comment(Frame):
         
         # attributs
         self.root = boss.master
-        self.root.th.add_widget("frame", self)
-        
         self.com = StringVar()
-        self.com.set('')
+        self.com.set('  ')
+        
+        # liaison du com avec clic
+        self.root.clic.setCom(self.com)
         
         # structure
-        label =  Label(self, textvariable= self.com, **KW_COMMENT)
-        label.pack(**PAD_COMMENT)
+        self.label =  Label(self, textvariable= self.com, **KW_COMMENT)
+        self.label.pack(**PAD_COMMENT)
         
-        # ajout du label dans le theme
-        self.root.th.add_widget("com", label)
+        # ajout des wdgets dans le theme
+        self.root.th.add_widget("com", self.label)
+        self.root.th.add_widget("frame", self)
        
-        
     def fix_comment(self, com):
         self.com.set(com)
     
