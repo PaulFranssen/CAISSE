@@ -3,8 +3,9 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
+import DB
 from CONST import *
-from sqlite3 import *
+import datetime
 from random import choice, randint, randrange
 from os import startfile, listdir, getcwd, mkdir, rename
 # from os.path import isdir, exists, splitext, isfile, join
@@ -16,7 +17,7 @@ import os.path
 class E(Exception):
     
     def __init__(self, com, s, msg):
-        Exception.__init__(self, s, msg)
+        Exception.__init__(self)
         self.s = s
         self.msg = msg
         self.com = com
@@ -30,27 +31,26 @@ class E(Exception):
 class Clic:
 
     def __init__(self, boss=None):
+        self.com = None
         self.boss = boss
-    
+        self.db = DB.Database()
+        self.bac = None
+        
     def setCom(self, com):
         self.com=com
        
     def setBac(self, bac):
         self.bac = bac
+        self.bac.setDb(self.db)
        
-        # self.database = None
-        # self.database_path = None
-        # self.connexion = None
-        # self.curseur = None
-        # self.cp = None
-       
-             
+        
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
 
         elif KW['item'] == "afficher la salle":
+            
             KW['bac'].focus_set()
             
         elif KW['item'] == "modifier le thème":
@@ -89,11 +89,21 @@ class Clic:
             KW['entry2'].focus_set()  
             
     def commandBouton(self, contenu, numeroBouton):
-        if contenu.item == "ajouter une table":
+        if contenu.item == "nouvelle caisse":
+            # désactiver la touche dans le menu
+            self.boss.cadreGestion.entete.desactive_item('nouvelle caisse')
             
+            # ajouter un id dans la base de données, avec le statut 1 (ouvert)
+            self.db.base1(dat = datetime.datetime.now())
+            
+            # afficher la salle
+            self.boss.cadreGestion.corps.display("afficher la salle")
+            
+        if contenu.item == "ajouter une table":
             nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip(), contenu.spinBox_var.get()
             table_names = self.bac.find_withtag(nom)
             
+            test =''
             try:
                  # le nom de la table doit être unique (utiliser la base de données ou le canvas)
                 if nom in table_names:
@@ -104,35 +114,34 @@ class Clic:
                     raise E(self.com, 'NOM', f"nom trop long (max {LENGTH_TABLE} caractères)")
                 
                 # largeur et hauteur conforme (voir les constantes)
-                if not largeur.isnumeric(): 
-                    raise E(self.com, 'LARGEUR', 'non-conforme')
-                if not 1 <= int(largeur) <= self.bac.getNbrMaxTable("width"):
-                    raise E(self.com, 'LARGEUR', f'largeur comprise entre 1 et {self.bac.getNbrMaxTable("width")}')
-                if not hauteur.isnumeric(): 
-                    raise E(self.com, 'LARGEUR', 'non-conforme')
-                if not 1 <= int(hauteur) <= self.bac.getNbrMaxTable("height"):
+                test = "LARGEUR"
+                if not 1 <= float(largeur) <= self.bac.getNbrMaxTable("width"):
+                    raise E(self.com, 'LARGEUR', f'largeur comprise entre 1 et {self.bac.getNbrMaxTable("width")}') 
+                test = "HAUTEUR"
+                if not 1 <= float(hauteur) <= self.bac.getNbrMaxTable("height"):
                     raise E(self.com, 'HAUTEUR', f'hauteur comprise entre 1 et {self.bac.getNbrMaxTable("height")}')
             
             except E as e:
                 e.affiche()
                 
+            except ValueError:
+                E(self.com, test, 'non-conforme').affiche()
+            
             else:    
                 # récupérer la couleur par rapport aux thèmes (th se trouve dans le root)
                 couleur = self.boss.th.getColorT(couleur)
-                self.boss.cadreGestion.corps.display("afficher la salle")
+                
+                # supprimer le message
+                self.com.set('  ')
                 
                 # ajouter une table au milieu du canvas
-                self.bac.create_table(largeur=int(largeur),
-                                      hauteur=int(hauteur), 
-                                      couleur=couleur, 
-                                      tableName=nom)
+                tup = self.bac.create_table(largeur=float(largeur),
+                                                hauteur=float(hauteur), 
+                                                couleur=couleur, 
+                                                tableName=nom)
         
-                # enregistrer la table dans la database
-            
                 # basculer l'affichage dans la table
-               
-            
-        
+                self.boss.cadreGestion.corps.display("afficher la salle")
             
     def commandListBox(self, **KW):    
         print(KW['listBox'].curselection(), KW['item'])
@@ -158,141 +167,5 @@ class Clic:
             KW['entry2_var'].set(employe)
             KW['entry2'].focus_set()
              
-    # def fermer(self):
-    #     pass
-
-    # def fix_cp(self, cp):
-    #     self.cp = cp
-    # # self.fix_exercice(date.today().year)
-
-    # def fix_theme(self, theme):
-    #     self.theme = theme
-    #     # self.cp.fix_exercice(theme)
-
-    # def fix_database(self, database):
-
-    #     # fixer le nom de la database et le path
-    #     self.database = database
-    #     self.database_path = join('BASE', database + '.db')
-
-    #     # afficher le nom à l'écran
-    #     self.cp.fix_database(self.database)
-
-    #     # création de la database ou ouverture simple
-    #     self.ouvrir()
-
-    #     # création éventuelle des tables
-    #     self.create_cat()
-    #     self.create_type()
-    #     self.create_article()
-    #     self.create_composition()
-    #     self.create_tiers()
-    #     self.create_workers()
-    #     self.create_charge()
-    #     self.create_factureA()
-    #     self.create_recordA()
-    #     self.create_vente()
-    #     self.create_recordV()
-    #     self.create_stocloture()
-    #     self.create_correction()
-    #     self.create_ponderation()
-    #     self.create_fixecat()
-    #     self.create_limitation()
-    #     self.create_trace()
-
-    #     # fermeture de la database
-    #     self.fermer()
-
-    #     # enregistrement dans le fichier f_base de la database de lancement
-    #     with open(f_base, 'w', encoding='utf-8') as f:
-    #         f.write(self.database)
-
-    # def get_database(self):
-    #     return self.database
-
-    # def get_curseur(self):
-    #     return self.curseur
-
-    # def ouvrir(self):
-    #     try:
-    #         self.connexion = connect(self.database_path, detect_types=PARSE_DECLTYPES | PARSE_COLNAMES)
-    #         self.connexion.execute("PRAGMA foreign_keys = 1")
-    #         self.curseur = self.connexion.cursor()
-
-    #     except Error as error:
-    #         print("Error while connecting to sqlite", error)
-
-    #     else:
-    #         if self.connexion:
-    #             # connexion à la base de données
-    #             pass
-
-    # def enregistrer(self):
-    #     self.connexion.commit()
-
-    # def fermer(self):
-    #     self.connexion.close()
-
-    # def create_f(self):
-
-    #     # fixation de l'execice
-    #     self.fix_exercice(date.today().year)
-
-    #     # création des fichiers txt
-    #     try:
-    #         if not exists('BASE'):
-    #             mkdir('BASE')
-    #         elif not isdir('BASE'):
-    #             mkdir('BASE')
-    #         if not exists('MEM_file'):
-    #             mkdir('MEM_file')
-    #         elif not isdir('MEM_file'):
-    #             mkdir('MEM_file')
-    #         if not exists(f_partage):
-    #             with open(f_partage, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_sauvegarde):
-    #             with open(f_sauvegarde, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_dirImport):
-    #             with open(f_dirImport, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_dirImportVente):
-    #             with open(f_dirImportVente, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_nameImport):
-    #             with open(f_nameImport, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_ticket):
-    #             with open(f_ticket, 'w', encoding='utf-8') as f:
-    #                 f.write('')
-    #         if not exists(f_base):
-    #             with open(f_base, 'w', encoding='utf-8') as f:
-    #                 f.write('baseX')
-    #         with open(f_base, 'r', encoding='utf-8') as f:
-    #             nom = f.readline()
-    #         if not nom.strip():
-    #             nom = "baseX"
-
-    #     except OSError as error:
-    #         print(error)
-    #         # a revoir commentaire avant de débuter
-    #         return False
-    #     else:
-    #         # database initiale
-    #         self.fix_database(nom)
-
-    # def create_article(self):
-    #     chaine = """CREATE TABLE IF NOT EXISTS article (
-    #                 art_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-    #                 code TEXT,
-    #                 des TEXT,
-    #                 cat_id INTEGER,        
-    #                 pv INTEGER,
-    #                 stockmin INTEGER DEFAULT 0,
-    #                 envente INTEGER DEFAULT 1,
-    #                 ad INTEGER,
-    #                 FOREIGN KEY(cat_id) REFERENCES categorie(cat_id))"""
-    #     self.curseur.execute(chaine)
-    #     self.enregistrer()
+   
        

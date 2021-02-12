@@ -7,6 +7,7 @@ DATA_FILE = "DATA_FILE"
 MENU_FILE = "menu_file.json"
 THEME_FILE = "theme_file.json"
 LAST_THEME_FILE = "last_theme.txt"
+DATABASE_FILE = "bdd.db"
 
 # tailles des caractères
 TAILLE_TITRE = 25
@@ -30,11 +31,11 @@ MARGE_HAUTE_SALLE = 10
 CURSOR = "crosshair"
 
 LENGTH_TABLE = 12  # longeur maximale d'un nom de table
-LENGTH_DIMENSION_TABLE = 3
+LENGTH_DIMENSION_TABLE = 4
 # PIXEL=36   # correspond à 1 unité
 # LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
 # HAUTEUR_MAX = 20
-CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
+CAPTURE_DANS_TABLE = "find_enclosed"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
 
 
 

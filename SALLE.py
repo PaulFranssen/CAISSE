@@ -11,6 +11,7 @@ class Bac(Canvas):
         Canvas.__init__(self, boss, width = width, height = height, bd=bd, cursor=cursor, highlightthickness=0)
         
         # attributs
+        self.db = None
         self.width = None
         self.height = None
         self.table_pixels = None
@@ -20,7 +21,6 @@ class Bac(Canvas):
         self.tup_selected = None  # tuple d'id sélectionnés
         self.number = 0  # numéro de la facture actuelle (0 donc pas de facture)
         self.id_lastFacture = None
-        self.id_lastObject = None
         self.autorisation = True
         
         # liens avec événements
@@ -37,9 +37,16 @@ class Bac(Canvas):
         self.table_pixels = int(self.height/DECOUPAGE_HEIGHT*COEF_DILATATION)
         self.milieu = (self.width/2, self.height/2)
         
+    def displayTablesInit(self):
+        for t in self.db.base5():
+            args = list(t)[0:4] + [list(t)[4:]]
+            self.create_table(*args)
         
+    def setDb(self, db):
+        self.db = db
+            
     def getNbrMaxTable(self, dim):
-        """retourne un le nombre max de tables en largeur ou en hauteur
+        """retourne  le nombre max d'unités de tables en largeur ou en hauteur
         """
         dic = dict(width=int(self.width/self.table_pixels*COEF_REMPLISSAGE), 
                    height=int(self.height/self.table_pixels*COEF_REMPLISSAGE))
@@ -47,9 +54,6 @@ class Bac(Canvas):
         return dic[dim]
     
     def create_facture(self, evt):
-        
-        print('création de facture')
-        # vérifier si on autorise une nouvelle facture a être créée
         ## vérifier si la caisse est ouverte
         
         ## vérifier si la facture précédente a bougé
@@ -59,14 +63,14 @@ class Bac(Canvas):
                                                     fill=VERT, 
                                                     font = self.font_facture, 
                                                     text=str(self.number + 1), 
-                                                    tags=("facture", VERT, str(self.number + 1)))   
+                                                    tags=("facture", "green", str(self.number + 1)))   
             self.id_lastObject = self.id_lastFacture
             self.number +=1
             self.autorisation = False
             self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
         
-    def create_table(self,largeur, hauteur, couleur, tableName):
-        """crée une table et son nom au milieu du bac
+    def create_table(self,largeur, hauteur, couleur, tableName, box=None):
+        """crée une table et son nom en box ou au milieu
 
         Args:
             largeur (int): largeur de la table en unités
@@ -74,29 +78,39 @@ class Bac(Canvas):
             couleur (str): code couleur de la table
             tableName (str): nom de la table
         """
-        if self.autorisation:
-            largeur = largeur*self.table_pixels
-            hauteur = hauteur*self.table_pixels
-            box = (int(self.milieu[0]-largeur/2), int(self.milieu[1]-hauteur/2), int(self.milieu[0]+largeur/2), int(self.milieu[1]+hauteur/2))
-            
-            id_tableName = self.create_text(self.milieu[0], 
-                                            int(self.milieu[1] - hauteur/2 - HAUTEUR_TEXTE_SALLE*COEF_DILATATION), 
-                                            font=self.font_tableName, 
+        nouvelle_table = True if box is None else False
+        largeur_pixels = largeur*self.table_pixels
+        hauteur_pixels = hauteur*self.table_pixels
+        if box is None:
+            x1 = int(self.milieu[0]-largeur_pixels/2)
+            y1 = int(self.milieu[1]-hauteur_pixels/2)
+            x2 = int(self.milieu[0]+largeur_pixels/2)
+            y2 = int(self.milieu[1]+hauteur_pixels/2)
+            box = x1, y1, x2, y2
+        pos_texte = int((box[0] + box[2])/2), box[1] - HAUTEUR_TEXTE_SALLE * COEF_DILATATION
+        
+        id_tableName = self.create_text(*pos_texte, 
+                                        font=self.font_tableName, 
+                                        fill=couleur, 
+                                        text=tableName, 
+                                        tags=("tableName",))
+        id_table = self.create_rectangle(*box, 
                                             fill=couleur, 
-                                            text=tableName, 
-                                            tags=("tableName",))
-            id_table = self.create_rectangle(*box, 
-                                                fill=couleur, 
-                                                width=0,
-                                                tags=("table",))
-            self.id_lastObject = id_table  
-            self.autorisation = False     
-                    # créer le lien entre la table et son nom
-            self.addtag_withtag(str(id_tableName), id_table)
-            self.addtag_withtag(str(id_table), id_tableName)
-                                
-            self.lower(id_table)
-            self.lower(id_tableName)
+                                            width=0,
+                                            tags=("table",))
+
+        # créer le lien entre la table et son nom (la table comprendra aussi le nom de la table comme 3ème tag)
+        self.addtag_withtag(str(id_tableName), id_table)
+        self.addtag_withtag(tableName, id_table)
+        self.addtag_withtag(str(id_table), id_tableName)
+                            
+        self.lower(id_table)
+        self.lower(id_tableName)
+        
+        # enregistrement de la table dans la db
+        if nouvelle_table:
+            self.db.base2(largeur, hauteur, couleur, tableName, *box)
+            
         
 #     def gofacture(self, id):  
 #         print('accéder à la facture', self.gettags(id))
@@ -106,36 +120,37 @@ class Bac(Canvas):
         # récupération de la position du clic et de l'id le plus proche
         self.x1, self.y1 = evt.x, evt.y
         self.tup_selected = self.find_closest(self.x1, self.y1)
-            
-        # tag du tuple sélectionné
-        tag = self.gettags(self.tup_selected[0])
-        #self.itemconfig(self.tup_selected[0], width = 20)
+         
+        if self.tup_selected:
+            # tag du tuple sélectionné
+            tag = self.gettags(self.tup_selected[0])
+            #self.itemconfig(self.tup_selected[0], width = 20)
         
-        if tag[0] == 'facture':
-            self.lift(self.tup_selected)
-             
-        elif tag[0] == 'table'or tag[0] == 'tableName':
-            if tag[0] == 'table':
-                id_table = self.tup_selected[0]
-                id_tableName = self.find_withtag(tag[1])[0]
-            else:
-                id_tableName = self.tup_selected[0]
-                id_table = self.find_withtag(tag[1])[0]
+            if tag[0] == 'facture':
+                self.lift(self.tup_selected)
                 
-            self.tup_selected = (id_table, id_tableName)
-            
-            # détermination des factures dans la zone de la table
-            box = self.bbox(id_table)
-            if CAPTURE_DANS_TABLE == "find_overlapping":
-                insideBox_id = self.find_overlapping(*box)
+            elif tag[0] == 'table' or tag[0] == 'tableName':
+                if tag[0] == 'table':
+                    id_table = self.tup_selected[0]
+                    id_tableName = self.find_withtag(tag[1])[0]
+                else:
+                    id_tableName = self.tup_selected[0]
+                    id_table = self.find_withtag(tag[1])[0]
+                    
+                self.tup_selected = (id_table, id_tableName)
+                
+                # détermination des factures dans la zone de la table
+                box = self.bbox(id_table)
+                if CAPTURE_DANS_TABLE == "find_overlapping":
+                    insideBox_id = self.find_overlapping(*box)
+                else:
+                    insideBox_id = self.find_enclosed(*box)
+                factures_id = self.find_withtag('facture')     
+                for id in insideBox_id:
+                    if id in factures_id:
+                        self.tup_selected += (id,)
             else:
-                insideBox_id = self.find_enclosed(*box)
-            factures_id = self.find_withtag('facture')     
-            for id in insideBox_id:
-                if id in factures_id:
-                    self.tup_selected += (id,)
-        else:
-            self.tup_selected = None
+                self.tup_selected = None
             
     def inFenetre(self, id, box):
         """détermine si id est dans une boite
@@ -172,15 +187,22 @@ class Bac(Canvas):
                 self.x1, self.y1 = x2, y2 
                 
                 # vérification du movement de la dernière facture
-                if self.id_lastObject in self.tup_selected:
+                if self.id_lastFacture in self.tup_selected:
                     self.autorisation = True 
                 
 
     def release(self, evt):
         self.x1, self.y1 = evt.x, evt.y
         if self.tup_selected:
-            if self.gettags(self.tup_selected[0])[0] == 'facture':
-                print(f'la facture {self.gettags(self.tup_selected[0])[2]} a été déplacée à la position ({self.x1}, {self.y1})')
+            # enregistrement des déplacements des objets sélectionnés
+            for id in self.tup_selected:
+                if self.gettags(id)[0] == 'table':
+                    box = self.coords(id)
+                    self.db.base3(self.gettags(id)[2], box)
+                    
+                    
+            # if self.gettags(self.tup_selected[0])[0] == 'facture':
+            #     print(f'la facture {self.gettags(self.tup_selected[0])[2]} a été déplacée à la position ({self.x1}, {self.y1})')
             self.tup_selected = None
             
 # if __name__ == '__main__':
