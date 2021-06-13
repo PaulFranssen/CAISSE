@@ -11,6 +11,8 @@ class Bac(Canvas):
         Canvas.__init__(self, boss, width = width, height = height, bd=bd, cursor=cursor, highlightthickness=0)
         
         # attributs
+        self.boss = boss  # boss est contenu
+        self.clic = boss.root.clic
         self.db = None
         self.width = None
         self.height = None
@@ -29,6 +31,7 @@ class Bac(Canvas):
         self.bind('<Button1-ButtonRelease>', self.release)
         self.bind('<Control-Key-F>', self.create_facture)
         self.bind('<Control-Key-f>', self.create_facture)
+        # self.bind('<Button-2>', self.displayFactures)
     
     def setDimensions(self):
         # attributs
@@ -41,10 +44,26 @@ class Bac(Canvas):
         for t in self.db.base5():
             args = list(t)[0:4] + [list(t)[4:]]
             self.create_table(*args)
-        
+            
+    # def displayFactures(self, factures):
+    #     # afficher toutes les factures se trouvant dans la database   
+    #     for nbr, serve, couleur,x1, y1 in factures:
+    #         self.id_lastFacture = self.create_text(x1, y1,
+    #                                                 fill=couleur, 
+    #                                                 font = self.font_facture, 
+    #                                                 text=str(nbr), 
+    #                                                 tags=("facture", couleur, str(nbr)))   
+    #         self.id_lastObject = self.id_lastFacture
+    #         self.number = max(self.number, nbr)
+    #         self.tag_bind(self.id_lastFacture, '<Button-2>', lambda _ : self.gofacture(self.id_lastFacture))
+            
+    # def gofacture(self, id):
+    #     print('aller à la facture', id)
+    #     self.clic.displayFacture(id)
+            
     def setDb(self, db):
         self.db = db
-            
+        
     def getNbrMaxTable(self, dim):
         """retourne  le nombre max d'unités de tables en largeur ou en hauteur
         """
@@ -55,19 +74,24 @@ class Bac(Canvas):
     
     def create_facture(self, evt):
         ## vérifier si la caisse est ouverte
+        if self.db.dat is not None:
         
         ## vérifier si la facture précédente a bougé
-        if self.autorisation:
-            
-            self.id_lastFacture = self.create_text(self.milieu[0], self.milieu[1], 
-                                                    fill=VERT, 
-                                                    font = self.font_facture, 
-                                                    text=str(self.number + 1), 
-                                                    tags=("facture", "green", str(self.number + 1)))   
-            self.id_lastObject = self.id_lastFacture
-            self.number +=1
-            self.autorisation = False
-            self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
+            if self.autorisation:
+                
+                self.id_lastFacture = self.create_text(self.milieu[0], self.milieu[1], 
+                                                        fill=VERT, 
+                                                        font = self.font_facture, 
+                                                        text=str(self.number + 1), 
+                                                        tags=("facture", VERT, str(self.number + 1)))   
+                self.id_lastObject = self.id_lastFacture
+                self.number +=1
+                self.autorisation = False
+                self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
+                
+                # ajout de la facture à la base de données 
+                box = self.coords(self.id_lastFacture)[0], self.coords(self.id_lastFacture)[1]
+                self.db.base6(self.number, box)
         
     def create_table(self,largeur, hauteur, couleur, tableName, box=None):
         """crée une table et son nom en box ou au milieu
@@ -100,9 +124,9 @@ class Bac(Canvas):
                                             tags=("table",))
 
         # créer le lien entre la table et son nom (la table comprendra aussi le nom de la table comme 3ème tag)
-        self.addtag_withtag(str(id_tableName), id_table)
-        self.addtag_withtag(tableName, id_table)
-        self.addtag_withtag(str(id_table), id_tableName)
+        self.addtag_withtag(str(id_tableName), id_table) # ajout de l'identifiant du nom comme tag de la table
+        self.addtag_withtag(tableName, id_table)         # ajout du nom de la table comme tag de la table
+        self.addtag_withtag(str(id_table), id_tableName) # ajout de l'identifiant de la table comme tag du nom de la table
                             
         self.lower(id_table)
         self.lower(id_tableName)
@@ -194,12 +218,16 @@ class Bac(Canvas):
     def release(self, evt):
         self.x1, self.y1 = evt.x, evt.y
         if self.tup_selected:
+            print(self.x1, self.y1)
+            
             # enregistrement des déplacements des objets sélectionnés
             for id in self.tup_selected:
                 if self.gettags(id)[0] == 'table':
                     box = self.coords(id)
                     self.db.base3(self.gettags(id)[2], box)
-                    
+                elif self.gettags(id)[0] == 'facture':
+                    box = self.coords(id)[0], self.coords(id)[1]
+                    self.db.base8(int(self.gettags(id)[2]), box)
                     
             # if self.gettags(self.tup_selected[0])[0] == 'facture':
             #     print(f'la facture {self.gettags(self.tup_selected[0])[2]} a été déplacée à la position ({self.x1}, {self.y1})')

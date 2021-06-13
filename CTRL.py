@@ -29,12 +29,12 @@ class E(Exception):
 
 
 class Clic:
-
     def __init__(self, boss=None):
         self.com = None
         self.boss = boss
         self.db = DB.Database()
         self.bac = None
+        # self.dat = None # date de la caisse en cours
         
     def setCom(self, com):
         self.com=com
@@ -42,16 +42,57 @@ class Clic:
     def setBac(self, bac):
         self.bac = bac
         self.bac.setDb(self.db)
-       
         
+    def setFac(self, fac):
+        self.fac = fac
+          
+    def setCaisse(self, newCaisse):  
+        """établit la caisse et affiche les éventuelles factures dans la salle
+
+        Args:
+            newCaisse (bool): True s'il sagit d'un démarrage 
+        """
+        
+        # fixe éventuellement la nouvelle caisse
+        dat = self.db.base1(newCaisse)
+        
+        if dat is not None and not newCaisse:
+            
+            # récupérer les factures d'une caisse ouverte
+            factures = self.db.base7()
+        
+            # affiche les factures dans la salle s'il y en a
+            if factures is not None:
+                self.displayFactures(factures)
+                
+    def displayFactures(self, factures):
+            # afficher toutes les factures se trouvant dans la database   
+        for nbr, serve, couleur,x1, y1 in factures:
+            self.bac.id_lastFacture = self.bac.create_text(x1, y1,
+                                                    fill=couleur, 
+                                                    font = self.bac.font_facture, 
+                                                    text=str(nbr), 
+                                                    tags=("facture", couleur, str(nbr)))   
+            self.bac.id_lastObject = self.bac.id_lastFacture
+            self.bac.number = max(self.bac.number, nbr)
+            self.bac.tag_bind(self.bac.id_lastFacture, '<Button-2>', lambda _ : self.gofacture(self.bac.id_lastFacture))
+        
+    def gofacture(self, id):
+        print('aller à la facture', id)
+        self.boss.cadreGestion.corps.display("facturation")
+                
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
+            
 
         elif KW['item'] == "afficher la salle":
             
             KW['bac'].focus_set()
+            
+        elif KW['item'] == "facturation":
+            pass
             
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
@@ -94,10 +135,19 @@ class Clic:
             self.boss.cadreGestion.entete.desactive_item('nouvelle caisse')
             
             # ajouter un id dans la base de données, avec le statut 1 (ouvert)
-            self.db.base1(dat = datetime.datetime.now())
+            self.db.base1(newCaisse = True)
+            
+            # récupérer le id de la caisse en cours
+            
             
             # afficher la salle
             self.boss.cadreGestion.corps.display("afficher la salle")
+            
+        if contenu.item == "facturation":
+           
+            # afficher la salle
+            self.boss.cadreGestion.corps.display("afficher la salle")
+            
             
         if contenu.item == "ajouter une table":
             nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip(), contenu.spinBox_var.get()

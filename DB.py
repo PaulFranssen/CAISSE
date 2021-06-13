@@ -1,5 +1,5 @@
  
-import sqlite3
+import sqlite3, datetime
 from CONST import *
  
 class Database:
@@ -7,6 +7,7 @@ class Database:
     def __init__(self):
         self.connexion = None
         self.curseur = None
+        self.dat = None  # date de la caisse en cours
         self.ouvrir()
               
     def ouvrir(self):
@@ -37,8 +38,17 @@ class Database:
                                     y1 INTEGER,
                                     x2 INTEGER,
                                     y2 INTEGER)""")
-                
-            # FOREIGN KEY(cat_id) REFERENCES categorie(cat_id))""")
+            
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS facture (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    dat TIMESTAMP,
+                                    nbr INTEGER, 
+                                    serve TEXT,
+                                    couleur TEXT,
+                                    x1 INTEGER,
+                                    y1 INTEGER)""")
+                                   
+                            
             self.connexion.commit()
             
             # ouverture automatique d'une caisse existante
@@ -49,15 +59,28 @@ class Database:
     #     """
     #     return self.curseur.execute("""SELECT id WHERE statut=1""").fetchone()
     
-    def base1(self, dat):
-        """insere une nouvelle caisse
+    
 
-        Args:
-            dat (datetime.datetime): date d'ouverture de la nouvelle caisse
-        """
-        self.curseur.execute("""INSERT INTO caisse(dat) VALUES(?)""", (dat,))
-        self.connexion.commit()
+    def base1(self, newCaisse):
+
+        """établit la nouvelle caisse si pas de caisse avec un statut = 1
         
+            newCaisse (bool) True si on crée une nouvelle caisse
+        """
+        res = self.curseur.execute("""SELECT dat FROM caisse WHERE statut=1""").fetchone()
+        if res:
+            print('caisse active', res)
+            self.dat = res[0]
+            print(self.dat)
+            
+        elif newCaisse:
+            self.dat = datetime.datetime.now()
+            self.curseur.execute("""INSERT INTO caisse(dat) VALUES(?)""", (self.dat,))
+            print("ajout d'une caisse")
+            self.connexion.commit()
+            
+        return self.dat
+            
     def base2(self, *tup):
         """insere une nouvelle table
         """
@@ -92,6 +115,36 @@ class Database:
         res = self.curseur.execute("""SELECT largeur, hauteur, couleur, tableName, x1, y1, x2, y2 FROM tables""").fetchall()
         
         return res
+    
+    def base6(self, nbr, box):
+        """crée une nouvelle facture inhérente à une caisse
+        """
+        
+        # valeurs initiales 
+        dat = self.dat
+        serve = ""
+        couleur = VERT
+        self.curseur.execute("""INSERT INTO facture(dat, nbr, serve, couleur, x1, y1) 
+                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, *box))
+        self.connexion.commit()
+        
+        
+        
+    def base7(self):
+        """récupères la liste des factures d'une caisse ouverte
+        """
+        res = None
+        if self.dat is not None:
+            res = self.curseur.execute("""SELECT nbr, serve, couleur,x1,y1 FROM facture WHERE dat=?""",(self.dat,)).fetchall()
+        return res
+    
+    def base8(self, nbr, box):
+        """update d'une facture suite à un déplacement
+        """
+        self.curseur.execute("""UPDATE facture SET x1=?, y1=? WHERE dat=? AND nbr=?""",(*box, self.dat, nbr))
+        self.connexion.commit()
+            
+        
         
         
  

@@ -35,7 +35,7 @@ LENGTH_DIMENSION_TABLE = 4
 # PIXEL=36   # correspond à 1 unité
 # LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
 # HAUTEUR_MAX = 20
-CAPTURE_DANS_TABLE = "find_enclosed"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
+CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
 
 
 
@@ -47,6 +47,8 @@ HEIGHT_LISTBOX = 20  # à moduler suivant les dimensions de l'écran
 LENGTH_CODE = 15
 LENGTH_DESCRIPTION = 30
 LENGTH_PRIX = 10
+LENGTH_NUMERO = 5
+
 
 # écarts
 ECART_DOUBLE_CADRE_VERTICAL = 120

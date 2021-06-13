@@ -24,6 +24,7 @@
     "salle":
     [
         "afficher la salle",
+        "facturation",
         "ajouter une table"
     ]
 }

@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
-from tkinter import Frame, StringVar, Menu, Menubutton, Label
+from tkinter import Frame, StringVar, Label
 import tkinter.tix as TIX
 import json
 import os.path
 import CONST
-import SALLE
+import SALLE, FACTURE
 from MODEL import *
 from CTRL import *
+from CTRL_F import ClicFacture
 
 class PF(Frame):
+    """Classe Principale établissant les liens avec le contôle (clic), le thème (th), le cadre graphique (cadreGestion)
+
+    Args:
+        Frame (tk): frame de départ
+    """
     def __init__(self, boss=None):
         Frame.__init__(self, boss)
-        # self.master.colormap = 'red'
+       
         
-        # configuration
+        # configuration de la fenêtre principale
         self.master.configure()
         self.master.wm_attributes('-fullscreen', 'true')
         self.master.resizable(width=False, height=False)
@@ -24,6 +30,7 @@ class PF(Frame):
         # attributs
         self.th = Theme()
         self.clic = Clic(self)
+        self.clic_facture = ClicFacture(self.clic)
         self.cadreGestion = CadreGestion(self)
        
         # ajout du cadre au thème
@@ -40,6 +47,7 @@ class PF(Frame):
             self.cadreGestion.display()
                    
         # w, h = self.master.winfo_screenwidth(), self.master.winfo_screenheight()
+        # print(w,h)
         # merge_x, merge_y = int((w - 1500) / 2), int((h - 800) / 2)
         # if merge_x < 0 or merge_y < 0:
         #     print('écran non conforme')
@@ -59,6 +67,11 @@ class PF(Frame):
         self.master.wm_iconify()
         
 class CadreGestion(Frame):
+    """cadre constitué de 3 éléments : Entete (menu), Corps  et Comment (commentaire)
+
+    Args:
+        Frame (tk): fenêtre principale
+    """
     
     def __init__(self, boss=None):
         Frame.__init__(self, boss)
@@ -67,23 +80,28 @@ class CadreGestion(Frame):
         self.configure()
         boss.th.add_widget("frame", self)
        
-        
         # attributs
         self.boss=boss
-        self.item = StringVar()
-        self.item.set("afficher la salle")
+        self.item = StringVar()  # item est la clé du corps
+        self.item.set("afficher la salle") # item de départ
+        
+        # récupération des différents item dans le fichier JSON
         with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
                 self.item_dic = json.load(read_file)
-        self.item_lst = []
+        self.item_lst = []  # liste contenant les item
         for liste in self.item_dic.values():
             self.item_lst += liste
             
         
         ## structure générale : entete, cadre, comment
+        
         self.entete = Entete(self)
         self.corps = Corps(self)
-        self.corps.display(self.item.get())
         self.comment = Comment(self)
+    
+        # affichage du corps initial
+        self.corps.display(self.item.get())
+        
         
         # calcul et fixation des dimensions du bac 
         marge = self.entete.b1.winfo_reqheight() + MARGE_HAUTE_SALLE + self.comment.label.winfo_reqheight() + PAD_COMMENT["pady"]*2
@@ -97,33 +115,39 @@ class CadreGestion(Frame):
         
     def display(self):
         # affichage du cadre
-        self.pack(fill = BOTH, expand = Y)
+        self.pack(fill = BOTH, expand = 1)
         
-    
     def hide(self):
         self.pack_forget()
-
-        
+     
 class Entete(Frame):
+    """constitutif du cadre de gestion et contenant le menu
+
+    Args:
+        Frame (tk): cadreGestion
+    """
     def __init__(self, boss=None):
         Frame.__init__(self, boss)
         
         # configuration
         self.configure()
         self.pack(fill=X)
+        
+        # attributs
+        self.boss = boss  # cadreGestion
+        self.root = boss.master  # pF
     
-        self.boss = boss
-        self.root = boss.master
-        self.root.th.add_widget("frame", self)
+        self.dic_position = {}  # clé : item ;  valeur : position (i, j) dans le menu
+        self.menu_lst=[] # liste des menus associés aux buttons
         
-        self.dic_position = {}  # clé : item   valeur : position (i, j) dans le menu
+        self.compoUI()
         
-        ## liste des items du menu   
-        lst = self.boss.item_lst
+    def compoUI(self):
+        """construction du menu
+        """
+        lst = self.boss.item_lst # liste des items du menu   
         nbr_item = len(lst) # separator inclus
-        
-        menuButton_lst=[] # liste des menubutton
-        self.menu_lst=[] # liste des menus associés aux menubutton
+        menuButton_lst=[] # liste des menubutton     
         barre_lst  = [] # liste des barres verticales
         
         for i, (key, value) in enumerate(self.boss.item_dic.items()):
@@ -172,6 +196,8 @@ class Entete(Frame):
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[10]))
                         elif nbr_item > 11 and item == lst[11]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[11]))
+                        elif nbr_item > 12 and item == lst[12]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[12]))
         
         # ajout à droite de la gestion de fenêtre   
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
@@ -182,6 +208,7 @@ class Entete(Frame):
         self.b2.pack(**PAD_FERMETURE)
         
         # ajout des widgets au thème
+        self.root.th.add_widget("frame", self)
         for mb in menuButton_lst:
             self.root.th.add_widget("menuButton", mb)
         for me in self.menu_lst:
@@ -192,6 +219,7 @@ class Entete(Frame):
             self.root.th.add_widget("barre", barre)
             
     def desactive_item(self, item):
+        
         """désactive l'item dans le menu
 
         Args:
@@ -205,13 +233,17 @@ class Entete(Frame):
 
         Args:
             item (str): item à activer
+            
         """
         i, j = self.dic_position[item]
         self.menu_lst[i].entryconfig(j, state = 'normal')
-        
-    
-   
+          
 class Corps(Frame):
+    """éléments du cadre Gestion et contenant un dictionnaire de Titre, Contenu et Bouton, item étant la clé
+
+    Args:
+        Frame (tk): cadreGestion
+    """
     def __init__(self, boss):
         Frame.__init__(self, boss)
         
@@ -279,8 +311,13 @@ class Titre(Frame):
          
     def display(self):
         if self.item == "afficher la salle":
+            
+            # cas particulier de la salle
             self.canvas.pack()
+            
         else:
+            
+            # cas général
             self.label.configure(text=self.item.upper())
             self.label.pack(**PAD_TITRE)
         
@@ -290,14 +327,26 @@ class Titre(Frame):
         self.pack_forget()
                 
 class Contenu(Frame):
+    """constitutif du corps, contient les widgets entre le Titre et le Bouton
+
+    Args:
+        Frame (tk): corps
+    """
     def __init__(self, boss, item):
         Frame.__init__(self, boss)
         self.configure()
         
+        print("type contenu master ", type(boss))
         # attributs
         self.boss = boss
         self.root = boss.master.master
         self.item = item
+        
+        self.compoUI()
+        
+    def compoUI(self):
+        """Ajout des widgets au contenu
+        """
         self.listBox_lst = []
         self.listBox_var = StringVar(value=self.listBox_lst)
         self.entry1_var = StringVar()
@@ -333,34 +382,19 @@ class Contenu(Frame):
         canvas3 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         canvas4 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         
-        ## salle
+        ## salle : contenu particulier car il n' a ni titre ni botton 
         self.bac = SALLE.Bac(self, width=0, height=0)
-   
-        # ajout des widgets aux themes
-        self.root.th.add_widget("frame", self)
-        self.root.th.add_widget("frame", cadreBox)
-        self.root.th.add_widget("frame", cadre)
-        self.root.th.add_widget("bac", self.bac)
-        self.root.th.add_widget("spinBox", self.spinBox)   
-        self.root.th.add_widget("canvas", canvas)
-        self.root.th.add_widget("canvas", canvas2)
-        self.root.th.add_widget("canvas", canvas3)
-        self.root.th.add_widget("canvas", canvas4)
-        self.root.th.add_widget("label", label1)
-        self.root.th.add_widget("label", label2)
-        self.root.th.add_widget("label", label3)
-        self.root.th.add_widget("label", label4)
-        self.root.th.add_widget("label", label5)
-        self.root.th.add_widget("entry", self.entry1)
-        self.root.th.add_widget("entry", self.entry2)
-        self.root.th.add_widget("entry", self.entry3)
-        self.root.th.add_widget("entry", self.entry4)
-        self.root.th.add_widget("listBox", self.listBox)
         
-        # widgets selon l'item
+        # facture
+        self.fac = FACTURE.Fac(self)
+   
+       
+        
+        # intégration des widgets selon l'item
         if self.item == 'nouvelle caisse':
+        
             pass
-            
+
         if self.item == 'ajouter une table':
             
             cadre.pack(side=LEFT)
@@ -402,7 +436,14 @@ class Contenu(Frame):
             # ajout du canvas au root.clic
             self.root.clic.setBac(self.bac)
             
-                      
+        if self.item == "facturation":
+            # affichage de la facture
+            # cadre.pack(side = LEFT)
+            print('contenu de la facture')
+            self.fac.pack(side=LEFT)
+            
+            # ajout du canvas au root.clic
+                                 
         if self.item == "modifier le thème": 
             cadreBox.pack(side=LEFT)
             label1.configure(text = "sélection".upper())
@@ -451,6 +492,28 @@ class Contenu(Frame):
             self.entry4.configure(width = LENGTH_PRIX)
             self.entry4.pack(**PAD_ENTRY)
             
+         # ajout des widgets aux themes
+        self.root.th.add_widget("frame", self)
+        self.root.th.add_widget("frame", cadreBox)
+        self.root.th.add_widget("frame", cadre)
+        self.root.th.add_widget("bac", self.bac)
+        self.root.th.add_widget("frame", self.fac)
+        self.root.th.add_widget("spinBox", self.spinBox)   
+        self.root.th.add_widget("canvas", canvas)
+        self.root.th.add_widget("canvas", canvas2)
+        self.root.th.add_widget("canvas", canvas3)
+        self.root.th.add_widget("canvas", canvas4)
+        self.root.th.add_widget("label", label1)
+        self.root.th.add_widget("label", label2)
+        self.root.th.add_widget("label", label3)
+        self.root.th.add_widget("label", label4)
+        self.root.th.add_widget("label", label5)
+        self.root.th.add_widget("entry", self.entry1)
+        self.root.th.add_widget("entry", self.entry2)
+        self.root.th.add_widget("entry", self.entry3)
+        self.root.th.add_widget("entry", self.entry4)
+        self.root.th.add_widget("listBox", self.listBox)
+            
     def display(self):    
         # display selon l'item
         self.root.clic.displayContenu(listBox=self.listBox,
@@ -465,13 +528,15 @@ class Contenu(Frame):
                                       entry4=self.entry4,
                                       entry4_var=self.entry4_var,
                                       item=self.item,
-                                      bac = self.bac,
+                                      bac = self.bac,  
+                                      fac = self.fac,                          
                                       spinBox = self.spinBox,
                                       spinBox_var = self.spinBox_var)
         
         if self.item =="afficher la salle":
             self.pack()
         else:
+            print('affichage du contenu', self.item)
             self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):
@@ -527,6 +592,10 @@ class Bouton(Frame):
         
         if self.item == "modifier le thème":
             canvas.pack(side=LEFT)
+            
+        if self.item == "facturation":
+            self.bouton1.configure(text="retour".upper())
+            self.bouton1.pack(**PAD_BUTTON)
             
         if self.item in {"ajouter un employé", "ajouter une table", "ajouter un article"}:
             self.bouton1.configure(text="ajouter".upper())
