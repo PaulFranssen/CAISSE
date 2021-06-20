@@ -47,6 +47,16 @@ class Database:
                                     couleur TEXT,
                                     x1 INTEGER,
                                     y1 INTEGER)""")
+            
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS articles (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    code TEXT,
+                                    descript TEXT, 
+                                    prix INTEGER)""")
+            
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS workers (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    name TEXT)""")
                                    
                             
             self.connexion.commit()
@@ -143,6 +153,39 @@ class Database:
         """
         self.curseur.execute("""UPDATE facture SET x1=?, y1=? WHERE dat=? AND nbr=?""",(*box, self.dat, nbr))
         self.connexion.commit()
+        
+    def isWorker(self, nom):
+        """détermine si un nom se trouve dans la base
+
+        Args:
+            nom (str): nom d'un employé
+        """
+        res = self.curseur.execute("""SELECT name FROM workers WHERE name=?""",(nom,)).fetchone()
+        return True if res else False
+    
+    def insertWorker(self, nom):
+        """insère un worker
+
+        Args:
+            nom (str): nom d'un worker
+        """ 
+        self.curseur.execute("""INSERT INTO workers (name) 
+                             VALUES(?)""", (nom,))
+        self.connexion.commit()
+        
+    def isCode(self, code):
+        """détermine si le code se trouve dans la base
+        """
+        res = self.curseur.execute("""SELECT code FROM articles WHERE code=?""",(code,)).fetchone()
+        return True if res else False
+    
+    def insertArticle(self, code, descript, prix):
+        """insère un article
+        """ 
+        self.curseur.execute("""INSERT INTO articles (code, descript, prix) 
+                             VALUES(?,?,?)""", (code, descript, prix))
+        self.connexion.commit()
+            
             
         
         

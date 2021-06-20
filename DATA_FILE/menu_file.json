@@ -8,11 +8,13 @@
     ],
 
     "données" : 
-    [
+    [   "ajouter une table",
+        "separator",
         "ajouter un article",
-        "éditer les articles",
         "separator",
         "ajouter un employé",
+        "separator",
+        "éditer les articles",
         "éditer les employés"
     ],
 
@@ -22,9 +24,8 @@
     ],
 
     "salle":
-    [
-        "afficher la salle",
-        "facturation",
-        "ajouter une table"
+    [   "afficher la salle",
+        "separator",
+        "facturation"   
     ]
 }

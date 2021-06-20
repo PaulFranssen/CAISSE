@@ -45,13 +45,19 @@ KW_LISTBOX = dict(selectmode='browse',
                   takefocus=0,
                   activestyle= 'none', 
                   highlightthickness= 0,
-                  relief='flat')
+                  relief='flat',
+                  bd=0)
 PAD_LISTBOX = dict(pady=0)
+
 KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
 PAD_LABEL = dict(padx=5, pady=5)
 
 KW_BUTTON = dict(font=(POLICE, TAILLE_CAR, BOLD), relief='flat', bd=0, height=HEIGHT_BUTTON) 
 PAD_BUTTON = dict(padx=20, side=LEFT)
+
+KW_SMALL_BUTTON = dict(font=(POLICE, TAILLE_SMALL_CAR), relief='flat', bd=0) 
+PAD_SMALL_BUTTON = dict()
+
 KW_ENTRY = dict(font=(POLICE, TAILLE_CAR),         
                 bd=0, 
                 relief='flat',

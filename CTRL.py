@@ -6,6 +6,7 @@
 import DB
 from CONST import *
 import datetime
+import time
 from random import choice, randint, randrange
 from os import startfile, listdir, getcwd, mkdir, rename
 # from os.path import isdir, exists, splitext, isfile, join
@@ -38,6 +39,9 @@ class Clic:
         
     def setCom(self, com):
         self.com=com
+        
+    def clearCom(self):
+        self.com.set('')
        
     def setBac(self, bac):
         self.bac = bac
@@ -45,6 +49,7 @@ class Clic:
         
     def setFac(self, fac):
         self.fac = fac
+        self.fac.setDb(self.db)
           
     def setCaisse(self, newCaisse):  
         """établit la caisse et affiche les éventuelles factures dans la salle
@@ -83,6 +88,7 @@ class Clic:
                 
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
+            self.clearCom()
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
             
@@ -109,6 +115,7 @@ class Clic:
             KW['listBox'].focus_set()
             
         elif KW['item'] == "ajouter un employé":
+            self.clearCom()
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
             
@@ -124,6 +131,7 @@ class Clic:
             KW['listBox'].focus_set()
           
         elif KW['item'] == "ajouter un article":
+            self.clearCom()
             KW['entry2_var'].set('')
             KW['entry3_var'].set('')
             KW['entry4_var'].set('')
@@ -148,6 +156,36 @@ class Clic:
             # afficher la salle
             self.boss.cadreGestion.corps.display("afficher la salle")
             
+        if contenu.item == "ajouter un employé":
+            nom = contenu.entry2_var.get().strip()
+            
+            test =''
+            try:
+                # le nom de l'employé doit être unique
+                if self.db.isWorker(nom):
+                    raise E(self.com, 'NOM', 'nom déjà utilisé')  
+                
+                if not nom :
+                    raise E(self.com, 'NOM', 'pas de nom')
+                
+                if len(nom) > LENGTH_WORKER:
+                    raise E(self.com, 'NOM', f"nom trop long (max {LENGTH_WORKER} caractères)")
+            
+            except E as e:
+                e.affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            except :
+                E(self.com, test, 'non-conforme').affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            else:
+                self.db.insertWorker(nom)
+                self.com.set('OK')
+                self.boss.master.after(attenteCourte, self.clearCom)
+              
+                
+                
             
         if contenu.item == "ajouter une table":
             nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip(), contenu.spinBox_var.get()
@@ -155,8 +193,8 @@ class Clic:
             
             test =''
             try:
-                 # le nom de la table doit être unique (utiliser la base de données ou le canvas)
-                if nom in table_names:
+                 # le nom de la table doit être unique (utiliser la base de données ou le canvas)               
+                if table_names:
                     raise E(self.com, 'NOM', 'nom déjà utilisé')  
                 if not nom :
                     raise E(self.com, 'NOM', 'pas de nom')
@@ -173,9 +211,11 @@ class Clic:
             
             except E as e:
                 e.affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
                 
-            except ValueError:
+            except :
                 E(self.com, test, 'non-conforme').affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
             
             else:    
                 # récupérer la couleur par rapport aux thèmes (th se trouve dans le root)
@@ -189,12 +229,58 @@ class Clic:
                                                 hauteur=float(hauteur), 
                                                 couleur=couleur, 
                                                 tableName=nom)
-        
+                
                 # basculer l'affichage dans la table
                 self.boss.cadreGestion.corps.display("afficher la salle")
+                
+        if contenu.item == "ajouter un article":
+            code, description, prix = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip()
+            
+            test =''
+            try:
+                 # le code de l'article doit être unique (utiliser la base de données)               
+                if self.db.isCode(code):
+                    raise E(self.com, 'CODE', 'code déjà utilisé')  
+                if not code :
+                    raise E(self.com, 'CODE', 'pas de code')
+                if len(code) > LENGTH_CODE:
+                    raise E(self.com, 'CODE', f"code trop long (max {LENGTH_CODE} caractères)")
+                
+                if not description :
+                    raise E(self.com, 'DESCRIPTION', 'pas de description')
+                if len(description) > LENGTH_DESCRIPTION:
+                    raise E(self.com, 'DESCRIPTION', f"trop long (max {LENGTH_DESCRIPTION} caractères)")
+                
+                if not prix :
+                        raise E(self.com, 'PRIX', 'pas de prix')
+                if len(prix) > LENGTH_PRIX:
+                    raise E(self.com, 'PRIX', f"trop long (max {LENGTH_PRIX} caractères)")
+                
+                prix = float(prix)
+                if prix < 0:
+                    raise E(self.com, 'PRIX', f"prix négatif")
+                
+            except E as e:
+                e.affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            except:
+                E(self.com, test, 'non-conforme').affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+            else:    
+                
+                # ajouter l'aricle
+                self.db.insertArticle(code, description, prix)
+                
+                self.com.set('OK')
+                self.boss.master.after(attenteCourte, self.clearCom)
+                
+        
+                # basculer l'affichage dans la table
+                # self.boss.cadreGestion.corps.display("afficher la salle")
             
     def commandListBox(self, **KW):    
-        print(KW['listBox'].curselection(), KW['item'])
+        
         if not KW['listBox'].curselection():
             return
         if KW['item'] == "modifier le thème":

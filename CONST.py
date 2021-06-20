@@ -12,6 +12,7 @@ DATABASE_FILE = "bdd.db"
 # tailles des caractères
 TAILLE_TITRE = 25
 TAILLE_CAR = 18
+TAILLE_SMALL_CAR = 12
 TAILLE_MENU = 16
 
 # constantes dans la salle
@@ -31,7 +32,9 @@ MARGE_HAUTE_SALLE = 10
 CURSOR = "crosshair"
 
 LENGTH_TABLE = 12  # longeur maximale d'un nom de table
+LENGTH_WORKER = 15  # longeur maximale d'un worker
 LENGTH_DIMENSION_TABLE = 4
+LENGTH_ETAT_FACTURE = 9
 # PIXEL=36   # correspond à 1 unité
 # LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
 # HAUTEUR_MAX = 20
@@ -43,11 +46,17 @@ CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
 WIDTH_BUTTON = 12
-HEIGHT_LISTBOX = 20  # à moduler suivant les dimensions de l'écran
+HEIGHT_LISTBOX = 14  # à moduler suivant les dimensions de l'écran
+HEIGHT_LISTBOX2 = 7 # liste de choix des articles
+ESPACE_VERTICAL_BUTTON_VALIDER = 80
 LENGTH_CODE = 15
 LENGTH_DESCRIPTION = 30
 LENGTH_PRIX = 10
 LENGTH_NUMERO = 5
+LENGTH_QTE = 5
+LENGTH_PU = 8
+
+
 
 
 # écarts

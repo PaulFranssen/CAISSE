@@ -92,6 +92,7 @@ class CadreGestion(Frame):
         for liste in self.item_dic.values():
             self.item_lst += liste
             
+       
         
         ## structure générale : entete, cadre, comment
         
@@ -156,7 +157,7 @@ class Entete(Frame):
             menuButton_lst.append(mb)
             mb.pack(**PAD_MENUBUTTON)
             
-            print('menu', mb.winfo_reqheight())
+          
             
             # lien du menu avec le menuButton
             me = TIX.Menu(mb, **KW_MENU)
@@ -198,12 +199,18 @@ class Entete(Frame):
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[11]))
                         elif nbr_item > 12 and item == lst[12]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[12]))
+                        elif nbr_item > 13 and item == lst[13]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[13]))
+                        elif nbr_item > 14 and item == lst[14]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[14]))
+                        elif nbr_item > 15 and item == lst[15]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[15]))
         
         # ajout à droite de la gestion de fenêtre   
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
         self.b1.pack(**PAD_FERMETURE)
         
-        print('but1', self.b1.winfo_reqheight())
+       
         self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
         self.b2.pack(**PAD_FERMETURE)
         
@@ -336,7 +343,7 @@ class Contenu(Frame):
         Frame.__init__(self, boss)
         self.configure()
         
-        print("type contenu master ", type(boss))
+       
         # attributs
         self.boss = boss
         self.root = boss.master.master
@@ -382,7 +389,7 @@ class Contenu(Frame):
         canvas3 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         canvas4 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         
-        ## salle : contenu particulier car il n' a ni titre ni botton 
+        ## salle : contenu particulier car il n' a ni titre ni bouton 
         self.bac = SALLE.Bac(self, width=0, height=0)
         
         # facture
@@ -439,11 +446,11 @@ class Contenu(Frame):
         if self.item == "facturation":
             # affichage de la facture
             # cadre.pack(side = LEFT)
-            print('contenu de la facture')
             self.fac.pack(side=LEFT)
             
             # ajout du canvas au root.clic
-                                 
+            self.root.clic.setFac(self.fac)  
+                              
         if self.item == "modifier le thème": 
             cadreBox.pack(side=LEFT)
             label1.configure(text = "sélection".upper())
@@ -536,7 +543,7 @@ class Contenu(Frame):
         if self.item =="afficher la salle":
             self.pack()
         else:
-            print('affichage du contenu', self.item)
+           
             self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):
@@ -575,8 +582,10 @@ class Bouton(Frame):
         # widgets
         self.bouton1 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
         self.bouton1.bind('<Return>', lambda _:(self.commandBouton(1)))
+        self.bouton1.bind('<ButtonRelease-1>', lambda _:(self.commandBouton(1)))
         self.bouton2 = Button(self, width = WIDTH_BUTTON, **KW_BUTTON)
         self.bouton2.bind('<Return>', lambda _:(self.commandBouton(2)))
+        self.bouton2.bind('<ButtonRelease-1>', lambda _:(self.commandBouton(2)))
         canvas = Canvas(self, height=self.bouton1.winfo_reqheight(), **KW_CANVAS)  # cas de l'absence de button
         
         # ajout des widgets aux thèmes
@@ -593,9 +602,9 @@ class Bouton(Frame):
         if self.item == "modifier le thème":
             canvas.pack(side=LEFT)
             
-        if self.item == "facturation":
-            self.bouton1.configure(text="retour".upper())
-            self.bouton1.pack(**PAD_BUTTON)
+        # if self.item == "facturation":
+        #     self.bouton1.configure(text="retour".upper())
+        #     self.bouton1.pack(**PAD_BUTTON)
             
         if self.item in {"ajouter un employé", "ajouter une table", "ajouter un article"}:
             self.bouton1.configure(text="ajouter".upper())
