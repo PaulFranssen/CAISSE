@@ -45,6 +45,7 @@ class Database:
                                     nbr INTEGER, 
                                     serve TEXT,
                                     couleur TEXT,
+                                    tablename TEXT,
                                     x1 INTEGER,
                                     y1 INTEGER)""")
             
@@ -133,9 +134,10 @@ class Database:
         # valeurs initiales 
         dat = self.dat
         serve = ""
+        tablename=""
         couleur = VERT
-        self.curseur.execute("""INSERT INTO facture(dat, nbr, serve, couleur, x1, y1) 
-                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, *box))
+        self.curseur.execute("""INSERT INTO facture(dat, nbr, serve, couleur, x1, y1, tablename) 
+                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, tablename, *box))
         self.connexion.commit()
         
         
@@ -145,7 +147,19 @@ class Database:
         """
         res = None
         if self.dat is not None:
-            res = self.curseur.execute("""SELECT nbr, serve, couleur,x1,y1 FROM facture WHERE dat=?""",(self.dat,)).fetchall()
+            res = self.curseur.execute("""SELECT nbr, serve, couleur, x1,y1, tablename FROM facture WHERE dat=?""",(self.dat,)).fetchall()
+        return res
+    
+    def base7bis(self):
+        """récupère la liste des factures vertes et oranges d'une caisse ouverte"
+        """
+        res = None
+        if self.dat is not None:
+            res = self.curseur.execute("""SELECT id, nbr, serve, couleur,x1,y1, tablename 
+                                       FROM facture 
+                                       WHERE dat=? 
+                                       AND couleur<>?
+                                       """,(self.dat,"rouge")).fetchall()
         return res
     
     def base8(self, nbr, box):
@@ -153,6 +167,20 @@ class Database:
         """
         self.curseur.execute("""UPDATE facture SET x1=?, y1=? WHERE dat=? AND nbr=?""",(*box, self.dat, nbr))
         self.connexion.commit()
+        
+    def base9(self, nbr):
+        """recupère éléments d'une facture sur base de son nombre et de sa date
+    
+        Args:
+            nbr (int): nombre de la facture
+        """
+        res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1, y1, tablename 
+                                       FROM facture 
+                                       WHERE dat=? 
+                                       AND nbr=?
+                                       """,(self.dat, nbr)).fetchone()
+        
+        return res
         
     def isWorker(self, nom):
         """détermine si un nom se trouve dans la base

@@ -17,15 +17,18 @@ TAILLE_MENU = 16
 
 # constantes dans la salle
 ROUGE = "#FF0000"
-VERT = "#00FF00"
+VERT = "#FFFFFF"
+VERT2="#FFAAAA"
 ORANGE = "#FF7E00"
+
+DIC_STATUT = {VERT:"OUVERT", VERT2:"MODIFIE", ORANGE : "FACTURE", ROUGE:"CLOTURE"}
 
 COEF_DILATATION = 1.5
 COEF_REMPLISSAGE = 0.95  # pourcentage de remplissage de l'écran pour une table de dimension maximale
 DECOUPAGE_HEIGHT = 18   # ce découpage me donnera le nombre de pixel par table , par la formule winfo_screenheight/découpage_height+coef_dilatation
 
-POLICE_SALLE = "Helvetica"
-HEIGHT_FACTURE = 24
+
+HEIGHT_FACTURE = 20 #24
 HAUTEUR_TEXTE_SALLE = 14
 MARGE_SALLE = 10
 MARGE_HAUTE_SALLE = 10
@@ -38,7 +41,7 @@ LENGTH_ETAT_FACTURE = 9
 # PIXEL=36   # correspond à 1 unité
 # LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
 # HAUTEUR_MAX = 20
-CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table, "find_enclosed" : intérieur à la table
+CAPTURE_DANS_TABLE = "find_enclosed"#"find_overlapping" #: touche la table, "find_enclosed" : intérieur à la table
 
 
 
@@ -46,9 +49,10 @@ CAPTURE_DANS_TABLE = "find_overlapping"   # "find_overlapping" : touche la table
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
 WIDTH_BUTTON = 12
-HEIGHT_LISTBOX = 14  # à moduler suivant les dimensions de l'écran
-HEIGHT_LISTBOX2 = 7 # liste de choix des articles
-ESPACE_VERTICAL_BUTTON_VALIDER = 80
+HEIGHT_LISTBOX = 18  # à moduler suivant les dimensions de l'écran
+HEIGHT_LISTBOX2 = 4 # liste de choix des articles
+HEIGHT_LISTBOX3 = 2 # liste de choix des workers
+ESPACE_VERTICAL_BUTTON_VALIDER = 0
 LENGTH_CODE = 15
 LENGTH_DESCRIPTION = 30
 LENGTH_PRIX = 10
@@ -60,10 +64,12 @@ LENGTH_PU = 8
 
 
 # écarts
-ECART_DOUBLE_CADRE_VERTICAL = 120
+ECART_DOUBLE_CADRE_VERTICAL = 100
 
 # police
 POLICE = "Consolas"
+POLICE_SALLE = "Bahnschrift Condensed" #"Helvetica"
+POLICE_TABLE = "Bahnschrift" #"Helvetica"
 
 
 

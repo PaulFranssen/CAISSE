@@ -18,8 +18,8 @@ class Bac(Canvas):
         self.height = None
         self.table_pixels = None
         self.milieu = None
-        self.font_tableName = (POLICE_SALLE, int(HAUTEUR_TEXTE_SALLE*COEF_DILATATION), 'italic')
-        self.font_facture = (POLICE_SALLE, int(HEIGHT_FACTURE*COEF_DILATATION), 'bold')
+        self.font_tableName = (POLICE_TABLE, int(HAUTEUR_TEXTE_SALLE*COEF_DILATATION))
+        self.font_facture = (POLICE_SALLE, int(HEIGHT_FACTURE*COEF_DILATATION))
         self.tup_selected = None  # tuple d'id sélectionnés
         self.number = 0  # numéro de la facture actuelle (0 donc pas de facture)
         self.id_lastFacture = None
@@ -31,7 +31,10 @@ class Bac(Canvas):
         self.bind('<Button1-ButtonRelease>', self.release)
         self.bind('<Control-Key-F>', self.create_facture)
         self.bind('<Control-Key-f>', self.create_facture)
-        # self.bind('<Button-2>', self.displayFactures)
+        self.bind('<Button-2>', self.getFacture) # selection d'une facture par clic2
+        
+    def setDb(self, db):
+        self.db = db
     
     def setDimensions(self):
         # attributs
@@ -44,6 +47,35 @@ class Bac(Canvas):
         for t in self.db.base5():
             args = list(t)[0:4] + [list(t)[4:]]
             self.create_table(*args)
+            
+    def getFacture(self, evt):
+        "selectionne une facture par clic-2"
+        # récupération de la position du clic et de l'id
+        self.x1, self.y1 = evt.x, evt.y
+        self.tup_selected = self.find_overlapping(self.x1, self.y1, self.x1, self.y1)
+         
+        if self.tup_selected:
+            length = len(self.tup_selected)
+            tag1 = self.gettags(self.tup_selected[0]) # tag du tuple sélectionné
+            
+            if length == 1:
+                if tag1[0] == 'facture':
+                    self.clic.gofacture(self.db.base9(tag1[2]), '')                    
+            
+            else: # la sélection contient une table et une facture en principe
+                
+                tag2 = self.gettags(self.tup_selected[1])
+                if tag1[0] == 'facture':
+                    if tag2[0] == 'table':
+                        self.clic.gofacture(self.db.base9(tag1[2]), tag2[2])
+                    else:
+                        self.clic.gofacture(self.db.base9(tag1[2]), '') 
+                        
+                elif tag2[0] == 'facture':
+                    if tag1[0] == 'table':
+                        self.clic.gofacture(self.db.base9(tag2[2]), tag1[2])
+                    else:
+                        self.clic.gofacture(self.db.base9(tag2[2]), '')
             
     # def displayFactures(self, factures):
     #     # afficher toutes les factures se trouvant dans la database   
@@ -61,8 +93,7 @@ class Bac(Canvas):
     #     print('aller à la facture', id)
     #     self.clic.displayFacture(id)
             
-    def setDb(self, db):
-        self.db = db
+    
         
     def getNbrMaxTable(self, dim):
         """retourne  le nombre max d'unités de tables en largeur ou en hauteur
@@ -175,6 +206,25 @@ class Bac(Canvas):
                         self.tup_selected += (id,)
             else:
                 self.tup_selected = None
+                
+    def getNameTable(self, x1, y1):
+        """détermine le nom de la table à la position x1,y1          
+
+        Args:
+            x1 (float): position x
+            y1 (float): position y
+        """
+        insideBox_id = self.find_overlapping(x1, y1, x1,y1)
+        tables_id = self.find_withtag("table")
+        # récupérer un élément commun de ces deux ensembles
+        tablename = ''
+        if insideBox_id and tables_id:
+            tables_id = set(insideBox_id) & set(tables_id)
+            if tables_id:
+                # récupérer le nom de la table
+                tablename = self.gettags(tables_id.pop())[2]
+        return tablename        
+        
             
     def inFenetre(self, id, box):
         """détermine si id est dans une boite

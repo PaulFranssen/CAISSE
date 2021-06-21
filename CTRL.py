@@ -61,18 +61,19 @@ class Clic:
         # fixe éventuellement la nouvelle caisse
         dat = self.db.base1(newCaisse)
         
-        if dat is not None and not newCaisse:
+        if dat is not None and not newCaisse: # cas d'une caisse relancée (non cloturée)
             
-            # récupérer les factures d'une caisse ouverte
-            factures = self.db.base7()
+            # récupérer les factures non rouge d'une caisse ouverte
+            factures = self.db.base7bis()
         
             # affiche les factures dans la salle s'il y en a
             if factures is not None:
                 self.displayFactures(factures)
                 
     def displayFactures(self, factures):
-            # afficher toutes les factures se trouvant dans la database   
-        for nbr, serve, couleur,x1, y1 in factures:
+        # afficher toutes les factures se trouvant dans la database   
+        for fact_id, nbr, serve, couleur,x1, y1, tablename in factures:
+            # uniquement les vertes et les oranges (à faire)
             self.bac.id_lastFacture = self.bac.create_text(x1, y1,
                                                     fill=couleur, 
                                                     font = self.bac.font_facture, 
@@ -80,12 +81,53 @@ class Clic:
                                                     tags=("facture", couleur, str(nbr)))   
             self.bac.id_lastObject = self.bac.id_lastFacture
             self.bac.number = max(self.bac.number, nbr)
-            self.bac.tag_bind(self.bac.id_lastFacture, '<Button-2>', lambda _ : self.gofacture(self.bac.id_lastFacture))
+            
+            
+            # liens des factures avec le button-2 > gofacture
+            # self.bac.tag_bind(self.bac.id_lastFacture, '<Button-2>', lambda _ : self.gofacture((fact_id, nbr, serve, couleur)))
         
-    def gofacture(self, id):
-        print('aller à la facture', id)
+    def gofacture(self, tup, tablename):
+        """affiche la facturation avec les éléments de la facture
+
+        Args:
+            tup (tuple): (fact_id, nbr, serve, couleur, tablename))
+        """
+        self.fac.setId(tup, tablename)
         self.boss.cadreGestion.corps.display("facturation")
+        
+    def getFacture(self, nbr):
+        """recupère la facture éventuelle de numéro nbr
+
+        Args:
+            nbr (str): numéro de la facture
+        """
+        # vérifier si nbr est un entier
+        try:
+            nbr = int(nbr)
+            facture = self.db.base9(nbr)
+            if not facture:
+                raise E(self.com, "N°FACTURE", "inexistant")
+            
+            fact_id, nbr, serve, couleur, x1, y1, tablename = facture
+            
+        except E as e: 
+            e.affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)  
+        except :
+            E(self.com, "N°FACTURE", 'non-conforme').affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)  
+        else:  
+            # récupérer la table si la facture n'est pas rouge
+            if couleur != "ROUGE":  # cas d'une facture rouge 
+                tablename = self.bac.getTableName(x1, y1)
+                self.fac.setId(facture, tablename) 
+            
+
                 
+            
+            
+            self.gofacture(facture, tablename)
+        
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
             self.clearCom()
