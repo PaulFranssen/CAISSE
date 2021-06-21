@@ -45,9 +45,9 @@ class Database:
                                     nbr INTEGER, 
                                     serve TEXT,
                                     couleur TEXT,
-                                    tablename TEXT,
                                     x1 INTEGER,
-                                    y1 INTEGER)""")
+                                    y1 INTEGER
+                                    tablename TEXT)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS articles (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -137,7 +137,7 @@ class Database:
         tablename=""
         couleur = VERT
         self.curseur.execute("""INSERT INTO facture(dat, nbr, serve, couleur, x1, y1, tablename) 
-                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, tablename, *box))
+                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, *box, tablename))
         self.connexion.commit()
         
         

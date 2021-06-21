@@ -58,24 +58,29 @@ class Bac(Canvas):
             length = len(self.tup_selected)
             tag1 = self.gettags(self.tup_selected[0]) # tag du tuple sélectionné
             
+            print(tag1, 'TAG')
+            
             if length == 1:
                 if tag1[0] == 'facture':
-                    self.clic.gofacture(self.db.base9(tag1[2]), '')                    
+                    nbr = int(tag1[2])
+                    self.clic.gofacture(self.db.base9(nbr), '')                    
             
             else: # la sélection contient une table et une facture en principe
                 
                 tag2 = self.gettags(self.tup_selected[1])
                 if tag1[0] == 'facture':
+                    nbr = int(tag1[2])
                     if tag2[0] == 'table':
-                        self.clic.gofacture(self.db.base9(tag1[2]), tag2[2])
+                        self.clic.gofacture(self.db.base9(nbr), tag2[2])
                     else:
-                        self.clic.gofacture(self.db.base9(tag1[2]), '') 
+                        self.clic.gofacture(self.db.base9(nbr), '') 
                         
                 elif tag2[0] == 'facture':
+                    nbr = int(tag2[2])
                     if tag1[0] == 'table':
-                        self.clic.gofacture(self.db.base9(tag2[2]), tag1[2])
+                        self.clic.gofacture(self.db.base9(nbr), tag1[2])
                     else:
-                        self.clic.gofacture(self.db.base9(tag2[2]), '')
+                        self.clic.gofacture(self.db.base9(nbr), '')
             
     # def displayFactures(self, factures):
     #     # afficher toutes les factures se trouvant dans la database   
@@ -118,7 +123,7 @@ class Bac(Canvas):
                 self.id_lastObject = self.id_lastFacture
                 self.number +=1
                 self.autorisation = False
-                self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id))
+                #self.tag_bind(id, '<Button-3>', lambda _ : self.gofacture(id)) #?
                 
                 # ajout de la facture à la base de données 
                 box = self.coords(self.id_lastFacture)[0], self.coords(self.id_lastFacture)[1]

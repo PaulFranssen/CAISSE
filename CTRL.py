@@ -92,6 +92,7 @@ class Clic:
         Args:
             tup (tuple): (fact_id, nbr, serve, couleur, tablename))
         """
+        print(tup, tablename, "TUP ")
         self.fac.setId(tup, tablename)
         self.boss.cadreGestion.corps.display("facturation")
         
