@@ -23,10 +23,15 @@ class Database:
             print('autre erreur dans ouvrir', error)
         
         else:
+            
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS caisse (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     dat TIMESTAMP,
                                     statut INTEGER DEFAULT 1)""")
+            
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS workers (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    nom TEXT)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS tables (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -39,6 +44,9 @@ class Database:
                                     x2 INTEGER,
                                     y2 INTEGER)""")
             
+           
+                                   
+            
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS facture (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     dat TIMESTAMP,
@@ -46,7 +54,7 @@ class Database:
                                     serve TEXT,
                                     couleur TEXT,
                                     x1 INTEGER,
-                                    y1 INTEGER
+                                    y1 INTEGER,
                                     tablename TEXT)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS articles (
@@ -55,9 +63,14 @@ class Database:
                                     descript TEXT, 
                                     prix INTEGER)""")
             
-            self.curseur.execute("""CREATE TABLE IF NOT EXISTS workers (
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS serve (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-                                    name TEXT)""")
+                                    caisse_id INT,
+                                    tab_id INT,
+                                    work_id INT,
+                                    FOREIGN KEY(caisse_id) REFERENCES caisse(id),
+                                    FOREIGN KEY(tab_id) REFERENCES tables(id),
+                                    FOREIGN KEY(work_id) REFERENCES workers(id))""")
                                    
                             
             self.connexion.commit()
@@ -137,7 +150,7 @@ class Database:
         tablename=""
         couleur = VERT
         self.curseur.execute("""INSERT INTO facture(dat, nbr, serve, couleur, x1, y1, tablename) 
-                             VALUES(?,?,?,?,?,?)""", (dat, nbr, serve, couleur, *box, tablename))
+                             VALUES(?,?,?,?,?,?,?)""", (dat, nbr, serve, couleur, *box, tablename))
         self.connexion.commit()
         
         
@@ -181,6 +194,80 @@ class Database:
                                        """,(self.dat, nbr)).fetchone()
         
         return res
+    
+    
+    
+    def base10(self, tablename):
+        """récupère le service correspondant à tablename
+        """
+        if tablename:
+            print('nomTAble', tablename)
+            res = self.curseur.execute("""SELECT workers.nom FROM workers, serve, tables, caisse 
+                                        WHERE workers.id = serve.work_id
+                                        AND caisse.dat=? 
+                                        AND caisse.id = serve.caisse_id
+                                        AND tables.tableName=?
+                                        AND tables.id = serve.tab_id
+                                        """,(self.dat, tablename)).fetchone()
+        else:
+            res=None
+        print(res)
+        
+        return '' if not res else res[0]
+    
+    def base11(self, begin):
+        """recupère la liste des workers commençants par begin
+        """
+        res = self.curseur.execute("""SELECT nom FROM workers""").fetchall()
+        
+        if res:
+            length = len(begin)
+            liste = [nom[0] for nom in res if len(nom[0])>=length and begin==nom[0][:length]]
+            liste.sort()
+            
+        else:
+            liste = []
+        return liste
+    
+    def base12(self, begin):
+        """recupère la liste des code commençants par begin
+        """
+        res = self.curseur.execute("""SELECT code FROM articles""").fetchall()
+        print(res, 'res', begin)
+        if res:
+            length = len(begin)
+            liste = [nom[0] for nom in res if len(nom[0])>=length and begin==nom[0][:length]]
+            liste.sort()
+            print(liste)
+        else:
+            liste = []
+        return liste
+    
+    def recordInServe(self, tablename, service):
+        """enregistre un lien table-service
+        """
+        tab_id = self.curseur.execute("""SELECT id FROM tables WHERE tablename=?""",(tablename,)).fetchone()
+        work_id = self.curseur.execute("""SELECT id FROM workers WHERE nom=?""",(service,)).fetchone()
+        caisse_id = self.curseur.execute("""SELECT id FROM caisse WHERE dat=?""",(self.dat,)).fetchone()
+        
+        if tab_id and work_id and caisse_id: # cas du record possible
+            
+            id = self.curseur.execute("""SELECT id FROM serve 
+                                       WHERE caisse_id=? 
+                                       AND tab_id=?""",(caisse_id[0], tab_id[0])).fetchone()
+            if id: # il y a déjà une table enregistrée > update le service
+                self.curseur.execute("""UPDATE serve
+                                        SET work_id=?
+                                        WHERE id=?""", (work_id[0], id[0]))
+                self.connexion.commit()
+            else: # pas encore d'enregistrement pour cette table et cette caisse
+                self.curseur.execute("""INSERT INTO serve (caisse_id, tab_id, work_id)
+                             VALUES(?,?,?)""", (caisse_id[0], tab_id[0], work_id[0]))
+                self.connexion.commit()
+                
+            
+        
+       
         
     def isWorker(self, nom):
         """détermine si un nom se trouve dans la base
@@ -188,7 +275,8 @@ class Database:
         Args:
             nom (str): nom d'un employé
         """
-        res = self.curseur.execute("""SELECT name FROM workers WHERE name=?""",(nom,)).fetchone()
+        res = self.curseur.execute("""SELECT nom FROM workers WHERE nom=?""",(nom,)).fetchone()
+        print(res)
         return True if res else False
     
     def insertWorker(self, nom):
@@ -197,7 +285,7 @@ class Database:
         Args:
             nom (str): nom d'un worker
         """ 
-        self.curseur.execute("""INSERT INTO workers (name) 
+        self.curseur.execute("""INSERT INTO workers (nom) 
                              VALUES(?)""", (nom,))
         self.connexion.commit()
         

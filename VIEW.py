@@ -389,13 +389,18 @@ class Contenu(Frame):
         canvas3 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         canvas4 = Canvas(cadre, width=10, height=TAILLE_CAR, **KW_CANVAS) #séparateur horizontal
         
-        ## salle : contenu particulier car il n' a ni titre ni bouton 
-        self.bac = SALLE.Bac(self, width=0, height=0)
-        
-        # facture
-        self.fac = FACTURE.Fac(self)
-   
        
+        
+        
+   
+        ## salle : contenu particulier car il n' a ni titre ni bouton 
+       
+       
+       # facture
+        self.fac = FACTURE.Fac(self)
+        self.bac = SALLE.Bac(self, width=0, height=0)
+        # liens entre objets
+        
         
         # intégration des widgets selon l'item
         if self.item == 'nouvelle caisse':
@@ -447,10 +452,10 @@ class Contenu(Frame):
             # affichage de la facture
             # cadre.pack(side = LEFT)
             self.fac.pack(side=LEFT)
-            
             # ajout du canvas au root.clic
             self.root.clic.setFac(self.fac)  
-                              
+            
+                            
         if self.item == "modifier le thème": 
             cadreBox.pack(side=LEFT)
             label1.configure(text = "sélection".upper())
@@ -540,10 +545,10 @@ class Contenu(Frame):
                                       spinBox = self.spinBox,
                                       spinBox_var = self.spinBox_var)
         
+        # affichage
         if self.item =="afficher la salle":
             self.pack()
-        else:
-           
+        else:      
             self.pack(fill=Y, expand=Y)
         
     def commandListBox(self, evt):

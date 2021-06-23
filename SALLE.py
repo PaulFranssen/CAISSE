@@ -58,8 +58,6 @@ class Bac(Canvas):
             length = len(self.tup_selected)
             tag1 = self.gettags(self.tup_selected[0]) # tag du tuple sélectionné
             
-            print(tag1, 'TAG')
-            
             if length == 1:
                 if tag1[0] == 'facture':
                     nbr = int(tag1[2])
@@ -212,7 +210,7 @@ class Bac(Canvas):
             else:
                 self.tup_selected = None
                 
-    def getNameTable(self, x1, y1):
+    def getTableName(self, x1, y1):
         """détermine le nom de la table à la position x1,y1          
 
         Args:

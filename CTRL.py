@@ -27,7 +27,7 @@ class E(Exception):
     def affiche(self):
         print(f"Erreur {self.s} : {self.msg}")
         self.com.set(f"Erreur {self.s} : {self.msg}")
-
+        
 
 class Clic:
     def __init__(self, boss=None):
@@ -50,6 +50,7 @@ class Clic:
     def setFac(self, fac):
         self.fac = fac
         self.fac.setDb(self.db)
+        
           
     def setCaisse(self, newCaisse):  
         """établit la caisse et affiche les éventuelles factures dans la salle
@@ -70,6 +71,130 @@ class Clic:
             if factures is not None:
                 self.displayFactures(factures)
                 
+                
+    def commandValider(self, **kw):
+        
+        service = kw['service'].get().strip()
+        print('service', service)
+        try:
+            # vérification du service
+            if not self.db.isWorker(service):
+                raise E(self.com, 'SERVICE', 'inexistant')
+        
+        except E as e:
+            e.affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)
+        
+        else:
+            # association entre une table et le service
+            ## récupérer la table
+            tablename = kw['table'].get().strip()
+            ## enregistrer (update ou insert) dans la db serve
+            self.db.recordInServe(tablename, service)
+            self.com.set('OK')
+            self.boss.master.after(attenteLongue, self.clearCom)
+    
+    def commandService(self, **kw):
+        
+        # établis les éléments de la listbox de service
+        begin = kw['entry3_var'].get().strip() # début du nom
+        # récupérer les workers dont le nom commencent par begin
+        liste = self.db.base11(begin)
+        
+        if len(liste) == 0:
+            # effacer la sélection de la box
+            kw['listBox3_var'].set([])
+       
+        elif len(liste) == 1:
+            # un seul nom donc l'afficher
+            kw['entry3_var'].set(liste[0])
+            kw['entry3'].icursor(END)
+            # supprimer les éventuels mots dans la box
+            kw['listBox3_var'].set([])
+            
+        else:
+            # plus d'un nom dans la liste, donc les placer dans la listbox3
+            kw['listBox3_var'].set(liste)
+            kw['listBox3'].selection_clear(0, END)
+            kw['listBox3'].selection_set(0)
+            kw['listBox3'].focus_set()
+            
+    def commandCode(self, **kw):
+        
+        # établis les éléments de la listbox des codes
+        begin = kw['code_var'].get().strip() # début du nom
+        # récupérer les workers dont le nom commencent par begin
+        liste = self.db.base12(begin)
+        
+        if len(liste) == 0:
+            # effacer la sélection de la box
+            kw['listBox2_var'].set([])
+       
+        elif len(liste) == 1:
+            # un seul nom donc l'afficher
+            kw['code_var'].set(liste[0])
+            #kw['entryCode'].icursor(END)
+            # supprimer les éventuels mots dans la box
+            kw['listBox2_var'].set([])
+            # afficher la description et le PU
+            kw['description_var'].set('description')
+            kw['pu_var'].set('pu')
+            
+            # effacer le prix et la remise
+            kw['remise_var'].set('')
+            kw['prix_var'].set('')
+            
+             # aller à la quantité
+            kw['qte_var'].set('')
+            kw['qte'].focus_set()
+            
+        else:
+            # plus d'un nom dans la liste, donc les placer dans la listbox2
+            kw['listBox2_var'].set(liste)
+            kw['listBox2'].selection_clear(0, END)
+            kw['listBox2'].selection_set(0)
+            kw['listBox2'].focus_set()
+            
+    
+    def commandLB3(self, **kw):
+        listBox3 = kw['listBox3']
+        
+        # récupérer la sélection (tuple)
+        res = listBox3.curselection()
+  
+        if res:
+            # afficher le service par récupération de la sélection
+            kw['service'].set(listBox3.get(res[0]))
+            
+        # effacer la liste de la box
+        kw['listBox3_var'].set([]) 
+            
+            
+    def commandLB2(self, **kw):
+        listBox2 = kw['listBox2']
+        
+        # récupérer la sélection (tuple)
+        res = listBox2.curselection()
+  
+        if res:
+            # afficher le code 
+            kw['code_var'].set(listBox2.get(res[0]))
+            
+            # afficher la description et le PU
+            kw['description_var'].set('description')
+            kw['pu_var'].set('pu')
+            
+            # effacer le prix
+            kw['remise_var'].set('')
+            kw['prix_var'].set('')
+            
+            # aller à la quantité
+            kw['qte_var'].set('')
+            kw['qte'].focus_set()
+            
+        # effacer la liste de la box
+        kw['listBox2_var'].set([])
+        
     def displayFactures(self, factures):
         # afficher toutes les factures se trouvant dans la database   
         for fact_id, nbr, serve, couleur,x1, y1, tablename in factures:
@@ -92,7 +217,6 @@ class Clic:
         Args:
             tup (tuple): (fact_id, nbr, serve, couleur, tablename))
         """
-        print(tup, tablename, "TUP ")
         self.fac.setId(tup, tablename)
         self.boss.cadreGestion.corps.display("facturation")
         
@@ -122,11 +246,7 @@ class Clic:
             if couleur != "ROUGE":  # cas d'une facture rouge 
                 tablename = self.bac.getTableName(x1, y1)
                 self.fac.setId(facture, tablename) 
-            
-
-                
-            
-            
+ 
             self.gofacture(facture, tablename)
         
     def displayContenu(self, **KW):
@@ -141,6 +261,7 @@ class Clic:
             KW['bac'].focus_set()
             
         elif KW['item'] == "facturation":
+            # actualiser la table et le service correspondant
             pass
             
         elif KW['item'] == "modifier le thème":
@@ -194,10 +315,12 @@ class Clic:
             # afficher la salle
             self.boss.cadreGestion.corps.display("afficher la salle")
             
-        if contenu.item == "facturation":
+        # if contenu.item == "facturation":
            
-            # afficher la salle
-            self.boss.cadreGestion.corps.display("afficher la salle")
+           
+        #     pass
+        #     # afficher la salle
+        #     # self.boss.cadreGestion.corps.display("afficher la salle")
             
         if contenu.item == "ajouter un employé":
             nom = contenu.entry2_var.get().strip()

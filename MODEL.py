@@ -47,6 +47,21 @@ KW_LISTBOX = dict(selectmode='browse',
                   highlightthickness= 0,
                   relief='flat',
                   bd=0)
+
+# listBox pour le service et le code dans facturation
+KW_LISTBOX2 = dict(selectmode='browse', 
+                  font=(POLICE, TAILLE_CAR, 'italic'),
+                  takefocus=0,
+                  activestyle= 'none', 
+                  highlightthickness= 0,
+                  relief='flat',
+                  justify='center',
+                  bd=0)
+# kw_28 = {'selectmode': 'browse', 'bg': color_33, 'font': (police_1, taille_4),
+#          'selectbackground': color_6, 'selectforeground': color_30, 'takefocus': 0,
+#          'activestyle': 'none', 'highlightthickness': 0,
+#          'relief': 'flat'}
+
 PAD_LISTBOX = dict(pady=0)
 
 KW_LABEL = dict(font=(POLICE, TAILLE_CAR))
