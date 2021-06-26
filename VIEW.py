@@ -9,7 +9,7 @@ import CONST
 import SALLE, FACTURE
 from MODEL import *
 from CTRL import *
-from CTRL_F import ClicFacture
+
 
 class PF(Frame):
     """Classe Principale établissant les liens avec le contôle (clic), le thème (th), le cadre graphique (cadreGestion)
@@ -30,7 +30,7 @@ class PF(Frame):
         # attributs
         self.th = Theme()
         self.clic = Clic(self)
-        self.clic_facture = ClicFacture(self.clic)
+        
         self.cadreGestion = CadreGestion(self)
        
         # ajout du cadre au thème

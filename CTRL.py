@@ -3,6 +3,7 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
+from MODEL import Theme
 import DB
 from CONST import *
 import datetime
@@ -25,7 +26,6 @@ class E(Exception):
         
 
     def affiche(self):
-        print(f"Erreur {self.s} : {self.msg}")
         self.com.set(f"Erreur {self.s} : {self.msg}")
         
 
@@ -35,7 +35,10 @@ class Clic:
         self.boss = boss
         self.db = DB.Database()
         self.bac = None
+        self.th = Theme()
+        self.list_recordF=[] # liste parallèle à la listBox de la facture
         # self.dat = None # date de la caisse en cours
+        self.index_selected = None # index de la ligne sélectionnée dans la box
         
     def setCom(self, com):
         self.com=com
@@ -51,7 +54,47 @@ class Clic:
         self.fac = fac
         self.fac.setDb(self.db)
         
-          
+    def isNumber(self, chain):
+        """détermine si chain a le format d'un nombre positif, le vide étant considéré comme 0
+        """
+        res=True
+        ch = chain.strip()
+        if ch == '':
+            # cas du vide (c'est un nombre)
+            res = True
+        else:
+            try:
+                # vérifier si sans les points on a un nombre
+                ch1 = int(ch.replace('.', ''))
+                
+                if ch1<0 or ch1>99999999: # le nombre est négatif ou excessif
+                    res=False
+                else:
+                    liste = [(len(ch)-pos)%4 for pos, char in enumerate(ch) if char == '.']
+                   
+                    if sum(liste): # les positions des '.' n'est pas adéquate
+                        res=False 
+                    elif ch[0]=='.': # le premier caractère est un point
+                        res=False
+                    elif len(ch)>7 and len(liste)==1: # manque un point
+                        res=False
+            except:
+                res=False
+        return res
+    
+    def formatNumber(self, chain):
+        """renvoie une chaine formatée à partir d'une chaine contenant un nombre
+        """
+        if type(chain) == int :
+            chain=str(chain)
+        ch = chain.replace('.','').strip()
+        if len(ch) > 6:
+            ch = ch[:-6] + '.' + ch[-6:-3] + '.' + ch[-3:]
+        elif len(ch) > 3:
+            ch = ch[:-3] + '.' + ch[-3:]
+        return ch
+    
+    
     def setCaisse(self, newCaisse):  
         """établit la caisse et affiche les éventuelles factures dans la salle
 
@@ -73,27 +116,182 @@ class Clic:
                 
                 
     def commandValider(self, **kw):
-        
+        # récupérer les variables
         service = kw['service'].get().strip()
-        print('service', service)
+        code = kw['code'].get().strip()
+        description = kw['description'].get()
+        pu=kw['pu'].get().strip()
+        qte=kw['qte'].get().strip()
+        remise=kw['remise'].get().strip()
+        prix=kw['prix'].get().strip()
+        statut = kw['statut'].get()
+        nbr = kw['nbr'].get().strip()
+        recu = kw['recu'].get().strip()
+        
         try:
+            # vérification du statut
+            if statut not in {DIC_STATUT[VERT], DIC_STATUT[VERT2]}:
+                raise E(self.com, 'STATUT ' + statut , 'modification non autorisée')
+            
+            # vérification du N°FACTURE
+            test = "nbr"
+            nbr1 = int(nbr)
+            if self.fac.getN() != nbr1: # le numéro de facture a été changé sans GO
+                #vérifier encore le  getNbr() vide (à faire) cas particulier de départ
+                raise E(self.com, 'N°FACTURE', 'ne correspond pas à la facture')
+            
+            test ="service"
             # vérification du service
             if not self.db.isWorker(service):
                 raise E(self.com, 'SERVICE', 'inexistant')
-        
+            
+            test = "reçu"
+            if not self.isNumber(recu):
+                raise E(self.com, 'RECU', 'non-conforme')
+            
+            encodageVide = self.fac.isEncodageVide()
+            if not encodageVide:
+                # vérification du code
+                code_id = self.db.code_id(code)
+                if not code_id:
+                    raise E(self.com, 'CODE', 'inexistant')
+                
+                # vérification de la description (doit correspondre au code)
+                if not self.db.isDescription(code, description):
+                    raise E(self.com, 'CODE', 'ne correspond pas à DESCRIPTION')
+                
+                # vérification du PU (int >=0)
+                if not self.isNumber(pu) or not pu:
+                    raise E(self.com, 'P.U.', 'non-conforme')
+                pu1 = int(pu.replace('.', ''))
+                
+                # vérification de la quantité
+                if not self.isNumber(qte) or not qte or qte == "0" or len(qte)>LENGTH_QTE:
+                        raise E(self.com, 'QTE', 'non-conforme')
+                qte1 = int(qte.replace('.', ''))
+                
+                # vérification de la remise
+                if not self.isNumber(remise):
+                    raise E(self.com, 'REMISE', 'non-conforme')
+                remise1 = 0 if remise =='' else int(remise.replace('.',''))
+                
+                # vérification du prix (doit correspondre pu.qte - remise)
+                if not prix or not self.isNumber(prix):
+                    raise E(self.com, 'PRIX', 'non-conforme')
+                
+                # calcul du prix (doit correspondre au prix indiqué)       
+                prix1 = pu1*qte1-remise1
+                if prix1 != int(prix.replace('.', '')):
+                    raise E(self.com, 'PRIX', 'non-conforme')
+               
         except E as e:
             e.affiche()
             self.boss.master.after(attenteLongue, self.clearCom)
+            
+        except:
+            if test == "nbr":
+                E(self.com, "N°FACTURE", "non-conforme").affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            else:
+                E(self.com, "", "?").affiche()
         
-        else:
+        else: # ENREGISTREMENT DES ENTRY VALIDES
+            
             # association entre une table et le service
             ## récupérer la table
             tablename = kw['table'].get().strip()
-            ## enregistrer (update ou insert) dans la db serve
+            ## enregistrer le lien table-service (update ou insert) dans la db serve
             self.db.recordInServe(tablename, service)
+            
+            # récupérer le id de la facture
+            #fact_id = self.db.base9(nbr1)[0] # récupère le id de facture
+            fact_id = self.fac.getId()
+            
+            # mise en forme du reçu et enregistrement dans la base
+            recu = 0 if recu == '' else int(recu)          
+            self.db.setRecu(fact_id, recu)
+            kw['recu'].set(self.formatNumber(recu))
+            
+            # ajout de la ligne dans la table recordF
+            if not encodageVide:
+                self.db.recordLigne(code_id=code_id,
+                                    nbr = nbr1, 
+                                    pu=pu1,
+                                    qte=qte1,
+                                    remise=remise1,
+                                    prix=prix1,
+                                    transfert=0,
+                                    index_selected = self.index_selected)
+                # actualisation de la listBox
+                self.actualiserListBox(fact_id)
+            
+            # commentaire OK
             self.com.set('OK')
             self.boss.master.after(attenteLongue, self.clearCom)
     
+    def commandFacturer(self):
+        # si déjà statut "facturé", alors  juste réimprimer le ticket
+        # sinon :
+        
+        # validation de la facture
+        
+        # changement de statut > désactivation (inside changement)
+        
+        # impression du ticket 
+        
+        # rem : activation désactivation dans le statut (setStatut)
+        pass
+    
+    def commandTerminer(self):    
+        # nécessite 2 clics
+        # 1er clic : validation du reçu, affichage du solde : si c'est bon passé au second clic
+        # 2ème clic : validation du reçu, affichae du reçu : si identique : impression du ticket et passage au ROUGE
+        # si code négatif, 2 tickets : 1 ticket client et 1 ticket à garder
+        # si ROUGE : uniquement impression du ticket (bouton devient "TICKET")
+        
+        # rem : si nouvel affichage de facture, alors réinitialiser le 1er clic à zéro
+        pass
+    def commandDelete(self):
+       
+        if self.index_selected is None:  # effacer la zone d'encodage
+            self.fac.eraseEncodage()
+        
+        else : # cas d'une sélection en cours
+            self.db.deleteRecordF(self.list_recordF[self.index_selected][0]) # suppression dans la base de donnée
+            self.actualiserListBox(self.fac.getId())
+       
+            
+    def commandLB(self, **kw):
+        """récupère la ligne sélectionnée dans la listBox et l'affiche dans la zone d'encodage
+        """       
+        tup_selection = kw['listBox'].curselection()
+        if tup_selection: # tuple vide si pas de sélection...
+            
+            i_selection = tup_selection[0]
+            # suppression de la couleur de l'ancien item sélectionné
+            if self.index_selected is not None:
+                kw['listBox'].itemconfig(self.index_selected, foreground = self.th.getColorNormal())
+            
+            self.index_selected = i_selection
+            
+            
+            # mise en rouge de l'item sélectionné (conservation si autre sélection)
+            kw['listBox'].itemconfig(i_selection, foreground = self.th.getColorWarning())
+            recordF = self.list_recordF[i_selection] # élement de self.list_recordF : (id, code_id, pu, qte, remise, prix, transfert)
+            
+            # mise des entry en warning
+            #list_wgt = [kw['code'], kw['description'], kw['pu'], kw['qte'], kw['remise'], kw['prix']]
+            #self.th.change_theme(list_wgt, "entryWarning")
+            
+            # copiage des valeurs dans la zone d'encodage
+            kw['code_var'].set(self.db.getArticle(recordF[1])[0])
+            kw['description_var'].set(self.db.getArticle(recordF[1])[1])
+            kw['pu_var'].set(self.formatNumber(recordF[2]))
+            kw['qte_var'].set(str(recordF[3]))
+            kw['remise_var'].set(self.formatNumber(recordF[4]))
+            kw['prix_var'].set(self.formatNumber(recordF[5]))
+            
     def commandService(self, **kw):
         
         # établis les éléments de la listbox de service
@@ -121,9 +319,9 @@ class Clic:
             
     def commandCode(self, **kw):
         
-        # établis les éléments de la listbox des codes
+        # établis les éléments de la listbox des codes débutant par begin
         begin = kw['code_var'].get().strip() # début du nom
-        # récupérer les workers dont le nom commencent par begin
+        # récupérer les codes dont le nom commencent par begin
         liste = self.db.base12(begin)
         
         if len(liste) == 0:
@@ -137,10 +335,11 @@ class Clic:
             # supprimer les éventuels mots dans la box
             kw['listBox2_var'].set([])
             # afficher la description et le PU
-            kw['description_var'].set('description')
-            kw['pu_var'].set('pu')
+            kw['description_var'].set(self.db.getDescription(kw['code_var'].get()))
+            pu = self.formatNumber(str(self.db.getPU(kw['code_var'].get())))
+            kw['pu_var'].set(pu)
             
-            # effacer le prix et la remise
+            # effacer le prix et la remise+++++
             kw['remise_var'].set('')
             kw['prix_var'].set('')
             
@@ -181,8 +380,9 @@ class Clic:
             kw['code_var'].set(listBox2.get(res[0]))
             
             # afficher la description et le PU
-            kw['description_var'].set('description')
-            kw['pu_var'].set('pu')
+            kw['description_var'].set(self.db.getDescription(kw['code_var'].get()))
+            pu = self.formatNumber(str(self.db.getPU(kw['code_var'].get())))
+            kw['pu_var'].set(pu)
             
             # effacer le prix
             kw['remise_var'].set('')
@@ -195,6 +395,42 @@ class Clic:
         # effacer la liste de la box
         kw['listBox2_var'].set([])
         
+    def commandPrix(self, **kw):
+        """calcul éventuel du prix 
+        """
+        qte = kw['qte'].get().strip()
+        pu = kw['pu'].get().strip()
+        remise = kw['remise'].get().strip()
+        
+        if not remise:
+            remise='0'
+        
+        res = True
+        
+      
+        if not pu or not qte:
+            res=False
+        elif not self.isNumber(pu) or not self.isNumber(qte) or not self.isNumber(remise): 
+            res=False
+        elif len(qte)>LENGTH_QTE:
+            res=False
+        
+        if res:
+            # calcul d'un prix
+            prix = int(qte.replace('.','')) * int(pu.replace('.','')) - int(remise.replace('.',''))
+            if prix >=0 and prix <= 99999999:
+                # fixer le prix
+                kw['prix'].set(self.formatNumber(str(prix)))
+                # focus sur le prix
+                kw['entryPrix'].focus_set()
+            else:
+                res=False
+        
+        if not res:
+            # prix annulé
+            kw['prix'].set('')
+            
+                 
     def displayFactures(self, factures):
         # afficher toutes les factures se trouvant dans la database   
         for fact_id, nbr, serve, couleur,x1, y1, tablename in factures:
@@ -217,8 +453,43 @@ class Clic:
         Args:
             tup (tuple): (fact_id, nbr, serve, couleur, tablename))
         """
+       
+        # établissement des 2 premières lignes de la facture, du reçu et du solde
         self.fac.setId(tup, tablename)
+        
+        # actualisation de la listBox
+        
+        fact_id = tup[0] # récupère le id de facture
+        
+        self.actualiserListBox(fact_id)
+        
         self.boss.cadreGestion.corps.display("facturation")
+        
+    def actualiserListBox(self, fact_id):
+        """actualise la listBox pour une facture fact_id après validation, effacement ou lors de l'affichage de la facture, yc solde et reçu
+        """
+        if self.index_selected is not None:  # supprime l'éventuelle ligne sélectionnée dans la box
+            print('suppression de la ligne rouge', self.index_selected, self.th.getColorNormal())
+            self.fac.listBox.itemconfig(self.index_selected, foreground = self.th.getColorNormal())
+        
+        tup = self.fac.listBox.curselection()
+        if tup:
+            self.fac.listBox.selection_clear(tup[0])   # effacement de l'éventuelle sélection
+                
+            
+        self.index_selected = None  # initialisation de la ligne sélectionnée précédemment
+        
+        self.list_recordF = self.db.getList_RecordF(fact_id) # construction de la liste parallèle à listBox_var
+        # élement de self.list_recordF : (id, code_id, pu, qte, remise, prix, transfert)
+        
+        self.fac.setListBox_var(self.list_recordF) # fabrication de la listBox_var
+        
+        self.fac.eraseEncodage() # effacement de la zone d'encodage
+        
+        # re-calcul du total
+        self.fac.setTotal(self.formatNumber(self.db.getTotal(fact_id)))
+            
+        
         
     def getFacture(self, nbr):
         """recupère la facture éventuelle de numéro nbr
@@ -233,7 +504,7 @@ class Clic:
             if not facture:
                 raise E(self.com, "N°FACTURE", "inexistant")
             
-            fact_id, nbr, serve, couleur, x1, y1, tablename = facture
+            fact_id, nbr, serve, couleur, x1, y1, tablename, recu, solde = facture
             
         except E as e: 
             e.affiche()
@@ -245,7 +516,7 @@ class Clic:
             # récupérer la table si la facture n'est pas rouge
             if couleur != "ROUGE":  # cas d'une facture rouge 
                 tablename = self.bac.getTableName(x1, y1)
-                self.fac.setId(facture, tablename) 
+                #self.fac.setId(facture, tablename) 
  
             self.gofacture(facture, tablename)
         

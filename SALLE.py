@@ -168,11 +168,7 @@ class Bac(Canvas):
         # enregistrement de la table dans la db
         if nouvelle_table:
             self.db.base2(largeur, hauteur, couleur, tableName, *box)
-            
-        
-#     def gofacture(self, id):  
-#         print('accéder à la facture', self.gettags(id))
-#         #self.delete(id)
+ 
         
     def selectByClic(self, evt):
         # récupération de la position du clic et de l'id le plus proche
@@ -271,8 +267,7 @@ class Bac(Canvas):
     def release(self, evt):
         self.x1, self.y1 = evt.x, evt.y
         if self.tup_selected:
-            print(self.x1, self.y1)
-            
+           
             # enregistrement des déplacements des objets sélectionnés
             for id in self.tup_selected:
                 if self.gettags(id)[0] == 'table':

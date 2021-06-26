@@ -148,6 +148,26 @@ class Theme:
             
             for wgt in lst:
                 wgt.configure(**self.dic_theme[self.theme][key])
+                
+    # def change_theme(self, list_wgt, key):
+    #     """modifie les caractères d'une liste de widget en les définissant avec la clé key
+
+    #     Args:
+    #         list_wgt (list): liste de widgets à modifier
+    #         key (str): clé du dictionnaire (ex "entry", "table", ...)
+    #     """
+    #     for wgt in list_wgt:
+    #         wgt.configure(**self.dic_theme[self.theme][key])
+    
+    def getColorWarning(self):
+        """obtenir la couleur du caractère de entryWarning
+        """
+        return self.dic_theme[self.theme]["entryWarning"]["fg"]
+    
+    def getColorNormal(self):
+        """obtenir la couleur du caractère de entry
+        """
+        return self.dic_theme[self.theme]["entry"]["fg"]
                     
     def getColorTable(self):    
         """renvoie la liste des couleurs de la table

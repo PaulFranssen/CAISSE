@@ -58,9 +58,9 @@ LENGTH_DESCRIPTION = 30
 LENGTH_PRIX = 10
 LENGTH_NUMERO = 5
 LENGTH_QTE = 5
-LENGTH_PU = 8
-
-
+LENGTH_PU = 10
+F = lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^10}   {x[3]:^5}   {x[4]:^10}   {x[5]:^10}" 
+FOREGROUND_TRANSFERT = "grey25"
 
 
 # écarts

@@ -44,9 +44,6 @@ class Database:
                                     x2 INTEGER,
                                     y2 INTEGER)""")
             
-           
-                                   
-            
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS facture (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     dat TIMESTAMP,
@@ -55,7 +52,10 @@ class Database:
                                     couleur TEXT,
                                     x1 INTEGER,
                                     y1 INTEGER,
-                                    tablename TEXT)""")
+                                    tablename TEXT,
+                                    total INTEGER DEFAULT 0,
+                                    recu INTEGER DEFAULT 0,
+                                    solde INTEGER)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS articles (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -71,8 +71,17 @@ class Database:
                                     FOREIGN KEY(caisse_id) REFERENCES caisse(id),
                                     FOREIGN KEY(tab_id) REFERENCES tables(id),
                                     FOREIGN KEY(work_id) REFERENCES workers(id))""")
-                                   
-                            
+            
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS recordF (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    fact_id INTEGER,
+                                    code_id INTEGER, 
+                                    pu INTEGER,
+                                    qte INTEGER,
+                                    remise INTEGER,
+                                    prix INTEGER,
+                                    transfert INTEGER DEFAULT 0)""")
+            
             self.connexion.commit()
             
             # ouverture automatique d'une caisse existante
@@ -187,7 +196,7 @@ class Database:
         Args:
             nbr (int): nombre de la facture
         """
-        res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1, y1, tablename 
+        res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1, y1, tablename, recu, solde 
                                        FROM facture 
                                        WHERE dat=? 
                                        AND nbr=?
@@ -243,6 +252,98 @@ class Database:
             liste = []
         return liste
     
+    def setRecu(self, fact_id, recu):
+        self.curseur.execute("""UPDATE facture SET recu=? WHERE id=?""",(recu, fact_id))
+        self.connexion.commit()
+        
+    def recordLigne(self, **kw):
+        """enregistre une ligne de zone d'encodage dans la db (table recordF), ajuste le total
+        """
+
+        ## identifiant de la facture
+        fact_id = self.base9(kw['nbr'])[0]
+        total = self.curseur.execute("""SELECT total FROM facture WHERE id=?""",(fact_id,)).fetchone()[0]
+        transfert = kw['transfert']
+        if kw['index_selected'] is None: # cas de l'absence de ligne sélectionnée
+     
+            if not transfert:
+                res = self.curseur.execute("""SELECT id, qte, remise, prix FROM recordF 
+                                        WHERE fact_id=?
+                                        AND code_id=? 
+                                        AND pu=?
+                                        AND transfert=?
+                                        """, (fact_id, kw['code_id'], kw['pu'], 0)).fetchone()
+                if res:
+                    # cas du update
+                    id = res[0]
+                    qte = res[1] + kw['qte']          
+                    remise = res[2] + kw['remise']
+                    prix = res[3] + kw['prix']
+                    
+                    self.curseur.execute("""UPDATE recordF 
+                                            SET qte=?, remise=?, prix=?
+                                            WHERE id=?""", (qte, remise, prix, id))
+                    
+                    total += prix
+                    self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""",(total, fact_id))
+                    self.connexion.commit()
+                
+                else:
+                    # cas du insert
+                    self.curseur.execute("""INSERT INTO recordF (fact_id, code_id, pu, qte, remise, prix) 
+                                        VALUES(?,?,?,?,?,?)""", (fact_id, kw['code_id'], kw['pu'], kw['qte'], kw['remise'], kw['prix']))
+                    total += kw['prix']
+                    self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""",(total, fact_id))
+                    self.connexion.commit()
+            else:
+                # insertion (transfert)
+                self.curseur.execute("""INSERT INTO recordF (fact_id, code_id, pu, qte, remise, prix, transfert) 
+                                        VALUES(?,?,?,?,?,?,?)""", (fact_id, kw['code_id'], kw['pu'], kw['qte'], kw['remise'], kw['prix'], 1))
+                total += kw['prix']
+                self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""",(total, fact_id))
+                self.connexion.commit()
+                
+        else: # cas du remplacement de l'enregistrement
+            id = self.getList_RecordF(fact_id)[kw['index_selected']][0] # récupération de id du record
+            old_prix = self.getList_RecordF(fact_id)[kw['index_selected']][5]
+            # update
+            self.curseur.execute("""UPDATE recordF 
+                                    SET code_id=?, pu=?, qte=?, remise=?, prix=?
+                                    WHERE id=?""", (kw['code_id'], kw['pu'], kw['qte'], kw['remise'], kw['prix'], id))
+            total += kw['prix'] - old_prix
+            self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""",(total, fact_id))
+            self.connexion.commit()
+            
+    def getList_RecordF(self, fact_id):
+        """get la liste des enregistrements correspondant à un id de facture
+        """
+        # récupérer le numéro de facture
+        
+        res = self.curseur.execute("""SELECT id, code_id, pu, qte, remise, prix, transfert FROM recordF 
+                                    WHERE fact_id=?
+                                    """, (fact_id,)).fetchall()
+        return [] if not res else list(res)
+    
+    def code_id(self, code):
+        res = self.curseur.execute("""SELECT id FROM articles WHERE code=?""",(code,)).fetchone()
+        return False if not res else res[0]   
+    
+    def getTotal(self, fact_id):
+        """calcule et renvoie le total d'une facture
+        """
+        # récupération des prix des recordF associés à cette facture
+        res = self.curseur.execute("""SELECT prix from recordF WHERE fact_id=?""",(fact_id,)).fetchall()
+        total = 0 if not res else sum([tup[0] for tup in res])
+        
+        # enregistrer le total dans le record
+        self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""",(total, fact_id))
+        self.connexion.commit()
+        return total
+    
+    def getArticle(self, code_id):
+        res = self.curseur.execute("""SELECT code, descript FROM articles WHERE id=?""",(code_id,)).fetchone()
+        return res 
+    
     def recordInServe(self, tablename, service):
         """enregistre un lien table-service
         """
@@ -265,9 +366,9 @@ class Database:
                              VALUES(?,?,?)""", (caisse_id[0], tab_id[0], work_id[0]))
                 self.connexion.commit()
                 
-            
-        
-       
+    def deleteRecordF(self, recordF_id):
+            self.curseur.execute("""DELETE FROM recordF WHERE id=?""", (recordF_id,))
+            self.connexion.commit()
         
     def isWorker(self, nom):
         """détermine si un nom se trouve dans la base
@@ -294,6 +395,24 @@ class Database:
         """
         res = self.curseur.execute("""SELECT code FROM articles WHERE code=?""",(code,)).fetchone()
         return True if res else False
+    
+    def isDescription(self, code, description):
+        """Vérifie si le code correspond à la description
+        """
+        res = self.curseur.execute("""SELECT id FROM articles WHERE code=? AND descript=?""",(code, description)).fetchone()
+        return True if res else False
+    
+    def getDescription(self, code):
+        """Retourne la description à partir du code
+        """
+        res = self.curseur.execute("""SELECT descript FROM articles WHERE code=?""",(code,)).fetchone()
+        return '' if not res else res[0]
+    
+    def getPU(self, code):
+        """Retourne le pu partir du code
+        """
+        res = self.curseur.execute("""SELECT prix FROM articles WHERE code=?""",(code,)).fetchone()
+        return '' if not res else str(res[0])
     
     def insertArticle(self, code, descript, prix):
         """insère un article

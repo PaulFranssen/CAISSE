@@ -17,17 +17,18 @@ class Fac(Frame):
         self.boss = boss
         self.root = boss.root
         self.clic = self.root.clic
-        # self.db = self.clic.db
         self.width = None
-        self.id = None #numéro de la facture à afficher
+        self.id = None #id de la facture à afficher
+        self.nbr = None #numéro de la facture à afficher
+        self.statut = None
         
         self.height = None
         self.number = 0  # numéro de la facture actuelle (0 donc pas de facture)
         self.color = CONST.VERT
-        self.id_lastFacture = None
+        #self.id_lastFacture = None
         
         # construis une chaine à partir d'un tuple x (éléments de la box)
-        self.f=lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^8}   {x[3]:^5}   {x[4]:^8}   {x[5]:^10}" 
+        # self.f=lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^10}   {x[3]:^5}   {x[4]:^10}   {x[5]:^10}" 
         
         # variables des widgets
         self.entry1_var = StringVar()
@@ -35,9 +36,9 @@ class Fac(Frame):
         self.entry3_var = StringVar()
         self.entry4_var = StringVar()
         self.entry5_var = StringVar()
-        self.entryC_var = StringVar()
-        self.entryD_var = StringVar()
-        self.entryE_var = StringVar()
+        self.entryTotal_var = StringVar()
+        self.entryRecu_var = StringVar()
+        self.entrySolde_var = StringVar()
         self.listBox_var = StringVar()
         self.entryPU_var = StringVar()
         self.entryQTE_var = StringVar()
@@ -45,6 +46,7 @@ class Fac(Frame):
         self.entryRemise_var = StringVar()
         self.entryPrix_var = StringVar()
         self.entryDescription_var = StringVar()
+        self.listBox_var = StringVar()
         self.listBox2_var = StringVar()
         self.listBox3_var = StringVar()
         
@@ -53,18 +55,44 @@ class Fac(Frame):
         
     def liens(self):
         # ajout des liens 
-        self.button1.bind('<1>', lambda _: self.clic.getFacture(self.entry1_var.get())) # clic sur go (facture)
-        # self.listBox1.bind('<<ListboxSelect>>', self.commandListBox)
-        # self.listBox1.bind('<Return>', self.returnListBox) 
+        self.button1.bind('<1>', lambda _: self.clic.getFacture(self.entry1_var.get().strip())) # clic sur go (facture)
+        # self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
+        # self.listBox.bind('<Return>', self.returnListBox) 
+        self.buttonFacturer.bind('<1>', lambda _:self.clic.commandFacturer())
         self.buttonValider.bind('<1>', lambda _: self.clic.commandValider(table=self.entry2_var, 
-                                                                                  service=self.entry3_var))  
+                                                                          service=self.entry3_var,
+                                                                          code=self.entryCode_var,
+                                                                          description=self.entryDescription_var,
+                                                                          statut=self.entry4_var,
+                                                                          pu=self.entryPU_var,
+                                                                          qte=self.entryQTE_var,
+                                                                          remise=self.entryRemise_var,
+                                                                          prix=self.entryPrix_var,
+                                                                          nbr=self.entry1_var,
+                                                                          recu = self.entryRecu_var)) 
+        
+        self.buttonEffacer.bind('<1>', lambda _: self.clic.commandDelete())
+        
         self.entry3.bind('<Return>', lambda _ : self.clic.commandService(entry3_var=self.entry3_var,
                                                                          entry3=self.entry3,
                                                                          listBox3 = self.listBox3,
                                                                          listBox3_var = self.listBox3_var))
         
         
-       
+        self.listBox.bind('<<ListboxSelect>>', lambda _: self.clic.commandLB(listBox=self.listBox,
+                                                                             listBox_var=self.listBox_var,
+                                                                             code_var = self.entryCode_var,
+                                                                             description_var = self.entryDescription_var,
+                                                                             pu_var = self.entryPU_var,
+                                                                             qte_var = self.entryQTE_var,
+                                                                             remise_var = self.entryRemise_var,
+                                                                             prix_var = self.entryPrix_var,
+                                                                             code = self.entryCode,
+                                                                             description = self.entryDescription,
+                                                                             pu = self.entryPU,
+                                                                             qte = self.entryQTE,
+                                                                             remise = self.entryRemise,
+                                                                             prix = self.entryPrix))
         
         
         
@@ -98,6 +126,33 @@ class Fac(Frame):
                                                                          description_var=self.entryDescription_var,
                                                                          prix_var=self.entryPrix_var))
         
+        self.entryQTE.bind('<Return>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+        
+        self.entryRemise.bind('<Return>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+        
+        self.entryPU.bind('<Return>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+    def getId(self):
+        """id de la facture en cours, None si aucune
+        """
+        return self.id 
+    
+    def getN(self):
+        """retourne le numero de facture correspondant à l'id, ne pas confondre avec getNbr qui est pour le entry
+        """
+        return self.nbr
+      
     
     def setDb(self, db):
         self.db = db
@@ -106,16 +161,80 @@ class Fac(Frame):
         """fixe le numéro de la facture, le nom de la table, le statut et le service
 
         Args:
-            tup (tuple): (fact_id, nbr, serve, couleur,x1, y1, tablename)
+            tup (tuple): (fact_id, nbr, serve, couleur,x1, y1, tablename, recu, solde)
             tablename (str) : nom de la table ou ''
         """
         self.fact = tup
+        self.id = self.fact[0]
+        self.nbr = self.fact[1]
+        self.statut = DIC_STATUT[tup[3]]
         self.entry1_var.set(str(tup[1])) # indique le numéro de facture 
         self.entry2_var.set(tablename) # indique la table
-        self.entry4_var.set(DIC_STATUT[tup[3]]) # fixe le statut d'après la couleur
+        self.entry4_var.set(self.statut) # fixe le statut d'après la couleur
         
         # affiche le service correspondant à la table
         self.entry3_var.set(self.db.base10(tablename)) 
+        
+        # affiche le reçu et le solde
+        self.entryRecu_var.set(self.clic.formatNumber(tup[7]))
+        if self.statut == ROUGE: # le solde est uniquement à afficher lorsque la facture est rouge
+            self.entrySolde_var.set(self.clic.formatNumber(tup[8]))
+        else:
+            self.entrySolde_var.set('')
+            
+    def disableWidgetsF(self):
+        self.entryCode.configure(state=DISABLED)
+        self.entryPU.configure(state=DISABLED)
+        self.entryQTE.configure(state=DISABLED)
+        self.entryRemise.configure(state=DISABLED)
+        self.buttonEffacer.configure(state=DISABLED)
+        self.buttonValider.configure(state=DISABLED)
+        self.entry3.configure(state=DISABLED)
+        self.entry5.configure(state=DISABLED)
+        
+    def activateTerminer(self):
+        # activer le button TERMINER
+        self.buttonTerminer.configure(state=NORMAL)
+        
+    def eraseEncodage(self):
+        """efface la zone d'encodage
+        """
+        self.entryCode_var.set('')
+        self.entryDescription_var.set('')
+        self.entryPU_var.set('')
+        self.entryQTE_var.set('')
+        self.entryRemise_var.set('')
+        self.entryPrix_var.set('')
+        
+    def setTotal(self, total):
+        self.entryTotal_var.set(total)
+        
+    def isEncodageVide(self):
+        b = self.entryCode_var.get().strip()
+        b += self.entryDescription_var.get().strip()
+        b += self.entryPU_var.get().strip()
+        b += self.entryQTE_var.get().strip()
+        b += self.entryRemise_var.get().strip()
+        b += self.entryPrix_var.get().strip()
+        return b == ''
+    
+    def setListBox_var(self, list_recordF):
+        """établit la liste dans la box, sur base de la self.list_recordF déjà construite
+        """ 
+              
+        liste=[] # liste qui contiendra les éléments de listBox_var
+        list_transfert = []
+        for i, tup in enumerate(list_recordF):
+            id, code_id, pu, qte, remise, prix, transfert = tup
+            code, description = self.db.getArticle(code_id)
+            chaine = code, description, self.clic.formatNumber(pu), str(qte), self.clic.formatNumber(remise), self.clic.formatNumber(prix)
+            liste.append(F(chaine))
+            if transfert:
+                list_transfert.append(i)
+        for i in list_transfert:
+            self.listBox.itemconfig(i, foreground=FOREGROUND_TRANSFERT)
+                
+        self.listBox_var.set(liste)
         
     def getNbr(self):
         """capte le numéro indiqué dans la case facture
@@ -124,9 +243,10 @@ class Fac(Frame):
             str: numéro de la case N°FACTURE
         """
         return self.entry1_var.get()
+    
         
-    def commandListBox():
-            pass
+    # def commandListBox():
+    #         pass
         
     def returnListBox():
         pass
@@ -149,10 +269,10 @@ class Fac(Frame):
         line1 = Frame(self.frameLeft)
         line2 = Frame(self.frameLeft)
         sepV = Canvas(self.frameLeft, height=0, **KW_CANVAS) #séparateur vertical avant listbox
-        text1 = self.f(("CODE", "DESCRIPTION", "P.U.", "QTE", "REMISE", "PRIX"))
-        text = self.f(("CODE + ENTER", "DESCRIPTION", "P.U.", "QTE", "REMISE", "PRIX"))
+        text1 = F(("CODE", "DESCRIPTION", "P.U.", "QTE", "REMISE", "PRIX"))
+        text = F(("CODE + ENTER", "DESCRIPTION", "P.U.", "QTE", "REMISE", "PRIX"))
         self.label7 = Label(self.frameLeft, text = text1, **KW_LABEL)
-        self.listBox1 = Listbox(self.frameLeft, listvariable=self.listBox_var, width=len(text), height=HEIGHT_LISTBOX, **KW_LISTBOX)
+        self.listBox = Listbox(self.frameLeft, listvariable=self.listBox_var, width=len(text), height=HEIGHT_LISTBOX, **KW_LISTBOX)
         self.label6 = Label(self.frameLeft, text = text, **KW_LABEL)
         line3 = Frame(self.frameLeft)
         self.listBox2 = Listbox(self.frameLeft, listvariable=self.listBox2_var, width=LENGTH_CODE, height=HEIGHT_LISTBOX2, **KW_LISTBOX2)
@@ -198,7 +318,7 @@ class Fac(Frame):
         self.entryRemise = Entry(line3, textvariable=self.entryRemise_var, width = LENGTH_PU, **KW_ENTRY)
         self.entryPrix = Entry(line3, textvariable=self.entryPrix_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
         
-        self.buttonEffacer = Button(line4, text = "EFFACER", width= 14, **KW_BUTTON)
+        self.buttonEffacer = Button(line4, text = "SUPPRIMER", width= 14, **KW_BUTTON)
         self.buttonValider = Button(line4, text = "VALIDER", width= 14, **KW_BUTTON)
        
         # intégration des widgets
@@ -250,7 +370,7 @@ class Fac(Frame):
         line2.pack(pady = 0, fill=X)
         sepV.pack(pady=5)
         self.label7.pack(padx=5) # titre des colonnes
-        self.listBox1.pack()
+        self.listBox.pack()
         self.label6.pack(padx=5)
         line3.pack()
         self.listBox2.pack(side=LEFT, padx=10, pady=5)
@@ -273,21 +393,21 @@ class Fac(Frame):
         self.buttonFacturer = Button(lineA, text = "FACTURER", width= 14, **KW_BUTTON)
         self.buttonModifier = Button(lineB, text = "MODIFIER", width= 14, **KW_BUTTON)
         self.labelC = Label(lineC,text = "TOTAL", **KW_LABEL)
-        self.entryC = Entry(lineC, textvariable=self.entryC_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
+        self.entryTotal = Entry(lineC, textvariable=self.entryTotal_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
         self.labelD = Label(lineD,text = "RECU", **KW_LABEL)
-        self.entryD = Entry(lineD, textvariable=self.entryD_var, width = LENGTH_PRIX,**KW_ENTRY)
+        self.entryRecu = Entry(lineD, textvariable=self.entryRecu_var, width = LENGTH_PRIX,**KW_ENTRY)
         self.labelE = Label(lineE,text = "SOLDE", **KW_LABEL)
-        self.entryE = Entry(lineE, textvariable=self.entryE_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
+        self.entrySolde = Entry(lineE, textvariable=self.entrySolde_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
         self.buttonTerminer = Button(lineF, text = "TERMINER", width= 14, **KW_BUTTON)
         
         # integration des widgets
         self.buttonFacturer.pack(side=RIGHT)
         self.buttonModifier.pack(side=RIGHT)
-        self.entryC.pack(side=RIGHT)
+        self.entryTotal.pack(side=RIGHT)
         self.labelC.pack(side=RIGHT, padx=5)
-        self.entryD.pack(side=RIGHT)
+        self.entryRecu.pack(side=RIGHT)
         self.labelD.pack(side=RIGHT, padx=5)
-        self.entryE.pack(side=RIGHT)
+        self.entrySolde.pack(side=RIGHT)
         self.labelE.pack(side=RIGHT, padx=5)
         self.buttonTerminer.pack(side=RIGHT)
         
@@ -322,7 +442,7 @@ class Fac(Frame):
         self.root.th.add_widget("frame", lineE)
         self.root.th.add_widget("frame", lineF)
         
-        self.root.th.add_widget("listBox", self.listBox1)
+        self.root.th.add_widget("listBox", self.listBox)
         self.root.th.add_widget("listBox2", self.listBox2)
         self.root.th.add_widget("listBox2", self.listBox3)
         
@@ -351,9 +471,9 @@ class Fac(Frame):
         self.root.th.add_widget("entry", self.entry3)
         self.root.th.add_widget("entry", self.entry4)
         self.root.th.add_widget("entry", self.entry5)
-        self.root.th.add_widget("entry", self.entryC)
-        self.root.th.add_widget("entry", self.entryD)
-        self.root.th.add_widget("entry", self.entryE)
+        self.root.th.add_widget("entry", self.entryTotal)
+        self.root.th.add_widget("entry", self.entryRecu)
+        self.root.th.add_widget("entry", self.entrySolde)
         self.root.th.add_widget("entry", self.entryCode)
         self.root.th.add_widget("entry", self.entryDescription)
         self.root.th.add_widget("entry", self.entryPU)
@@ -373,6 +493,4 @@ class Fac(Frame):
         self.root.th.add_widget("canvas", sepV3)
         self.root.th.add_widget("canvas", canvas)
         
-       
-    
     
