@@ -82,6 +82,12 @@ class Database:
                                     prix INTEGER,
                                     transfert INTEGER DEFAULT 0)""")
             
+            self.curseur.execute("""CREATE TABLE IF NOT EXISTS modification (
+                                    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                                    fact_id INTEGER,
+                                    total1 INTEGER, 
+                                    total2 INTEGER)""")
+            
             self.connexion.commit()
             
             # ouverture automatique d'une caisse existante
@@ -256,6 +262,10 @@ class Database:
         self.curseur.execute("""UPDATE facture SET recu=? WHERE id=?""",(recu, fact_id))
         self.connexion.commit()
         
+    def recordTable(self, fact_id, tablename):
+        self.curseur.execute("""UPDATE facture SET tablename=? WHERE id=?""",(tablename, fact_id))
+        self.connexion.commit()
+        
     def recordLigne(self, **kw):
         """enregistre une ligne de zone d'encodage dans la db (table recordF), ajuste le total
         """
@@ -369,6 +379,7 @@ class Database:
     def deleteRecordF(self, recordF_id):
             self.curseur.execute("""DELETE FROM recordF WHERE id=?""", (recordF_id,))
             self.connexion.commit()
+            
         
     def isWorker(self, nom):
         """détermine si un nom se trouve dans la base
@@ -379,6 +390,27 @@ class Database:
         res = self.curseur.execute("""SELECT nom FROM workers WHERE nom=?""",(nom,)).fetchone()
         print(res)
         return True if res else False
+    
+    def recordStatut(self, fact_id, statut):
+        self.curseur.execute("""UPDATE facture SET couleur=? WHERE id=?""", (statut, fact_id))
+        self.connexion.commit()
+        
+    def recordSolde(self, fact_id, solde):
+        self.curseur.execute("""UPDATE facture SET solde=? WHERE id=?""", (solde, fact_id))
+        self.connexion.commit()
+        
+    def recordRecu(self, fact_id, recu):
+        self.curseur.execute("""UPDATE facture SET recu=? WHERE id=?""", (recu, fact_id))
+        self.connexion.commit()
+        
+    
+             
+    def recordModification(self, fact_id, step, total):
+        if step == 0:
+            self.curseur.execute("""INSERT INTO modification (fact_id, total1) VALUES (?,?)""", (fact_id, total))   
+        else: # step=1
+            self.curseur.execute("""UPDATE modification SET total2=? WHERE id=?""", (total, fact_id))
+        self.connexion.commit() 
     
     def insertWorker(self, nom):
         """insère un worker

@@ -39,6 +39,7 @@ class Clic:
         self.list_recordF=[] # liste parallèle à la listBox de la facture
         # self.dat = None # date de la caisse en cours
         self.index_selected = None # index de la ligne sélectionnée dans la box
+        self.clicTerminer = 0 # indique le nombre de clic effectué sur la touche terminer
         
     def setCom(self, com):
         self.com=com
@@ -112,11 +113,17 @@ class Clic:
         
             # affiche les factures dans la salle s'il y en a
             if factures is not None:
+                # affiche les factures existantes
                 self.displayFactures(factures)
                 
                 
     def commandValider(self, **kw):
         # récupérer les variables
+        if kw['b']['state'] == DISABLED:
+            return
+        # annulle les box 2 et 3 (service et article)
+        self.fac.deleteLB23()
+        
         service = kw['service'].get().strip()
         code = kw['code'].get().strip()
         description = kw['description'].get()
@@ -124,14 +131,14 @@ class Clic:
         qte=kw['qte'].get().strip()
         remise=kw['remise'].get().strip()
         prix=kw['prix'].get().strip()
-        statut = kw['statut'].get()
+        #statut = kw['statut'].get()
         nbr = kw['nbr'].get().strip()
         recu = kw['recu'].get().strip()
         
         try:
-            # vérification du statut
-            if statut not in {DIC_STATUT[VERT], DIC_STATUT[VERT2]}:
-                raise E(self.com, 'STATUT ' + statut , 'modification non autorisée')
+            # # vérification du statut
+            # if statut not in {DIC_STATUT[VERT], DIC_STATUT[VERT2]}:
+            #     raise E(self.com, 'STATUT ' + statut , 'modification non autorisée')
             
             # vérification du N°FACTURE
             test = "nbr"
@@ -195,7 +202,7 @@ class Clic:
                 
             else:
                 E(self.com, "", "?").affiche()
-        
+                self.boss.master.after(attenteLongue, self.clearCom)
         else: # ENREGISTREMENT DES ENTRY VALIDES
             
             # association entre une table et le service
@@ -209,7 +216,7 @@ class Clic:
             fact_id = self.fac.getId()
             
             # mise en forme du reçu et enregistrement dans la base
-            recu = 0 if recu == '' else int(recu)          
+            recu = 0 if recu == '' else int(recu.replace('.',''))          
             self.db.setRecu(fact_id, recu)
             kw['recu'].set(self.formatNumber(recu))
             
@@ -230,20 +237,125 @@ class Clic:
             self.com.set('OK')
             self.boss.master.after(attenteLongue, self.clearCom)
     
-    def commandFacturer(self):
-        # si déjà statut "facturé", alors  juste réimprimer le ticket
-        # sinon :
+    def commandFacturer(self, **kw):
+       
+        if kw['b']['state'] == DISABLED:
+            return
         
-        # validation de la facture
+        # annulle les box 2 et 3 (service et article)
+        self.fac.deleteLB23()
         
-        # changement de statut > désactivation (inside changement)
+        service = kw['service'].get().strip()
+        recu = kw['recu'].get().strip()
+        nbr = kw['nbr'].get().strip()
+        statut = self.fac.getStatut()
+        try:
+            test = "nbr"
+            nbr1 = int(nbr)
+            if self.fac.getN() != nbr1: # le numéro de facture a été changé sans GO
+                    #vérifier encore le  getNbr() vide (à faire) cas particulier de départ
+                    raise E(self.com, 'N°FACTURE', 'ne correspond pas à la facture')
+
+            if statut == ORANGE:
+                pass
+               
+            elif statut == VERT or statut == VERT2:
+                test = ""      
+                # vérifier si la facture contient des éléments
+                if not len(kw['listBox_var'].get()):
+                    raise E(self.com, "FACTURER", "facture vide")
+                
+                # vérifier si la zone d'encodage est vide
+                if not self.fac.isEncodageVide():
+                    raise E(self.com, "ZONE D'ENCODAGE", "non-vide")
+                
+                test ="service"
+                # vérification du service
+                if not self.db.isWorker(service):
+                    raise E(self.com, 'SERVICE', 'inexistant')
+                
+                test = "reçu"
+                if not self.isNumber(recu):
+                    raise E(self.com, 'RECU', 'non-conforme')
+                
+        except E as e:
+            e.affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)
         
-        # impression du ticket 
+        except:
+            if test == "nbr":
+                E(self.com, "N°FACTURE", "non-conforme").affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
         
-        # rem : activation désactivation dans le statut (setStatut)
-        pass
-    
-    def commandTerminer(self):    
+            else:
+                E(self.com, "", "?").affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+        
+        else: 
+            
+            if statut == ORANGE:
+                self.imprimerFacture(fact_id = self.fac.getId())
+            
+            elif statut == VERT or statut == VERT2:
+               
+                ## association entre une table et le service
+                ### récupérer la table
+                tablename = kw['table'].get().strip()
+                ### enregistrer le lien table-service (update ou insert) dans la db serve
+                self.db.recordInServe(tablename, service)
+                
+                # récupérer le id facture
+                fact_id = self.fac.getId()
+                
+                # mise en forme du reçu et enregistrement dans la base
+                recu = 0 if recu == '' else int(recu.replace('.',''))          
+                self.db.setRecu(fact_id, recu)
+                kw['recu'].set(self.formatNumber(recu))
+                
+                # modification 
+                if statut == VERT2:
+                    modification=True # modification activée pour l'impression
+                    self.db.recordModification(fact_id = fact_id, step=1, total = self.db.getTotal(fact_id))
+                else:
+                    modification = False
+                    
+                # établissement du nouveau statut
+                self.fac.setStatut(ORANGE)
+                self.bac.setColorFacture(nbr, ORANGE) 
+                
+                # impression facture
+                self.imprimerFacture(fact_id = fact_id, modification=modification)
+            
+    def imprimerFacture(self, fact_id, modification=False):
+        
+        print("IMPRESSION FACTURE, modification :", fact_id, modification)
+        
+    def commandModifier(self, **kw):
+        
+        if kw['b']['state'] == DISABLED:
+            return
+        
+        # annulle les box 2 et 3 (service et article)
+        self.fac.deleteLB23()
+        
+        # récupérer id de la facture
+        fact_id = self.fac.getId()
+        
+        # enregistrer la modification (step=0 en début de modification et step=1 en fin de modification)
+        self.db.recordModification(fact_id =fact_id, step=0, total = self.db.getTotal(fact_id))
+        
+        # ouvrir la facture et la faire passer en modification
+        self.fac.setStatut(VERT2)
+        self.bac.setColorFacture(str(self.fac.getN()), VERT2)
+        
+    def commandTerminer(self, **kw): 
+        
+        if kw['b']['state'] == DISABLED:
+            return   
+        
+        # annulle les box 2 et 3 (service et article)
+        self.fac.deleteLB23()
+        
         # nécessite 2 clics
         # 1er clic : validation du reçu, affichage du solde : si c'est bon passé au second clic
         # 2ème clic : validation du reçu, affichae du reçu : si identique : impression du ticket et passage au ROUGE
@@ -251,7 +363,89 @@ class Clic:
         # si ROUGE : uniquement impression du ticket (bouton devient "TICKET")
         
         # rem : si nouvel affichage de facture, alors réinitialiser le 1er clic à zéro
-        pass
+        
+        # terminer n'est activé que quand je suis en statut orange
+        fact_id = self.fac.getId()
+        recu = kw['recu'].get().strip()
+        nbr = kw['nbr'].get().strip()
+        total = kw['total'].get().strip()
+        
+        try:
+            test = "nbr"
+            # vérification du N° de facture
+            nbr1 = int(nbr)
+            if self.fac.getN() != nbr1: # le numéro de facture a été changé sans GO
+                #vérifier encore le  getNbr() vide (à faire) cas particulier de départ
+                raise E(self.com, 'N°FACTURE', 'ne correspond pas à la facture')
+           
+            if self.fac.getStatut() != ROUGE:    
+                test = "reçu"
+                if not self.isNumber(recu) or recu == '':
+                    raise E(self.com, 'RECU', 'non-conforme')
+                
+        except E as e:
+            e.affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)
+        
+        except:
+            if test == "nbr":
+                E(self.com, "N°FACTURE", "non-conforme").affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+        
+            else:
+                E(self.com, "", "?").affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+        
+        else: # validation effectuée correctement
+            
+            if self.fac.getStatut() == ROUGE: # cas de l'impression ticket direct
+                self.imprimerFactureFinale(fact_id)
+                
+            else: # orange et passage au rouge si second clic
+                
+                # récupération du reçu et du total
+                recu = int(recu.replace('.',''))
+                self.db.recordRecu(fact_id, recu) # enregistrement du recu
+                total = int(total.replace('.', ''))
+                
+                # calcul du solde
+                solde = total - recu
+                
+                # affichage du solde (avec recup de l'ancien)
+                sld = kw['solde'].get().strip().replace('.','')
+                solde_old = 0 if not sld else int(sld)
+                kw['solde'].set(self.formatNumber(solde))
+                
+                # affichage du reçu 
+                kw['recu'].set(self.formatNumber(recu))
+                
+                # adaptation du background du solde
+                if solde > 0:
+                    # modifier le background du entry
+                        kw['entrySolde'].configure(disabledbackground = self.th.getColorWarning(choix = "disabledbackground"))
+                else: 
+                    kw['entrySolde'].configure(disabledbackground = self.th.getColorNormal(choix = "disabledbackground"))
+                
+                
+                if self.clicTerminer == 1: 
+                    self.clicTerminer = 0 # réinitialisation du clicTerminer
+                    
+                    # impression facture si le solde n'a pas changé      
+                    if solde == solde_old: # le solde est resté identique après le premier clic
+                        self.db.recordSolde(fact_id, solde) # fixer le solde dans la facture définitive
+                        self.db.recordTable(fact_id, kw['table'].get().strip())
+                        self.fac.setStatut(ROUGE) # passage au rouge
+                        self.bac.setColorFacture(nbr, ROUGE) # passage de la facture nbr au rouge dans le bac
+                        self.imprimerFactureFinale(fact_id) # imprimée 2x si le solde est positif
+                else:
+                    self.clicTerminer = 1 # second passage à venir
+    
+    def commandRecu(self, **kw):
+        recu = kw['recu'].get().strip()
+        if self.isNumber(recu):
+            kw['recu'].set(self.formatNumber(recu))
+        self.fac.focus_set()
+                    
     def commandDelete(self):
        
         if self.index_selected is None:  # effacer la zone d'encodage
@@ -433,15 +627,18 @@ class Clic:
                  
     def displayFactures(self, factures):
         # afficher toutes les factures se trouvant dans la database   
+        nbr_max = 0 # nombre max de factures
         for fact_id, nbr, serve, couleur,x1, y1, tablename in factures:
-            # uniquement les vertes et les oranges (à faire)
-            self.bac.id_lastFacture = self.bac.create_text(x1, y1,
-                                                    fill=couleur, 
-                                                    font = self.bac.font_facture, 
-                                                    text=str(nbr), 
-                                                    tags=("facture", couleur, str(nbr)))   
-            self.bac.id_lastObject = self.bac.id_lastFacture
-            self.bac.number = max(self.bac.number, nbr)
+            # sauf les rouges
+            if couleur != ROUGE:
+                self.bac.id_lastFacture = self.bac.create_text(x1, y1,
+                                                        fill=couleur, 
+                                                        font = self.bac.font_facture, 
+                                                        text=str(nbr), 
+                                                        tags=("facture", couleur, str(nbr)))   
+                self.bac.id_lastObject = self.bac.id_lastFacture
+            nbr_max = max(nbr, nbr_max)
+        self.bac.setNumber(nbr_max)
             
             
             # liens des factures avec le button-2 > gofacture
@@ -451,9 +648,10 @@ class Clic:
         """affiche la facturation avec les éléments de la facture
 
         Args:
-            tup (tuple): (fact_id, nbr, serve, couleur, tablename))
+            tup (tuple): (fact_id, nbr, serve, couleur, tablename, recu, solde))
         """
-       
+        self.clicTerminer = 0  # initialisation du clicTerminer
+        
         # établissement des 2 premières lignes de la facture, du reçu et du solde
         self.fac.setId(tup, tablename)
         
@@ -468,9 +666,12 @@ class Clic:
     def actualiserListBox(self, fact_id):
         """actualise la listBox pour une facture fact_id après validation, effacement ou lors de l'affichage de la facture, yc solde et reçu
         """
+         # annulle les box 2 et 3 (service et article)
+        self.fac.deleteLB23()
+        
         if self.index_selected is not None:  # supprime l'éventuelle ligne sélectionnée dans la box
-            print('suppression de la ligne rouge', self.index_selected, self.th.getColorNormal())
             self.fac.listBox.itemconfig(self.index_selected, foreground = self.th.getColorNormal())
+            
         
         tup = self.fac.listBox.curselection()
         if tup:
@@ -489,7 +690,6 @@ class Clic:
         # re-calcul du total
         self.fac.setTotal(self.formatNumber(self.db.getTotal(fact_id)))
             
-        
         
     def getFacture(self, nbr):
         """recupère la facture éventuelle de numéro nbr
@@ -519,7 +719,11 @@ class Clic:
                 #self.fac.setId(facture, tablename) 
  
             self.gofacture(facture, tablename)
-        
+    
+    def imprimerFactureFinale(self, fact_id):
+        print('FACTURE FINALE', fact_id)
+        # à imprimer 2x si le solde correspondant à cette facture est positif
+               
     def displayContenu(self, **KW):
         if KW['item'] == "ajouter une table":
             self.clearCom()

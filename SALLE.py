@@ -35,6 +35,26 @@ class Bac(Canvas):
         
     def setDb(self, db):
         self.db = db
+        
+    def setNumber(self, number):
+        """Détermine le Numéro de la dernière facture"""
+        self.number = number
+        
+    def setColorFacture(self, nbr, statut):
+        # récupérer le id correspondand à la facture nbr (str)
+        tup = self.find_withtag("facture")
+        print(tup, "tup contenant nbr", nbr, statut)
+        for id in tup:
+            print('tag0 :', self.gettags(id)[2])
+            if self.gettags(id)[2] == nbr:
+                
+                if statut == ROUGE:
+                    self.delete(id)
+                else:
+                    self.itemconfigure(id, fill = statut)
+                    # aussi à modifier tag[1]
+                break
+        
     
     def setDimensions(self):
         # attributs
@@ -126,7 +146,8 @@ class Bac(Canvas):
                 # ajout de la facture à la base de données 
                 box = self.coords(self.id_lastFacture)[0], self.coords(self.id_lastFacture)[1]
                 self.db.base6(self.number, box)
-        
+                
+   
     def create_table(self,largeur, hauteur, couleur, tableName, box=None):
         """crée une table et son nom en box ou au milieu
 

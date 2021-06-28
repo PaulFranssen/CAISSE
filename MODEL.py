@@ -159,15 +159,15 @@ class Theme:
     #     for wgt in list_wgt:
     #         wgt.configure(**self.dic_theme[self.theme][key])
     
-    def getColorWarning(self):
-        """obtenir la couleur du caractère de entryWarning
+    def getColorWarning(self, choix = "fg"):
+        """obtenir la couleur du caractère de entryWarning (par défaut "fg", ou choix autre caractéristique)
         """
-        return self.dic_theme[self.theme]["entryWarning"]["fg"]
+        return self.dic_theme[self.theme]["entryWarning"][choix]
     
-    def getColorNormal(self):
-        """obtenir la couleur du caractère de entry
+    def getColorNormal(self, choix = "fg"):
+        """obtenir la couleur du caractère de entry (par défaut "fg", ou choix autre caractéristique)
         """
-        return self.dic_theme[self.theme]["entry"]["fg"]
+        return self.dic_theme[self.theme]["entry"][choix]
                     
     def getColorTable(self):    
         """renvoie la liste des couleurs de la table

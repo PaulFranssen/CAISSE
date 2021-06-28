@@ -7,8 +7,7 @@
 import VIEW
 
 if __name__ == '__main__':
-   
-    
+     
     # création du cadre principal et du lien : cadre > database et clic
     pf = VIEW.PF()
     
@@ -19,7 +18,6 @@ if __name__ == '__main__':
     # établissement de la caisse ouverte si il y en a
     pf.clic.setCaisse(newCaisse=False)
 
-
     # boucle principale (attente des événements)
     pf.mainloop()
     
@@ -27,5 +25,6 @@ if __name__ == '__main__':
     
      
      
+    
     
     

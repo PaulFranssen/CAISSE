@@ -58,8 +58,24 @@ class Fac(Frame):
         self.button1.bind('<1>', lambda _: self.clic.getFacture(self.entry1_var.get().strip())) # clic sur go (facture)
         # self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
         # self.listBox.bind('<Return>', self.returnListBox) 
-        self.buttonFacturer.bind('<1>', lambda _:self.clic.commandFacturer())
-        self.buttonValider.bind('<1>', lambda _: self.clic.commandValider(table=self.entry2_var, 
+        self.buttonFacturer.bind('<ButtonRelease-1>', lambda _:self.clic.commandFacturer(table=self.entry2_var, 
+                                                                          service=self.entry3_var,
+                                                                          nbr=self.entry1_var,
+                                                                          recu = self.entryRecu_var,
+                                                                          listBox_var=self.listBox_var,
+                                                                          b=self.buttonFacturer))
+        
+        self.buttonTerminer.bind('<ButtonRelease-1>', lambda _:self.clic.commandTerminer(solde=self.entrySolde_var,
+                                                                          nbr=self.entry1_var,
+                                                                          recu = self.entryRecu_var,
+                                                                          entrySolde=self.entrySolde,
+                                                                          total = self.entryTotal_var,
+                                                                          table = self.entry2_var,
+                                                                          b=self.buttonTerminer))
+        
+        self.buttonModifier.bind('<ButtonRelease-1>', lambda _: self.clic.commandModifier(b=self.buttonModifier))
+        
+        self.buttonValider.bind('<ButtonRelease-1>', lambda _: self.clic.commandValider(table=self.entry2_var, 
                                                                           service=self.entry3_var,
                                                                           code=self.entryCode_var,
                                                                           description=self.entryDescription_var,
@@ -69,9 +85,10 @@ class Fac(Frame):
                                                                           remise=self.entryRemise_var,
                                                                           prix=self.entryPrix_var,
                                                                           nbr=self.entry1_var,
-                                                                          recu = self.entryRecu_var)) 
+                                                                          recu = self.entryRecu_var,
+                                                                          b=self.buttonValider)) 
         
-        self.buttonEffacer.bind('<1>', lambda _: self.clic.commandDelete())
+        self.buttonEffacer.bind('<ButtonRelease-1>', lambda _: self.clic.commandDelete(b=self.buttonEffacer))
         
         self.entry3.bind('<Return>', lambda _ : self.clic.commandService(entry3_var=self.entry3_var,
                                                                          entry3=self.entry3,
@@ -94,11 +111,6 @@ class Fac(Frame):
                                                                              remise = self.entryRemise,
                                                                              prix = self.entryPrix))
         
-        
-        
-        # self.listBox3.bind('<<ListboxSelect>>', lambda _: self.clic.commandLB3(service=self.entry3_var,
-        #                                                                         listBox3 = self.listBox3,
-        #                                                                         listBox3_var = self.listBox3_var))
         self.listBox3.bind('<Return>', lambda _: self.clic.commandLB3(service=self.entry3_var,
                                                                                 listBox3 = self.listBox3,
                                                                                 listBox3_var = self.listBox3_var)) 
@@ -143,6 +155,9 @@ class Fac(Frame):
                                                                          remise=self.entryRemise_var,
                                                                          prix=self.entryPrix_var,
                                                                          entryPrix=self.entryPrix))
+        
+        self.entryRecu.bind('<Return>', lambda _: self.clic.commandRecu(recu=self.entryRecu_var))
+        
     def getId(self):
         """id de la facture en cours, None si aucune
         """
@@ -167,35 +182,125 @@ class Fac(Frame):
         self.fact = tup
         self.id = self.fact[0]
         self.nbr = self.fact[1]
-        self.statut = DIC_STATUT[tup[3]]
+        self.setStatut(tup[3])
         self.entry1_var.set(str(tup[1])) # indique le numéro de facture 
         self.entry2_var.set(tablename) # indique la table
-        self.entry4_var.set(self.statut) # fixe le statut d'après la couleur
         
         # affiche le service correspondant à la table
-        self.entry3_var.set(self.db.base10(tablename)) 
+        self.entry3_var.set(self.db.base10(tablename))
         
         # affiche le reçu et le solde
-        self.entryRecu_var.set(self.clic.formatNumber(tup[7]))
-        if self.statut == ROUGE: # le solde est uniquement à afficher lorsque la facture est rouge
-            self.entrySolde_var.set(self.clic.formatNumber(tup[8]))
-        else:
+        recu, solde = tup[7], tup[8]
+        self.entryRecu_var.set(self.clic.formatNumber(recu))
+        if self.statut == ROUGE: # le solde est uniquement à afficher lorsque la facture est rouge 
+            self.entrySolde_var.set(self.clic.formatNumber(solde))
+            if solde > 0:
+                self.entrySolde.configure(disabledbackground=self.clic.th.getColorWarning(choix = "disabledbackground"))
+            else:
+                self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+        else: # suppression du solde si pas rouge et affichage normal du bg
             self.entrySolde_var.set('')
+            self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+    
+    def getStatut(self):
+        return self.statut
+    
+    def setStatut(self, statut_new):
+        if statut_new == ORANGE:
+            self.entryCode.configure(state=DISABLED)
+            self.entryPU.configure(state=DISABLED)
+            self.entryQTE.configure(state=DISABLED)
+            self.entryRemise.configure(state=DISABLED)
+            self.buttonEffacer.configure(state=DISABLED)
+            self.buttonValider.configure(state=DISABLED)
+            self.entry3.configure(state=DISABLED)
+            self.entry5.configure(state=DISABLED)
+            self.entryRecu.configure(state=NORMAL)
+            self.buttonModifier.configure(state=NORMAL)
+            self.buttonFacturer.configure(state=NORMAL)
+            self.buttonTerminer.configure(state=NORMAL, text = "TERMINER")
+            self.button5.configure(state=DISABLED)
+            self.listBox.configure(state=DISABLED)
+            # modification dans la database
+            self.clic.db.recordStatut(self.id, ORANGE)
+                
+        elif statut_new == VERT:
+            self.entryCode.configure(state=NORMAL)
+            self.entryPU.configure(state=NORMAL)
+            self.entryQTE.configure(state=NORMAL)
+            self.entryRemise.configure(state=NORMAL)
+            self.buttonEffacer.configure(state=NORMAL)
+            self.buttonValider.configure(state=NORMAL)
+            self.entry3.configure(state=NORMAL)
+            self.entry5.configure(state=NORMAL)
+            self.entryRecu.configure(state=NORMAL)
+            self.buttonModifier.configure(state=DISABLED)
+            self.buttonFacturer.configure(state=NORMAL)
+            self.buttonTerminer.configure(state=DISABLED, text = "TERMINER")
+            self.button5.configure(state=NORMAL)
+            self.listBox.configure(state=NORMAL)
+            # modification dans la database
+            self.clic.db.recordStatut(self.id, VERT)
             
-    def disableWidgetsF(self):
-        self.entryCode.configure(state=DISABLED)
-        self.entryPU.configure(state=DISABLED)
-        self.entryQTE.configure(state=DISABLED)
-        self.entryRemise.configure(state=DISABLED)
-        self.buttonEffacer.configure(state=DISABLED)
-        self.buttonValider.configure(state=DISABLED)
-        self.entry3.configure(state=DISABLED)
-        self.entry5.configure(state=DISABLED)
-        
-    def activateTerminer(self):
-        # activer le button TERMINER
-        self.buttonTerminer.configure(state=NORMAL)
-        
+        elif statut_new == VERT2:
+            self.entryCode.configure(state=NORMAL)
+            self.entryPU.configure(state=NORMAL)
+            self.entryQTE.configure(state=NORMAL)
+            self.entryRemise.configure(state=NORMAL)
+            self.buttonEffacer.configure(state=NORMAL)
+            self.buttonValider.configure(state=NORMAL)
+            self.entry3.configure(state=NORMAL)
+            self.entry5.configure(state=NORMAL)
+            self.entryRecu.configure(state=NORMAL)
+            self.buttonModifier.configure(state=DISABLED)
+            self.buttonFacturer.configure(state=NORMAL)
+            self.buttonTerminer.configure(state=DISABLED, text = "TERMINER")
+            self.button5.configure(state=NORMAL)
+            self.listBox.configure(state=NORMAL)
+            # modification dans la database
+            self.clic.db.recordStatut(self.id, VERT2)
+            
+        elif statut_new == ROUGE:
+            self.entryCode.configure(state=DISABLED)
+            self.entryPU.configure(state=DISABLED)
+            self.entryQTE.configure(state=DISABLED)
+            self.entryRemise.configure(state=DISABLED)
+            self.buttonEffacer.configure(state=DISABLED)
+            self.buttonValider.configure(state=DISABLED)
+            self.entry3.configure(state=DISABLED)
+            self.entry5.configure(state=DISABLED)
+            self.entrySolde.configure(state=DISABLED)
+            self.entryRecu.configure(state=DISABLED)
+            self.buttonModifier.configure(state=DISABLED)
+            self.buttonFacturer.configure(state=DISABLED)
+            self.buttonTerminer.configure(state=NORMAL, text = "TICKET")
+            self.button5.configure(state=DISABLED)
+            self.listBox.configure(state=DISABLED)
+            # modification dans la database
+            self.clic.db.recordStatut(self.id, ROUGE)
+         
+        else: # absence de statut
+            self.entryCode.configure(state=DISABLED)
+            self.entryPU.configure(state=DISABLED)
+            self.entryQTE.configure(state=DISABLED)
+            self.entryRemise.configure(state=DISABLED)
+            self.buttonEffacer.configure(state=DISABLED)
+            self.buttonValider.configure(state=DISABLED)
+            self.entry3.configure(state=DISABLED)
+            self.entry5.configure(state=DISABLED)
+            self.entrySolde.configure(state=DISABLED)
+            self.entryRecu.configure(state=DISABLED)
+            self.buttonModifier.configure(state=DISABLED)
+            self.buttonFacturer.configure(state=DISABLED)
+            self.buttonTerminer.configure(state=DISABLED, text = "TERMINER")
+            self.button5.configure(state=DISABLED)
+            self.listBox.configure(state=DISABLED)
+            # modification dans la database
+            self.clic.db.recordStatut(self.id, '')
+                                                                                                                                                                                                                    
+        self.statut = statut_new
+        self.entry4_var.set(DIC_STATUT[self.statut])
+            
     def eraseEncodage(self):
         """efface la zone d'encodage
         """
@@ -220,8 +325,7 @@ class Fac(Frame):
     
     def setListBox_var(self, list_recordF):
         """établit la liste dans la box, sur base de la self.list_recordF déjà construite
-        """ 
-              
+        """       
         liste=[] # liste qui contiendra les éléments de listBox_var
         list_transfert = []
         for i, tup in enumerate(list_recordF):
@@ -235,6 +339,12 @@ class Fac(Frame):
             self.listBox.itemconfig(i, foreground=FOREGROUND_TRANSFERT)
                 
         self.listBox_var.set(liste)
+        
+    def deleteLB23(self):
+        """efface la list des box 2 et 3
+        """
+        self.listBox2_var.set([])
+        self.listBox2_var.set([])
         
     def getNbr(self):
         """capte le numéro indiqué dans la case facture
@@ -391,14 +501,14 @@ class Fac(Frame):
         
         # composants des line
         self.buttonFacturer = Button(lineA, text = "FACTURER", width= 14, **KW_BUTTON)
-        self.buttonModifier = Button(lineB, text = "MODIFIER", width= 14, **KW_BUTTON)
+        self.buttonModifier = Button(lineB, text = "MODIFIER", state = DISABLED, width= 14, **KW_BUTTON)
         self.labelC = Label(lineC,text = "TOTAL", **KW_LABEL)
         self.entryTotal = Entry(lineC, textvariable=self.entryTotal_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
         self.labelD = Label(lineD,text = "RECU", **KW_LABEL)
         self.entryRecu = Entry(lineD, textvariable=self.entryRecu_var, width = LENGTH_PRIX,**KW_ENTRY)
         self.labelE = Label(lineE,text = "SOLDE", **KW_LABEL)
         self.entrySolde = Entry(lineE, textvariable=self.entrySolde_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
-        self.buttonTerminer = Button(lineF, text = "TERMINER", width= 14, **KW_BUTTON)
+        self.buttonTerminer = Button(lineF, text = "TERMINER", state = DISABLED, width= 14, **KW_BUTTON)
         
         # integration des widgets
         self.buttonFacturer.pack(side=RIGHT)
