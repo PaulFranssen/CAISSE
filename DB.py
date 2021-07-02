@@ -273,6 +273,7 @@ class Database:
         self.curseur.execute("""DELETE FROM serve""")
         self.connexion.commit()
         
+        
     # def deleteSolde(self, fact_id):
     #     self.curseur.execute("""UPDATE facture SET solde=? WHERE id=?""",(0, fact_id))
     #     self.connexion.commit()
@@ -375,8 +376,20 @@ class Database:
                                     WHERE id=?""", (code, descript, int(prix.replace('.','')), code_id))
         self.connexion.commit()
     
+    def deleteServe2(self, work_id):
+        self.curseur.execute("""DELETE FROM serve WHERE work_id=?""",(work_id,))
+        self.connexion.commit()
+        
+    def deleteWorker(self, work_id):
+        self.curseur.execute("""DELETE FROM workers WHERE id=?""",(work_id,))
+        self.connexion.commit()
+    
     def getStatut(self):
         res = self.curseur.execute("""SELECT statut FROM caisse WHERE dat=?""", (self.dat,)).fetchone()
+        return None if not res else res[0]
+    
+    def getWorker_id(self, nom):
+        res = self.curseur.execute("""SELECT id FROM workers WHERE nom=?""", (nom,)).fetchone()
         return None if not res else res[0]
     
     def clotureCaisse(self):

@@ -916,6 +916,32 @@ class Clic:
                 contenu.entry2_var.set('')
                 contenu.focus_set()
                 
+        if contenu.item == "supprimer un employé":
+            # vérifier si l'employé existe
+            try:
+                code = contenu.entry2_var.get().strip()
+                work_id = self.db.getWorker_id(code)
+                if not work_id:
+                    raise E(self.com, "NOM", "inexistant")         
+                 
+                
+            except E as e:
+                e.affiche() 
+                self.boss.master.after(attenteLongue, self.clearCom)
+            
+            else:   
+                # supprimer dans serve
+                self.db.deleteServe2(work_id)
+                
+                # supprimer dans la db
+                self.db.deleteWorker(work_id)
+                
+                self.com.set('OK')
+                self.boss.master.after(attenteLongue, self.clearCom)
+                # effacer le entry
+                contenu.entry2_var.set('')
+                contenu.focus_set()
+                
         if contenu.item == "modifier un article":
             
             code, description, prix = contenu.entryA_var.get().strip(), contenu.entryB_var.get().strip(), contenu.entryC_var.get().strip()

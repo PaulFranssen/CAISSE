@@ -457,7 +457,14 @@ class Contenu(Frame):
             
         elif self.item == 'supprimer un article':
             cadre.pack(side=LEFT)
-            label2.configure(text="code de l'article".upper())
+            label2.configure(text="code".upper())
+            label2.pack(**PAD_LABEL)
+            self.entry2.configure(width = LENGTH_CODE)
+            self.entry2.pack(**PAD_ENTRY)
+            
+        elif self.item == 'supprimer un employé':
+            cadre.pack(side=LEFT)
+            label2.configure(text="nom".upper())
             label2.pack(**PAD_LABEL)
             self.entry2.configure(width = LENGTH_CODE)
             self.entry2.pack(**PAD_ENTRY)
@@ -466,7 +473,7 @@ class Contenu(Frame):
             
             cadre.pack(side=LEFT)
             
-            label2.configure(text="nom de la table".upper())
+            label2.configure(text="nom".upper())
             label2.pack(**PAD_LABEL)
             self.entry2.configure(width = LENGTH_TABLE)
             self.entry2.pack(**PAD_ENTRY)
@@ -589,19 +596,19 @@ class Contenu(Frame):
             self.entry5.configure(width = LENGTH_DATE)
             self.entry5.pack()
             
-        elif self.item == "éditer les employés":
-            cadreBox.pack(side=LEFT)           
-            canvas.pack(side=LEFT)
-            cadre.pack(side=LEFT)
+        # elif self.item == "éditer les employés":
+        #     cadreBox.pack(side=LEFT)           
+        #     canvas.pack(side=LEFT)
+        #     cadre.pack(side=LEFT)
             
-            label1.configure(text = "sélection + enter".upper())
-            label1.pack(**PAD_LABEL)   
-            self.listBox.configure(width=LENGTH_CODE)
-            self.listBox.pack(**PAD_LISTBOX)
-            label2.configure(text="nom de l'employé".upper())
-            label2.pack(**PAD_LABEL)
-            self.entry2.configure(width = LENGTH_CODE)
-            self.entry2.pack()
+        #     label1.configure(text = "sélection + enter".upper())
+        #     label1.pack(**PAD_LABEL)   
+        #     self.listBox.configure(width=LENGTH_CODE)
+        #     self.listBox.pack(**PAD_LISTBOX)
+        #     label2.configure(text="nom de l'employé".upper())
+        #     label2.pack(**PAD_LABEL)
+        #     self.entry2.configure(width = LENGTH_CODE)
+        #     self.entry2.pack()
             
         elif self.item == "ajouter un article":
             
@@ -810,6 +817,10 @@ class Bouton(Frame):
             self.bouton1.pack(**PAD_BUTTON)
             
         if self.item == "supprimer un article":
+            self.bouton1.configure(text="supprimer".upper())
+            self.bouton1.pack(**PAD_BUTTON)
+            
+        if self.item == "supprimer un employé":
             self.bouton1.configure(text="supprimer".upper())
             self.bouton1.pack(**PAD_BUTTON)
         
