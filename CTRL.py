@@ -89,33 +89,38 @@ class Clic:
         if type(chain) == int :
             chain=str(chain)
         ch = chain.replace('.','').strip()
-        if len(ch) > 6:
-            ch = ch[:-6] + '.' + ch[-6:-3] + '.' + ch[-3:]
-        elif len(ch) > 3:
-            ch = ch[:-3] + '.' + ch[-3:]
+        
+        if ch[0] == "-":
+            # cas négatif
+            print(ch)
+            if len(ch) > 7:
+                    ch = ch[:-6] + '.' + ch[-6:-3] + '.' + ch[-3:]
+            elif len(ch) > 4:
+                ch = ch[:-3] + '.' + ch[-3:]    
+        else:
+            if len(ch) > 6:
+                ch = ch[:-6] + '.' + ch[-6:-3] + '.' + ch[-3:]
+            elif len(ch) > 3:
+                ch = ch[:-3] + '.' + ch[-3:]
         return ch
     
     
-    def setCaisse(self, newCaisse):  
+    def setCaisse(self):  
         """établit la caisse et affiche les éventuelles factures dans la salle
 
-        Args:
-            newCaisse (bool): True s'il sagit d'un démarrage 
         """
+        # déterminer si une caisse est ouverte
+        dat = self.db.base0()
         
-        # fixe éventuellement la nouvelle caisse
-        dat = self.db.base1(newCaisse)
-        
-        if dat is not None and not newCaisse: # cas d'une caisse relancée (non cloturée)
-            
-            # récupérer les factures non rouge d'une caisse ouverte
-            factures = self.db.base7bis()
+        if dat :
+            self.db.setDat(dat)
+            # récupérer les factures d'une caisse ouverte
+            factures = self.db.base7()
         
             # affiche les factures dans la salle s'il y en a
-            if factures is not None:
-                # affiche les factures existantes
+            if factures :
+                # affiche les factures non rouges existantes
                 self.displayFactures(factures)
-                
                 
     def commandValider(self, **kw):
         # récupérer les variables
@@ -338,6 +343,9 @@ class Clic:
         # annulle les box 2 et 3 (service et article)
         self.fac.deleteLB23()
         
+        # effacer l'éventuel solde
+        self.fac.deleteSolde()
+        
         # récupérer id de la facture
         fact_id = self.fac.getId()
         
@@ -348,6 +356,7 @@ class Clic:
         self.fac.setStatut(VERT2)
         self.bac.setColorFacture(str(self.fac.getN()), VERT2)
         
+        
     def commandTerminer(self, **kw): 
         
         if kw['b']['state'] == DISABLED:
@@ -355,14 +364,6 @@ class Clic:
         
         # annulle les box 2 et 3 (service et article)
         self.fac.deleteLB23()
-        
-        # nécessite 2 clics
-        # 1er clic : validation du reçu, affichage du solde : si c'est bon passé au second clic
-        # 2ème clic : validation du reçu, affichae du reçu : si identique : impression du ticket et passage au ROUGE
-        # si code négatif, 2 tickets : 1 ticket client et 1 ticket à garder
-        # si ROUGE : uniquement impression du ticket (bouton devient "TICKET")
-        
-        # rem : si nouvel affichage de facture, alors réinitialiser le 1er clic à zéro
         
         # terminer n'est activé que quand je suis en statut orange
         fact_id = self.fac.getId()
@@ -424,7 +425,7 @@ class Clic:
                     # modifier le background du entry
                         kw['entrySolde'].configure(disabledbackground = self.th.getColorWarning(choix = "disabledbackground"))
                 else: 
-                    kw['entrySolde'].configure(disabledbackground = self.th.getColorNormal(choix = "disabledbackground"))
+                    kw['entrySolde'].configure(disabledbackground = self.th.getColorOK(choix = "disabledbackground"))
                 
                 
                 if self.clicTerminer == 1: 
@@ -434,8 +435,12 @@ class Clic:
                     if solde == solde_old: # le solde est resté identique après le premier clic
                         self.db.recordSolde(fact_id, solde) # fixer le solde dans la facture définitive
                         self.db.recordTable(fact_id, kw['table'].get().strip())
-                        self.fac.setStatut(ROUGE) # passage au rouge
+                        self.db.recordService(fact_id, kw['service'].get().strip())
+                        
+                        self.fac.setStatut(ROUGE) # passage au rouge 
                         self.bac.setColorFacture(nbr, ROUGE) # passage de la facture nbr au rouge dans le bac
+                        # suppression des associations table-serveur
+                        kw['entrySolde'].configure(disabledbackground = self.th.getColorNormal(choix = "disabledbackground"))
                         self.imprimerFactureFinale(fact_id) # imprimée 2x si le solde est positif
                 else:
                     self.clicTerminer = 1 # second passage à venir
@@ -638,6 +643,7 @@ class Clic:
                                                         tags=("facture", couleur, str(nbr)))   
                 self.bac.id_lastObject = self.bac.id_lastFacture
             nbr_max = max(nbr, nbr_max)
+            print(nbr, nbr_max, "MAX")
         self.bac.setNumber(nbr_max)
             
             
@@ -725,6 +731,33 @@ class Clic:
         # à imprimer 2x si le solde correspondant à cette facture est positif
                
     def displayContenu(self, **KW):
+        
+        if KW['item'] == "synthèse":
+            
+            self.clearCom()
+            
+            h = self.db.getOuverture()
+            h = "-" if not h else str(h)[:19]
+            KW['entry2_var'].set(h)
+            a = self.db.getEnCours()
+            KW['entryA_var'].set(self.formatNumber(a))
+            b = self.db.getEnFacture()
+            KW['entryB_var'].set(self.formatNumber(b))
+            c = self.db.getEnCloture()
+            KW['entryC_var'].set(self.formatNumber(c))
+            KW['entryD_var'].set(self.formatNumber(a+b+c))
+            
+            d = self.db.getImpaye()
+            d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
+            KW['entry3_var'].set(d)
+            e = self.db.getModification()
+            e = "-" if e==(0,0) else f"{self.formatNumber(e[0])} #{e[1]}"
+            KW['entry4_var'].set(e)
+            g = self.db.getFermeture()
+            g = "-" if not g else str(g)[:19]
+            KW['entry5_var'].set(g)
+            
+            
         if KW['item'] == "ajouter une table":
             self.clearCom()
             KW['entry2_var'].set('')
@@ -768,6 +801,21 @@ class Clic:
             KW['listBox_var'].set(employe_lst)
             KW['listBox'].selection_set(0)
             KW['listBox'].focus_set()
+            
+        elif KW['item'] == "modifier un article":
+            self.clearCom()
+            KW['entry2_var'].set('')
+            KW['entryA_var'].set('')
+            KW['entryB_var'].set('')
+            KW['entryC_var'].set('')
+            
+            KW['entry2'].configure(state=NORMAL)
+            KW['entryA'].configure(state=DISABLED)
+            KW['entryB'].configure(state=DISABLED)
+            KW['entryC'].configure(state=DISABLED)
+            
+            KW['entry2'].focus_set()
+            
           
         elif KW['item'] == "ajouter un article":
             self.clearCom()
@@ -775,28 +823,195 @@ class Clic:
             KW['entry3_var'].set('')
             KW['entry4_var'].set('')
             KW['entry2'].focus_set()  
+    
+    def displayButton(self, **kw):
+        
+        if kw['item'] == "ticket de cloture":
+            self.clearCom()
             
-    def commandBouton(self, contenu, numeroBouton):
+            if self.db.getDat() is None:
+                # désactiver le bouton1
+                kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
+                self.com.set("Pas de caisse sélectionnée")
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            elif self.db.getStatut():
+                # vérifier qu'il ny a que des factures cloturées
+                if not self.db.base7bis():# détermine le nombre de factures non cloturées
+                    kw['bouton1'].configure(state = NORMAL, text = "CLOTURER")
+                else:
+                    kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
+                    self.com.set("Il reste des factures non cloturées")
+                    self.boss.master.after(attenteLongue, self.clearCom)
+            else:
+                 kw['bouton1'].configure(state = NORMAL, text = "TICKET")
+        
+        
+        elif kw['item'] == "nouvelle caisse":
+            self.clearCom()
+            
+            if self.db.getDat() is None:
+                    # désactiver le bouton1
+                kw['bouton1'].configure(state = NORMAL)
+                
+                
+            else:
+                kw['bouton1'].configure(state = DISABLED)
+                self.com.set('Caisse déjà ouverte')
+                self.boss.master.after(attenteLongue, self.clearCom)
+
+                   
+    def commandBouton(self, **kw):
+        numeroBouton = kw['numeroBouton']
+        contenu = kw['contenu']
+        bouton1 = kw['bouton1']
+        
+        if contenu.item == "supprimer une table":
+            try:
+                # vérifier si la table existe
+                tableName = contenu.entry2_var.get().strip()
+                table_id = self.db.isTable(tableName)
+                if not table_id:
+                    raise E(self.com, "NOM", "inexistant")   
+                    
+            except E as e:
+                e.affiche() 
+                self.boss.master.after(attenteLongue, self.clearCom)
+            
+            else:    
+                # supprimer son enregistrement du serve db
+                self.db.deleteRecordServe(table_id)
+                # supprimer dans le bac (avec son assicié tablename)
+                self.bac.deleteTable(tableName)
+                # supprimer dans la database
+                self.db.deleteTable(tableName)
+                self.com.set('OK')
+                self.boss.master.after(attenteLongue, self.clearCom)
+                # effacer le entry
+                contenu.entry2_var.set('')
+                contenu.focus_set()
+            
+        if contenu.item == "supprimer un article":
+            # vérifier si l'article existe
+            try:
+                code = contenu.entry2_var.get().strip()
+                code_id = self.db.getCode_id(code)
+                if not code_id:
+                    raise E(self.com, "CODE", "inexistant")         
+                # vérifier qu'il n'apparaisse pas dans un record de facture
+                if self.db.isRecorded(code_id):
+                    raise E(self.com, "CODE", "présent dans une facture")  
+                
+            except E as e:
+                e.affiche() 
+                self.boss.master.after(attenteLongue, self.clearCom)
+            
+            else:   
+                # supprimer dans la db
+                self.db.deleteArticle(code_id)
+                
+                self.com.set('OK')
+                self.boss.master.after(attenteLongue, self.clearCom)
+                # effacer le entry
+                contenu.entry2_var.set('')
+                contenu.focus_set()
+                
+        if contenu.item == "modifier un article":
+            
+            code, description, prix = contenu.entryA_var.get().strip(), contenu.entryB_var.get().strip(), contenu.entryC_var.get().strip()
+            codeM = contenu.entry2_var.get().strip()
+            test = ''
+            try:
+                 # le code de l'article doit être unique (utiliser la base de données)               
+                if self.db.isCode(code) and code != codeM:
+                    raise E(self.com, 'CODE', 'déjà utilisé')  
+                if not code :
+                    raise E(self.com, 'CODE', 'saisie vide')
+                if len(code) > LENGTH_CODE:
+                    raise E(self.com, 'CODE', f"trop long (max {LENGTH_CODE} caractères)")
+                
+                if not description :
+                    raise E(self.com, 'DESCRIPTION', 'saisie vide')
+                if len(description) > LENGTH_DESCRIPTION:
+                    raise E(self.com, 'DESCRIPTION', f"trop long (max {LENGTH_DESCRIPTION} caractères)")
+                
+                if not prix :
+                        raise E(self.com, 'PRIX', 'saisie vide')
+                if len(prix) > LENGTH_PRIX:
+                    raise E(self.com, 'PRIX', f"trop long (max {LENGTH_PRIX} caractères)")
+                
+                if not self.isNumber(prix) or prix == '':
+                    raise E(self.com, 'PRIX', f"prix non-conforme")
+                
+            except E as e:
+                e.affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+                
+            except:
+                E(self.com, "", '?').affiche()
+                self.boss.master.after(attenteLongue, self.clearCom)
+            else:    
+                
+                # modifier l'aricle
+                code_id = self.db.getCode_id(codeM)
+               
+                self.db.updateArticle(code, description, prix.replace('.',''), code_id)
+                
+                self.com.set('OK')
+                self.boss.master.after(attenteCourte, self.clearCom)
+                contenu.entryA_var.set('')
+                contenu.entryB_var.set('')
+                contenu.entryC_var.set('')
+                contenu.entry2_var.set('')
+                contenu.entryA.configure(state=DISABLED)
+                contenu.entryB.configure(state=DISABLED)
+                contenu.entryC.configure(state=DISABLED)
+                contenu.entry2.configure(state=NORMAL)
+                
+                contenu.entry2.focus_set()
+                
         if contenu.item == "nouvelle caisse":
             # désactiver la touche dans le menu
-            self.boss.cadreGestion.entete.desactive_item('nouvelle caisse')
-            
+            #self.boss.cadreGestion.entete.desactive_item('nouvelle caisse')
             # ajouter un id dans la base de données, avec le statut 1 (ouvert)
-            self.db.base1(newCaisse = True)
+            # self.db.base1(newCaisse = True)
             
-            # récupérer le id de la caisse en cours
-            
-            
-            # afficher la salle
-            self.boss.cadreGestion.corps.display("afficher la salle")
-            
-        # if contenu.item == "facturation":
+            # récupérer la dat de la caisse en cours ou none
+            if bouton1["state"] == DISABLED:
+                 return  
+            else:
+                self.db.base1() # ouverture de caisse
+                factures = self.db.base7()
+                # affiche les factures dans la salle s'il y en a
+                if factures:
+                    # affiche les factures existantes
+                    self.displayFactures(factures)
+                
+                self.com.set('OK')
+                bouton1.configure(state=DISABLED)
+                self.boss.master.after(attenteLongue, self.clearCom) 
+                 
+                # afficher la salle
+                # self.boss.cadreGestion.corps.display("afficher la salle")
+                return
+        
+        if contenu.item == "ticket de cloture":
            
-           
-        #     pass
-        #     # afficher la salle
-        #     # self.boss.cadreGestion.corps.display("afficher la salle")
+            if bouton1['state'] == DISABLED:
+                return
             
+            elif bouton1['text'] == "TICKET":
+                print('IMPRIMER TICKET FINAL')
+                      
+            else:
+                # cloture effective de la caisse
+                print('IMPRIMER TICKET FINAL')
+                self.com.set('OK')
+                self.boss.master.after(attenteLongue, self.clearCom)
+                self.db.clotureCaisse()
+                self.db.deleteServe()  # suppression de l'association service-table
+                bouton1.configure(text="TICKET")
+                
         if contenu.item == "ajouter un employé":
             nom = contenu.entry2_var.get().strip()
             
@@ -804,13 +1019,13 @@ class Clic:
             try:
                 # le nom de l'employé doit être unique
                 if self.db.isWorker(nom):
-                    raise E(self.com, 'NOM', 'nom déjà utilisé')  
+                    raise E(self.com, 'NOM', 'déjà utilisé')  
                 
                 if not nom :
                     raise E(self.com, 'NOM', 'pas de nom')
                 
                 if len(nom) > LENGTH_WORKER:
-                    raise E(self.com, 'NOM', f"nom trop long (max {LENGTH_WORKER} caractères)")
+                    raise E(self.com, 'NOM', f"trop long (max {LENGTH_WORKER} caractères)")
             
             except E as e:
                 e.affiche()
@@ -829,18 +1044,20 @@ class Clic:
                 
             
         if contenu.item == "ajouter une table":
-            nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip(), contenu.spinBox_var.get()
+            nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entryA_var.get().strip(), contenu.entryB_var.get().strip(), contenu.spinBox_var.get()
             table_names = self.bac.find_withtag(nom)
             
             test =''
             try:
                  # le nom de la table doit être unique (utiliser la base de données ou le canvas)               
                 if table_names:
-                    raise E(self.com, 'NOM', 'nom déjà utilisé')  
+                    raise E(self.com, 'NOM', 'déjà utilisé')  
                 if not nom :
-                    raise E(self.com, 'NOM', 'pas de nom')
+                    raise E(self.com, 'NOM', 'pas de nom saisi')
                 if len(nom) > LENGTH_TABLE:
-                    raise E(self.com, 'NOM', f"nom trop long (max {LENGTH_TABLE} caractères)")
+                    raise E(self.com, 'NOM', f"trop long (max {LENGTH_TABLE} caractères)")
+                if nom.isnumeric():
+                    raise E(self.com, 'NOM', f"format numérique non accepté")
                 
                 # largeur et hauteur conforme (voir les constantes)
                 test = "LARGEUR"
@@ -863,7 +1080,7 @@ class Clic:
                 couleur = self.boss.th.getColorT(couleur)
                 
                 # supprimer le message
-                self.com.set('  ')
+                self.clearCom()
                 
                 # ajouter une table au milieu du canvas
                 tup = self.bac.create_table(largeur=float(largeur),
@@ -875,31 +1092,30 @@ class Clic:
                 self.boss.cadreGestion.corps.display("afficher la salle")
                 
         if contenu.item == "ajouter un article":
-            code, description, prix = contenu.entry2_var.get().strip(), contenu.entry3_var.get().strip(), contenu.entry4_var.get().strip()
+            code, description, prix = contenu.entryA_var.get().strip(), contenu.entryB_var.get().strip(), contenu.entryC_var.get().strip()
             
-            test =''
+            test = ''
             try:
                  # le code de l'article doit être unique (utiliser la base de données)               
                 if self.db.isCode(code):
-                    raise E(self.com, 'CODE', 'code déjà utilisé')  
+                    raise E(self.com, 'CODE', 'déjà utilisé')  
                 if not code :
-                    raise E(self.com, 'CODE', 'pas de code')
+                    raise E(self.com, 'CODE', 'saisie vide')
                 if len(code) > LENGTH_CODE:
-                    raise E(self.com, 'CODE', f"code trop long (max {LENGTH_CODE} caractères)")
+                    raise E(self.com, 'CODE', f"trop long (max {LENGTH_CODE} caractères)")
                 
                 if not description :
-                    raise E(self.com, 'DESCRIPTION', 'pas de description')
+                    raise E(self.com, 'DESCRIPTION', 'saisie vide')
                 if len(description) > LENGTH_DESCRIPTION:
                     raise E(self.com, 'DESCRIPTION', f"trop long (max {LENGTH_DESCRIPTION} caractères)")
                 
                 if not prix :
-                        raise E(self.com, 'PRIX', 'pas de prix')
+                        raise E(self.com, 'PRIX', 'saisie vide')
                 if len(prix) > LENGTH_PRIX:
                     raise E(self.com, 'PRIX', f"trop long (max {LENGTH_PRIX} caractères)")
                 
-                prix = float(prix)
-                if prix < 0:
-                    raise E(self.com, 'PRIX', f"prix négatif")
+                if not self.isNumber(prix) or prix == '':
+                    raise E(self.com, 'PRIX', f"prix non-conforme")
                 
             except E as e:
                 e.affiche()
@@ -911,14 +1127,15 @@ class Clic:
             else:    
                 
                 # ajouter l'aricle
-                self.db.insertArticle(code, description, prix)
+                self.db.insertArticle(code, description, prix.replace('.',''))
                 
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom)
+                contenu.entryA_var.set('')
+                contenu.entryB_var.set('')
+                contenu.entryC_var.set('')
+                contenu.focus_set()
                 
-        
-                # basculer l'affichage dans la table
-                # self.boss.cadreGestion.corps.display("afficher la salle")
             
     def commandListBox(self, **KW):    
         
@@ -933,10 +1150,44 @@ class Clic:
             KW['entry2_var'].set('')
             KW['entry2']['state'] = DISABLED
             
-    def commandSpinBox(self, **KW):
-        pass
+    def commandEntry2(self, **kw):
+        if kw['item'] == "modifier un article":
+            # vérifier qu'il y a un code valide dans entry2_var
+            try:
+                code = kw['entry2_var'].get().strip()
+                code_id = self.db.getCode_id(code)
+                if not code_id:
+                    raise E(self.com, "CODE", 'inexistant')
                 
+            except E as e:
+                e.affiche()
+                self.boss.master.after(attenteCourte, self.clearCom)
+                
+            else:
+                kw['entry2'].configure(state=DISABLED)
+                kw['entryA'].configure(state=NORMAL)            
+                kw['entryB'].configure(state=NORMAL)   
+                kw['entryC'].configure(state=NORMAL) 
+                
+                cod, des, prx = self.db.getArticle2(code_id)
+                
+                kw['entryA_var'].set(cod)            
+                kw['entryB_var'].set(des)  
+                kw['entryC_var'].set(self.formatNumber(prx))
+                 
+                kw['entryA'].focus_set()
+                kw['entryA'].icursor(END)
+                 
+    def commandSpinBox(self, **kw):
+        
+        if kw['item'] == "ajouter une table":
+            # récupérer la sélection et modifier la couleur de bg
+            colorKey = kw['spinBox_var'].get().strip()
+            color = self.th.getColorT(colorKey)
+            kw['spinBox'].configure(readonlybackground=color)
+               
     def returnListBox(self, **KW):
+        
         if KW['item'] == "éditer les employés":
             index = int(KW['listBox'].curselection()[0])
             employe = KW['listBox'].get(index).strip()

@@ -164,6 +164,11 @@ class Theme:
         """
         return self.dic_theme[self.theme]["entryWarning"][choix]
     
+    def getColorOK(self, choix = "fg"):
+        """obtenir la couleur du caractère de entryOK (par défaut "fg", ou choix autre caractéristique)
+        """
+        return self.dic_theme[self.theme]["entryOK"][choix]
+    
     def getColorNormal(self, choix = "fg"):
         """obtenir la couleur du caractère de entry (par défaut "fg", ou choix autre caractéristique)
         """
@@ -175,7 +180,7 @@ class Theme:
         return list(self.dic_theme[self.theme]['table'].keys())
                
     def getColorT(self, couleur):
-        """renvoie le code couleur pour une couleur de table
+        """renvoie le code couleur pour une couleur(clé) de table
         """
         return  self.dic_theme[self.theme]['table'][couleur]
              

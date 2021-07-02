@@ -3,19 +3,25 @@
     [
         "nouvelle caisse",  
         "separator",
-        "état",
-        "cloturer"
+        "synthèse",
+        "ticket de cloture"
     ],
+    
 
     "données" : 
     [   "ajouter une table",
+        "supprimer une table",
         "separator",
         "ajouter un article",
+        "supprimer un article",
+        "modifier un article",
         "separator",
         "ajouter un employé",
+        "supprimer un employé",
         "separator",
-        "éditer les articles",
-        "éditer les employés"
+        "ajouter un article",
+        "supprimer un article",
+        "modifier un article"
     ],
 
     "thème" : 
@@ -27,5 +33,6 @@
     [   "afficher la salle",
         "separator",
         "facturation"   
-    ]
+    ],
+    "first":["first"]
 }

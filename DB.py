@@ -7,7 +7,7 @@ class Database:
     def __init__(self):
         self.connexion = None
         self.curseur = None
-        self.dat = None  # date de la caisse en cours
+        self.dat = None  # date de la caisse en cours (none alors pas de caisse sélectionnée)
         self.ouvrir()
               
     def ouvrir(self):
@@ -27,6 +27,7 @@ class Database:
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS caisse (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     dat TIMESTAMP,
+                                    fermeture INTEGER,
                                     statut INTEGER DEFAULT 1)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS workers (
@@ -86,7 +87,8 @@ class Database:
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     fact_id INTEGER,
                                     total1 INTEGER, 
-                                    total2 INTEGER)""")
+                                    total2 INTEGER,
+                                    fin INTEGER DEFAULT 0)""")
             
             self.connexion.commit()
             
@@ -98,25 +100,18 @@ class Database:
     #     """
     #     return self.curseur.execute("""SELECT id WHERE statut=1""").fetchone()
     
-    
+    def base0(self):
+        """détermine la date de la caisse ouverte ou None"""
+        res = self.curseur.execute("""SELECT dat FROM caisse WHERE statut=?""",(1,)).fetchone()
+        return None if not res else res[0]
 
-    def base1(self, newCaisse):
+    def base1(self):
 
-        """établit la nouvelle caisse si pas de caisse avec un statut = 1
-        
-            newCaisse (bool) True si on crée une nouvelle caisse
-        """
-        res = self.curseur.execute("""SELECT dat FROM caisse WHERE statut=1""").fetchone()
-        if res:
-            print('caisse active', res)
-            self.dat = res[0]
-            print(self.dat)
-            
-        elif newCaisse:
-            self.dat = datetime.datetime.now()
-            self.curseur.execute("""INSERT INTO caisse(dat) VALUES(?)""", (self.dat,))
-            print("ajout d'une caisse")
-            self.connexion.commit()
+        """établit une nouvelle caisse 
+        """ 
+        self.dat = datetime.datetime.now()
+        self.curseur.execute("""INSERT INTO caisse(dat, statut) VALUES(?,?)""", (self.dat, 1))
+        self.connexion.commit()
             
         return self.dat
             
@@ -175,7 +170,7 @@ class Database:
         """
         res = None
         if self.dat is not None:
-            res = self.curseur.execute("""SELECT nbr, serve, couleur, x1,y1, tablename FROM facture WHERE dat=?""",(self.dat,)).fetchall()
+            res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1,y1, tablename FROM facture WHERE dat=?""",(self.dat,)).fetchall()
         return res
     
     def base7bis(self):
@@ -187,7 +182,8 @@ class Database:
                                        FROM facture 
                                        WHERE dat=? 
                                        AND couleur<>?
-                                       """,(self.dat,"rouge")).fetchall()
+                                       """,(self.dat,ROUGE)).fetchall()
+        
         return res
     
     def base8(self, nbr, box):
@@ -257,7 +253,10 @@ class Database:
         else:
             liste = []
         return liste
-    
+    def deleteTable(self, tableName):
+        self.curseur.execute("""DELETE FROM tables WHERE tableName=?""",(tableName,))
+        self.connexion.commit()
+        
     def setRecu(self, fact_id, recu):
         self.curseur.execute("""UPDATE facture SET recu=? WHERE id=?""",(recu, fact_id))
         self.connexion.commit()
@@ -265,6 +264,18 @@ class Database:
     def recordTable(self, fact_id, tablename):
         self.curseur.execute("""UPDATE facture SET tablename=? WHERE id=?""",(tablename, fact_id))
         self.connexion.commit()
+        
+    def recordService(self, fact_id, service):
+        self.curseur.execute("""UPDATE facture SET serve=? WHERE id=?""",(service, fact_id))
+        self.connexion.commit()
+        
+    def deleteServe(self):
+        self.curseur.execute("""DELETE FROM serve""")
+        self.connexion.commit()
+        
+    # def deleteSolde(self, fact_id):
+    #     self.curseur.execute("""UPDATE facture SET solde=? WHERE id=?""",(0, fact_id))
+    #     self.connexion.commit()
         
     def recordLigne(self, **kw):
         """enregistre une ligne de zone d'encodage dans la db (table recordF), ajuste le total
@@ -354,6 +365,32 @@ class Database:
         res = self.curseur.execute("""SELECT code, descript FROM articles WHERE id=?""",(code_id,)).fetchone()
         return res 
     
+    def getArticle2(self, code_id):
+        res = self.curseur.execute("""SELECT code, descript, prix FROM articles WHERE id=?""",(code_id,)).fetchone()
+        return res 
+    
+    def updateArticle(self, code, descript, prix, code_id):
+        self.curseur.execute("""UPDATE articles
+                                    SET code=?, descript=?, prix=?
+                                    WHERE id=?""", (code, descript, int(prix.replace('.','')), code_id))
+        self.connexion.commit()
+    
+    def getStatut(self):
+        res = self.curseur.execute("""SELECT statut FROM caisse WHERE dat=?""", (self.dat,)).fetchone()
+        return None if not res else res[0]
+    
+    def clotureCaisse(self):
+        fermeture = datetime.datetime.now()
+        self.curseur.execute("""UPDATE caisse SET fermeture=?, statut=? WHERE dat=?""",(fermeture, 0, self.dat))
+        self.connexion.commit()
+        self.dat = None
+        
+    def getDat(self):
+        return self.dat
+    
+    def setDat(self, dat):
+        self.dat = dat
+    
     def recordInServe(self, tablename, service):
         """enregistre un lien table-service
         """
@@ -388,8 +425,15 @@ class Database:
             nom (str): nom d'un employé
         """
         res = self.curseur.execute("""SELECT nom FROM workers WHERE nom=?""",(nom,)).fetchone()
-        print(res)
         return True if res else False
+    
+    def isTable(self, nom):
+        res = self.curseur.execute("""SELECT id FROM tables WHERE tableName=?""",(nom,)).fetchone()
+        return False if not res else res[0]
+    
+    def deleteRecordServe(self, tab_id):
+        self.curseur.execute("""DELETE FROM serve WHERE tab_id=?""",(tab_id,))
+        self.connexion.commit()
     
     def recordStatut(self, fact_id, statut):
         self.curseur.execute("""UPDATE facture SET couleur=? WHERE id=?""", (statut, fact_id))
@@ -409,7 +453,7 @@ class Database:
         if step == 0:
             self.curseur.execute("""INSERT INTO modification (fact_id, total1) VALUES (?,?)""", (fact_id, total))   
         else: # step=1
-            self.curseur.execute("""UPDATE modification SET total2=? WHERE id=?""", (total, fact_id))
+            self.curseur.execute("""UPDATE modification SET total2=?, fin=? WHERE id=?""", (total, 1, fact_id))
         self.connexion.commit() 
     
     def insertWorker(self, nom):
@@ -425,9 +469,23 @@ class Database:
     def isCode(self, code):
         """détermine si le code se trouve dans la base
         """
-        res = self.curseur.execute("""SELECT code FROM articles WHERE code=?""",(code,)).fetchone()
+        res = self.curseur.execute("""SELECT id FROM articles WHERE code=?""",(code,)).fetchone()
         return True if res else False
     
+    def getCode_id(self,code):
+        res = self.curseur.execute("""SELECT id FROM articles WHERE code=?""",(code,)).fetchone()
+        if res:
+            return res[0]
+    def isRecorded(self, code_id):
+        """détermine si un code apparait dans une facture
+        """
+        res = self.curseur.execute("""SELECT id FROM recordF WHERE code_id=?""",(code_id,)).fetchone()
+        return False if not res else res
+    
+    def deleteArticle(self, code_id):
+        self.curseur.execute("""DELETE FROM articles WHERE id=?""",(code_id,))
+        self.connexion.commit()
+     
     def isDescription(self, code, description):
         """Vérifie si le code correspond à la description
         """
@@ -453,10 +511,35 @@ class Database:
                              VALUES(?,?,?)""", (code, descript, prix))
         self.connexion.commit()
             
-            
+    def getOuverture(self):
+        return self.dat
+    
+    def getEnCours(self):
+        res = self.curseur.execute("""SELECT total FROM facture WHERE dat=? AND (couleur=? OR couleur=?)""",(self.dat, VERT, VERT2)).fetchall()     
+        return 0 if res is None else sum([tup[0] for tup in res])
+    
+    def getEnFacture(self):
+        res = self.curseur.execute("""SELECT total FROM facture WHERE dat=? AND couleur=?""",(self.dat, ORANGE)).fetchall()     
+        return 0 if res is None else sum([tup[0] for tup in res])
         
+    def getEnCloture(self):
+        res = self.curseur.execute("""SELECT total FROM facture WHERE dat=? AND couleur=?""",(self.dat, ROUGE)).fetchall()     
+        return 0 if res is None else sum([tup[0] for tup in res])
+    
+    def getImpaye(self):
+        res = self.curseur.execute("""SELECT solde FROM facture WHERE dat=? AND couleur=? AND solde>?""",(self.dat, ROUGE,0)).fetchall()     
+        return (0, 0) if res is None else (sum([tup[0] for tup in res]), len(res))
+      
+    def getModification(self):
+        res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND facture.dat=? AND modification.fin=?""", (self.dat, 1)).fetchall()
+        print(res, "getM",  (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res)))
+        return (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res))
+    
+    def getFermeture(self):
+        res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
+        return res if res is None else res[0]
         
-        
+    
  
  # def fermer(self):
     #     pass

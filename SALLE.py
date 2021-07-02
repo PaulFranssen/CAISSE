@@ -182,6 +182,7 @@ class Bac(Canvas):
         self.addtag_withtag(str(id_tableName), id_table) # ajout de l'identifiant du nom comme tag de la table
         self.addtag_withtag(tableName, id_table)         # ajout du nom de la table comme tag de la table
         self.addtag_withtag(str(id_table), id_tableName) # ajout de l'identifiant de la table comme tag du nom de la table
+        self.addtag_withtag(tableName, id_tableName)
                             
         self.lower(id_table)
         self.lower(id_tableName)
@@ -190,7 +191,12 @@ class Bac(Canvas):
         if nouvelle_table:
             self.db.base2(largeur, hauteur, couleur, tableName, *box)
  
-        
+    def deleteTable(self, tableName):
+        # suppression de la table
+        tup = self.find_withtag(tableName)
+        for id in tup: # ne devrait contenir que 2 id
+            self.delete(id)
+           
     def selectByClic(self, evt):
         # récupération de la position du clic et de l'id le plus proche
         self.x1, self.y1 = evt.x, evt.y

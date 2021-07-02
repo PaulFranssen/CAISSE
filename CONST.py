@@ -12,14 +12,16 @@ DATABASE_FILE = "bdd.db"
 # tailles des caractères
 TAILLE_TITRE = 25
 TAILLE_CAR = 18
+SEPARATEUR_HORIZONTAL = 36
+SEPARATEUR_DANS_CADRE = 20
 TAILLE_SMALL_CAR = 12
 TAILLE_MENU = 16
 
 # constantes dans la salle
-ROUGE = "#FF0000"
-VERT = "#FFFFFF"
-VERT2="#FFAAAA"
-ORANGE = "#FF7E00"
+ROUGE = "#FF0000"  # encaissé
+VERT = "#FFFFFF"   # en cours
+VERT2="grey80"      # modifiée
+ORANGE = "#FF000D" #39FF14"  # facturé            #FD6C9E" #FF0001"
 
 DIC_STATUT = {VERT:"OUVERT", VERT2:"MODIFIE", ORANGE : "FACTURE", ROUGE:"CLOTURE"}
 
@@ -37,7 +39,7 @@ CURSOR = "crosshair"
 LENGTH_TABLE = 12  # longeur maximale d'un nom de table
 LENGTH_WORKER = 15  # longeur maximale d'un worker
 LENGTH_DIMENSION_TABLE = 4
-LENGTH_ETAT_FACTURE = 9
+
 # PIXEL=36   # correspond à 1 unité
 # LARGEUR_MAX = 30  # nbr d'unités maximum en largeur pour une table
 # HAUTEUR_MAX = 20
@@ -59,6 +61,8 @@ LENGTH_PRIX = 10
 LENGTH_NUMERO = 5
 LENGTH_QTE = 5
 LENGTH_PU = 10
+LENGTH_ETAT_FACTURE = 9
+LENGTH_DATE = 21
 F = lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^10}   {x[3]:^5}   {x[4]:^10}   {x[5]:^10}" 
 FOREGROUND_TRANSFERT = "grey25"
 
@@ -70,6 +74,8 @@ ECART_DOUBLE_CADRE_VERTICAL = 100
 POLICE = "Consolas"
 POLICE_SALLE = "Bahnschrift Condensed" #"Helvetica"
 POLICE_TABLE = "Bahnschrift" #"Helvetica"
+POLICE_FIRST = "consolas" # écran d'acceuil
+TAILLE_FIRST = 110
 
 
 

@@ -16,15 +16,8 @@ if __name__ == '__main__':
     pf.display("cadreGestion")
     
     # établissement de la caisse ouverte si il y en a
-    pf.clic.setCaisse(newCaisse=False)
+    pf.clic.setCaisse()
 
     # boucle principale (attente des événements)
     pf.mainloop()
-    
-   
-    
-     
-     
-    
-    
     

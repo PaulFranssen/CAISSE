@@ -69,6 +69,7 @@ class Fac(Frame):
                                                                           nbr=self.entry1_var,
                                                                           recu = self.entryRecu_var,
                                                                           entrySolde=self.entrySolde,
+                                                                          service = self.entry3_var,
                                                                           total = self.entryTotal_var,
                                                                           table = self.entry2_var,
                                                                           b=self.buttonTerminer))
@@ -88,7 +89,7 @@ class Fac(Frame):
                                                                           recu = self.entryRecu_var,
                                                                           b=self.buttonValider)) 
         
-        self.buttonEffacer.bind('<ButtonRelease-1>', lambda _: self.clic.commandDelete(b=self.buttonEffacer))
+        self.buttonEffacer.bind('<ButtonRelease-1>', lambda _: self.clic.commandDelete())
         
         self.entry3.bind('<Return>', lambda _ : self.clic.commandService(entry3_var=self.entry3_var,
                                                                          entry3=self.entry3,
@@ -194,13 +195,16 @@ class Fac(Frame):
         self.entryRecu_var.set(self.clic.formatNumber(recu))
         if self.statut == ROUGE: # le solde est uniquement à afficher lorsque la facture est rouge 
             self.entrySolde_var.set(self.clic.formatNumber(solde))
-            if solde > 0:
-                self.entrySolde.configure(disabledbackground=self.clic.th.getColorWarning(choix = "disabledbackground"))
-            else:
-                self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+            self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+        
         else: # suppression du solde si pas rouge et affichage normal du bg
             self.entrySolde_var.set('')
             self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+    
+    def deleteSolde(self):
+        self.entrySolde_var.set('')
+        self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
+        #self.clic.db.deleteSolde()
     
     def getStatut(self):
         return self.statut

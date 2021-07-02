@@ -15,13 +15,15 @@
         "button":{"bg": "grey30","fg":"grey15", "activebackground":"tomato", "activeforeground":"grey15", "highlightcolor": "tomato", "disabledforeground":"grey25"},
         "entry":{"bg":"grey60","fg":"black","disabledbackground":"grey40","disabledforeground":"black","insertbackground":"black","selectbackground":"tomato","selectforeground":"black"},
         "entryWarning":{"disabledbackground":"tomato","fg":"tomato"},
+        "entryOK":{"disabledbackground":"green","fg":"green"},
         "canvas":{"bg":"grey15"},
         "bac":{"bg" :"grey15"},
-        "spinBox":{"fg": "grey15", "readonlybackground": "grey60","buttonbackground": "grey60"},
-        "table":{"purple1": "purple1", "purple2": "purple2" ,"purple3":"purple3", "purple4":"purple4", 
-            "wheat1": "wheat1", "wheat2": "wheat2" ,"wheat3":"wheat3", "wheat4":"wheat4",
-            "SlateBlue1": "SlateBlue1", "SlateBlue2": "SlateBlue2" ,"SlateBlue3":"SlateBlue3", "SlateBlue4":"SlateBlue4",
-            "misty rose4":"misty rose4"}
+        "spinBox":{"fg": "black","buttonbackground": "grey60"},
+        
+        "table":{"violet": "purple3", "brun":"saddlebrown", "vert":"darkgreen",
+              "beige":"wheat4","gris":"grey40", "grisFoncé": "grey25", "rouge":"#7b0323",
+            "bleu":"#014182", "jaune": "#A88905", "magenta":"#960056","turquoise":"darkcyan"
+            }
     },
 
     "green":
