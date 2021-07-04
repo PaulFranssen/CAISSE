@@ -100,6 +100,12 @@ class Database:
     #     """
     #     return self.curseur.execute("""SELECT id WHERE statut=1""").fetchone()
     
+    def getCaisse(self, mem):
+        
+        res = self.curseur.execute("""SELECT id, dat, fermeture FROM caisse where statut=? AND dat>?""", (0, datetime.datetime.now()-datetime.timedelta(days=mem))).fetchall()
+        return [] if not res else list(res)
+        
+    
     def base0(self):
         """détermine la date de la caisse ouverte ou None"""
         res = self.curseur.execute("""SELECT dat FROM caisse WHERE statut=?""",(1,)).fetchone()
@@ -174,7 +180,7 @@ class Database:
         return res
     
     def base7bis(self):
-        """récupère la liste des factures vertes et oranges d'une caisse ouverte"
+        """récupère la liste des factures non rouge d'une caisse ouverte"
         """
         res = None
         if self.dat is not None:
@@ -183,9 +189,29 @@ class Database:
                                        WHERE dat=? 
                                        AND couleur<>?
                                        """,(self.dat,ROUGE)).fetchall()
-        
         return res
     
+    def base7ter(self, nbr):
+        """récupère la facture EN COURS(VERT) ou MODIFIE(VERT2) d'une caisse ouverte de numéro NBR"
+        """
+        res = None
+        if self.dat is not None:
+            res = self.curseur.execute("""SELECT id, total 
+                                       FROM facture 
+                                       WHERE dat=? 
+                                       AND nbr=?
+                                       AND (couleur=? OR couleur=?)
+                                       """,(self.dat, nbr, VERT, VERT2)).fetchone()
+        return res
+    
+    def updateTotal(self, fact_id, total):
+        self.curseur.execute("""UPDATE facture SET total=? WHERE id=?""", (total, fact_id))
+        self.connexion.commit()
+        
+    def deleteFacture(self, fact_id):
+        self.curseur.execute("""DELETE FROM facture WHERE id=?""",(fact_id,))
+        self.connexion.commit()
+        
     def base8(self, nbr, box):
         """update d'une facture suite à un déplacement
         """
@@ -346,9 +372,18 @@ class Database:
                                     """, (fact_id,)).fetchall()
         return [] if not res else list(res)
     
+    def insertRecordF(self, fact_id, code_id, pu, qte, remise, prix, transfert):
+        self.curseur.execute("""INSERT INTO recordF (fact_id, code_id, pu, qte, remise, prix, transfert) 
+                                VALUES(?,?,?,?,?,?,?)""", (fact_id, code_id, pu, qte, remise, prix, transfert))
+        self.connexion.commit()
+        
     def code_id(self, code):
         res = self.curseur.execute("""SELECT id FROM articles WHERE code=?""",(code,)).fetchone()
         return False if not res else res[0]   
+    
+    def getT(self, fact_id):
+        res = self.curseur.execute("""SELECT total from facture WHERE id=?""", (fact_id,)).fetchone()
+        return 0 if not res else res[0]
     
     def getTotal(self, fact_id):
         """calcule et renvoie le total d'une facture
@@ -427,8 +462,8 @@ class Database:
                 self.connexion.commit()
                 
     def deleteRecordF(self, recordF_id):
-            self.curseur.execute("""DELETE FROM recordF WHERE id=?""", (recordF_id,))
-            self.connexion.commit()
+        self.curseur.execute("""DELETE FROM recordF WHERE id=?""", (recordF_id,))
+        self.connexion.commit()
             
         
     def isWorker(self, nom):
@@ -551,6 +586,8 @@ class Database:
     def getFermeture(self):
         res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
         return res if res is None else res[0]
+    
+    
         
     
  

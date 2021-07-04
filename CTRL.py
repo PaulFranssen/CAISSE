@@ -620,8 +620,9 @@ class Clic:
             if prix >=0 and prix <= 99999999:
                 # fixer le prix
                 kw['prix'].set(self.formatNumber(str(prix)))
-                # focus sur le prix
-                kw['entryPrix'].focus_set()
+                # focus sur le buttonValider
+                self.fac.focusValider()
+                #kw['entryPrix'].focus_set()
             else:
                 res=False
         
@@ -643,7 +644,7 @@ class Clic:
                                                         tags=("facture", couleur, str(nbr)))   
                 self.bac.id_lastObject = self.bac.id_lastFacture
             nbr_max = max(nbr, nbr_max)
-            print(nbr, nbr_max, "MAX")
+            
         self.bac.setNumber(nbr_max)
             
             
@@ -674,6 +675,9 @@ class Clic:
         """
          # annulle les box 2 et 3 (service et article)
         self.fac.deleteLB23()
+        
+        # supprime le transfert
+        self.fac.deleteTransfert()
         
         if self.index_selected is not None:  # supprime l'éventuelle ligne sélectionnée dans la box
             self.fac.listBox.itemconfig(self.index_selected, foreground = self.th.getColorNormal())
@@ -732,6 +736,17 @@ class Clic:
                
     def displayContenu(self, **KW):
         
+        if KW['item'] == "sélectionner":
+            # récupérer les valeurs dans les caisses
+            liste_caisse = self.db.getCaisse(MEMORY)
+            if liste_caisse:
+                liste_var = [str(elem[1])[:19] for elem in liste_caisse] 
+            else:
+                liste_var = []
+            
+            # fixer la liste dans le spinBox
+            KW['spinBox'].configure(values = liste_var)
+            
         if KW['item'] == "synthèse":
             
             self.clearCom()
@@ -826,7 +841,7 @@ class Clic:
     
     def displayButton(self, **kw):
         
-        if kw['item'] == "ticket de cloture":
+        if kw['item'] == "cloture & ticket":
             self.clearCom()
             
             if self.db.getDat() is None:
@@ -859,12 +874,30 @@ class Clic:
                 kw['bouton1'].configure(state = DISABLED)
                 self.com.set('Caisse déjà ouverte')
                 self.boss.master.after(attenteLongue, self.clearCom)
+                
+        elif kw['item'] == "sélectionner":
+            
+            if self.db.getDat() is None:
+                kw['bouton1'].configure(state = NORMAL)        
+            else: 
+                kw['bouton1'].configure(state = DISABLED)
+                self.com.set('Inaccessible car une caisse est ouverte')
+                self.boss.master.after(attenteLongue*2, self.clearCom)
+            
 
                    
     def commandBouton(self, **kw):
         numeroBouton = kw['numeroBouton']
         contenu = kw['contenu']
         bouton1 = kw['bouton1']
+        
+        if contenu.item == "sélectionner":
+            if kw['bouton1']['state'] == DISABLED:
+                return
+            
+        # considérer la sélection et fixer la date
+        date = contenu.spinBox_var.get()
+              
         
         if contenu.item == "supprimer une table":
             try:
@@ -1021,7 +1054,7 @@ class Clic:
                 # self.boss.cadreGestion.corps.display("afficher la salle")
                 return
         
-        if contenu.item == "ticket de cloture":
+        if contenu.item == "cloture & ticket":
            
             if bouton1['state'] == DISABLED:
                 return
@@ -1212,14 +1245,97 @@ class Clic:
             color = self.th.getColorT(colorKey)
             kw['spinBox'].configure(readonlybackground=color)
                
-    def returnListBox(self, **KW):
+    # def returnListBox(self, **KW):
         
-        if KW['item'] == "éditer les employés":
-            index = int(KW['listBox'].curselection()[0])
-            employe = KW['listBox'].get(index).strip()
-            KW['entry2']['state'] = NORMAL
-            KW['entry2_var'].set(employe)
-            KW['entry2'].focus_set()
-             
+    #     if KW['item'] == "éditer les employés":
+    #         index = int(KW['listBox'].curselection()[0])
+    #         employe = KW['listBox'].get(index).strip()
+    #         KW['entry2']['state'] = NORMAL
+    #         KW['entry2_var'].set(employe)
+    #         KW['entry2'].focus_set()
+    
+    def goTransfert(self, **kw):
+        
+        if kw['bouton5']['state'] == DISABLED:
+            return
+        
+        destination = kw['destination'].get().strip()
+        nbr = kw['nbr'].get().strip()
+        listBox_var = kw['listBox_var']
+        
+        test =''
+        # test de la validité du transfert demandé de nbr > destination
+        try:
+            test = 'nbr'
+            nbr1 = int(nbr)
+            
+            factN = self.fac.getN()
+            fact_id = self.fac.getId()
+            
+            if factN != nbr1:
+                raise E(self.com, "N°FACTURE", "ne correspond pas à la facture")
+            # facture verte2 (modifié) ne peut pas être transféré (état DISABLED)
+            # la destination doit correspondre à entier
+            test = 'transfert'
+            nbr2 = int(destination)
+            
+            # la destination doit être différente de nbr
+            if nbr2 == factN:
+                 raise E(self.com, 'TRANSFERT', 'non-conforme')
+                 
+            # la destination doit être une facture au statut VERT ou VERT2 self.dat
+            facture_destination = self.db.base7ter(nbr2)
+           
+            if not facture_destination:
+                 raise E(self.com, 'TRANSFERT', 'non-conforme')
+                
+            # la listBox doit être non-vide
+            if not listBox_var.get():
+                 raise E(self.com, "FACTURE", "rien à transférer")
+               
+            # la zone d'encodage doit être vide
+            if not self.fac.isEncodageVide():
+                raise E(self.com, "ZONE D'ENCODAGE", "non-vide")
+  
+        except E as e:
+            e.affiche()
+            self.boss.master.after(attenteLongue, self.clearCom)
+            
+        except:
+            if test == 'nbr':
+                E(self.com, 'N°FACTURE', 'non-conforme').affiche()
+            
+            elif test == 'transfert':
+                E(self.com, 'TRANSFERT', 'numéro non-conforme').affiche()
+            
+            else:
+                E(self.com, '', '?').affiche()
+            
+            self.boss.master.after(attenteLongue, self.clearCom)
+            
+        else:
+            # effacer la entry de transfert
+            kw['destination'].set('')
+            
+            id_destination, total_destination = facture_destination
+            
+            # ajouter les éléments de la box à l'autre facture (recalculer son total)
+            total_origine = self.db.getT(fact_id) # total de la facture de départ
+            for recordF_id, code_id, pu, qte, remise, prix, transfert in self.db.getList_RecordF(fact_id):
+                self.db.insertRecordF(id_destination, code_id, pu, qte, remise, prix, transfert = 1) # ajoute un record F dans la facture de destination
+                self.db.deleteRecordF(recordF_id) # supprime l'enregistrement dans la facture d'origine
+            
+            self.bac.deleteFacture(nbr) # efface la facture origine dans la salle
+            self.db.deleteFacture(fact_id) # supprimer la facture d'origine dans la base
+            self.db.updateTotal(id_destination, total_origine + total_destination) # update le total de destination
+            
+            facture = self.db.base9(nbr2) # facture de destination
+            fact_id, nbr, serve, couleur, x1, y1, tablename, recu, solde = facture
+            if couleur != "ROUGE":  # cas d'une facture rouge (ici ne devrait pas arriver)
+                tablename = self.bac.getTableName(x1, y1)
+            self.gofacture(facture, tablename)
+            self.fac.focusEntryCode()
+            # self.com.set('Transfert effectué')
+            # self.boss.master.after(attenteLongue, self.clearCom())
    
        

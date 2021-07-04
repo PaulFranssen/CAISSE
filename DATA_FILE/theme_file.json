@@ -18,8 +18,9 @@
         "entryOK":{"disabledbackground":"green","fg":"green"},
         "canvas":{"bg":"grey15"},
         "bac":{"bg" :"grey15"},
-        "spinBox":{"fg": "black","buttonbackground": "grey60"},
-        
+        "spinBox":{"fg": "black","buttonbackground": "grey60", "readonlybackground":"grey40"},
+        "listBoxTransfert":{"fg": "grey15"},
+        "listBoxNormal":{"fg": "black"},
         "table":{"violet": "purple3", "brun":"saddlebrown", "vert":"darkgreen",
               "beige":"wheat4","gris":"grey40", "grisFoncé": "grey25", "rouge":"#7b0323",
             "bleu":"#014182", "jaune": "#A88905", "magenta":"#960056","turquoise":"darkcyan"

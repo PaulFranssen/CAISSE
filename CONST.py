@@ -18,12 +18,12 @@ TAILLE_SMALL_CAR = 12
 TAILLE_MENU = 16
 
 # constantes dans la salle
-ROUGE = "#FF0000"  # encaissé
+ROUGE = "#FF0000"  # encaisséE
 VERT = "#FFFFFF"   # en cours
 VERT2="grey80"      # modifiée
 ORANGE = "#FF000D" #39FF14"  # facturé            #FD6C9E" #FF0001"
 
-DIC_STATUT = {VERT:"OUVERT", VERT2:"MODIFIE", ORANGE : "FACTURE", ROUGE:"CLOTURE"}
+DIC_STATUT = {VERT:"EN COURS", VERT2:"MODIFIé".upper(), ORANGE : "FACTURé".upper(), ROUGE:"CLOTURé".upper()}
 
 COEF_DILATATION = 1.5
 COEF_REMPLISSAGE = 0.95  # pourcentage de remplissage de l'écran pour une table de dimension maximale
@@ -64,7 +64,8 @@ LENGTH_PU = 10
 LENGTH_ETAT_FACTURE = 9
 LENGTH_DATE = 21
 F = lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^10}   {x[3]:^5}   {x[4]:^10}   {x[5]:^10}" 
-FOREGROUND_TRANSFERT = "grey25"
+FOREGROUND_TRANSFERT = "grey25" # devrait se trouver dans le theme
+
 
 
 # écarts
@@ -77,7 +78,8 @@ POLICE_TABLE = "Bahnschrift" #"Helvetica"
 POLICE_FIRST = "consolas" # écran d'acceuil
 TAILLE_FIRST = 110
 
-
+# nombre de jours de mémoire pour la caisse
+MEMORY = 3
 
 
 

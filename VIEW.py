@@ -447,6 +447,13 @@ class Contenu(Frame):
         elif self.item == 'nouvelle caisse':       
             pass
         
+        elif self.item == 'sélectionner':
+            cadre.pack(side=LEFT)
+            label2.configure(text="caisse (ouverture)".upper())
+            label2.pack(**PAD_LABEL)
+            self.spinBox.configure(width = LENGTH_DATE, state = "readonly", command=self.commandSpinBox)
+            self.spinBox.pack(**PAD_SPINBOX)
+        
         elif self.item == 'supprimer une table':
             
             cadre.pack(side=LEFT)
@@ -812,6 +819,10 @@ class Bouton(Frame):
             self.bouton1.configure(text="commencer".upper())
             self.bouton1.pack(**PAD_BUTTON)
             
+        if self.item == "sélectionner":
+            self.bouton1.configure(text="ouvrir".upper())
+            self.bouton1.pack(**PAD_BUTTON) 
+            
         if self.item == "supprimer une table":
             self.bouton1.configure(text="supprimer".upper())
             self.bouton1.pack(**PAD_BUTTON)
@@ -827,7 +838,7 @@ class Bouton(Frame):
         if self.item == "modifier le thème":
             canvas.pack(side=LEFT)
             
-        if self.item == "ticket de cloture":
+        if self.item == "cloture & ticket":
             self.bouton1.pack(**PAD_BUTTON)
            
             

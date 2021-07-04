@@ -43,9 +43,7 @@ class Bac(Canvas):
     def setColorFacture(self, nbr, statut):
         # récupérer le id correspondand à la facture nbr (str)
         tup = self.find_withtag("facture")
-        print(tup, "tup contenant nbr", nbr, statut)
         for id in tup:
-            print('tag0 :', self.gettags(id)[2])
             if self.gettags(id)[2] == nbr:
                 
                 if statut == ROUGE:
@@ -54,7 +52,14 @@ class Bac(Canvas):
                     self.itemconfigure(id, fill = statut)
                     # aussi à modifier tag[1]
                 break
-        
+    
+    def deleteFacture(self, nbr):
+        tup = self.find_withtag("facture")
+        for id in tup:
+            if self.gettags(id)[2] == nbr:
+                self.delete(id)
+                break
+    
     
     def setDimensions(self):
         # attributs
@@ -129,7 +134,7 @@ class Bac(Canvas):
     def create_facture(self, evt):
         ## vérifier si la caisse est ouverte
         if self.db.dat is not None:
-        
+           
         ## vérifier si la facture précédente a bougé
             if self.autorisation:
                 

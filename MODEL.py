@@ -183,7 +183,14 @@ class Theme:
         """renvoie le code couleur pour une couleur(clé) de table
         """
         return  self.dic_theme[self.theme]['table'][couleur]
-             
+    
+    def getForegroundListBox(self, transfert=0):
+        """renvoie le foreground pour la listBox (recordF)
+        """
+        if transfert == 0:
+            return  self.dic_theme[self.theme]['listBoxNormal']['fg']
+        else:
+            return  self.dic_theme[self.theme]['listBoxTransfert']['fg']
 
 # ##################################################
 # kw_master = {'bg': color_30}

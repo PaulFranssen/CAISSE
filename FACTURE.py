@@ -55,9 +55,17 @@ class Fac(Frame):
         
     def liens(self):
         # ajout des liens 
-        self.button1.bind('<1>', lambda _: self.clic.getFacture(self.entry1_var.get().strip())) # clic sur go (facture)
+        self.buttonValider.bind('<FocusIn>', self.colorValider)
+        self.buttonValider.bind('<FocusOut>', self.colorValider)
+        
+        self.button1.bind('<ButtonRelease-1>', lambda _: self.clic.getFacture(self.entry1_var.get().strip())) # clic sur go (facture)
         # self.listBox.bind('<<ListboxSelect>>', self.commandListBox)
         # self.listBox.bind('<Return>', self.returnListBox) 
+        self.button5.bind('<ButtonRelease-1>', lambda _: self.clic.goTransfert(destination=self.entry5_var,
+                                                                               bouton5 = self.button5,
+                                                                               nbr = self.entry1_var,
+                                                                               listBox_var=self.listBox_var)) # clic sur go (transfert)
+        
         self.buttonFacturer.bind('<ButtonRelease-1>', lambda _:self.clic.commandFacturer(table=self.entry2_var, 
                                                                           service=self.entry3_var,
                                                                           nbr=self.entry1_var,
@@ -127,6 +135,17 @@ class Fac(Frame):
                                                                          description_var=self.entryDescription_var,
                                                                          prix_var=self.entryPrix_var))
         
+        self.entryCode.bind('<Tab>', lambda _: self.clic.commandCode(code_var=self.entryCode_var,
+                                                                         code=self.entryCode,
+                                                                         pu_var=self.entryPU_var,
+                                                                         qte_var=self.entryQTE_var,
+                                                                         qte=self.entryQTE,
+                                                                         remise_var=self.entryRemise_var,
+                                                                         listBox2=self.listBox2,
+                                                                         listBox2_var=self.listBox2_var,
+                                                                         description_var=self.entryDescription_var,
+                                                                         prix_var=self.entryPrix_var))
+        
        
         self.listBox2.bind('<Return>', lambda _: self.clic.commandLB2(code_var=self.entryCode_var,
                                                                          code=self.entryCode,
@@ -145,7 +164,26 @@ class Fac(Frame):
                                                                          prix=self.entryPrix_var,
                                                                          entryPrix=self.entryPrix))
         
+        self.entryQTE.bind('<Tab>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+        
         self.entryRemise.bind('<Return>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+        
+        self.entryRemise.bind('<Tab>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
+                                                                         qte=self.entryQTE_var,
+                                                                         remise=self.entryRemise_var,
+                                                                         prix=self.entryPrix_var,
+                                                                         entryPrix=self.entryPrix))
+        
+        
+        self.entryPU.bind('<Return>', lambda _: self.clic.commandPrix(pu=self.entryPU_var,
                                                                          qte=self.entryQTE_var,
                                                                          remise=self.entryRemise_var,
                                                                          prix=self.entryPrix_var,
@@ -157,7 +195,11 @@ class Fac(Frame):
                                                                          prix=self.entryPrix_var,
                                                                          entryPrix=self.entryPrix))
         
+        
         self.entryRecu.bind('<Return>', lambda _: self.clic.commandRecu(recu=self.entryRecu_var))
+       
+    def focusEntryCode(self):
+        self.entryCode.focus_set() 
         
     def getId(self):
         """id de la facture en cours, None si aucune
@@ -205,6 +247,9 @@ class Fac(Frame):
         self.entrySolde_var.set('')
         self.entrySolde.configure(disabledbackground=self.clic.th.getColorNormal(choix = "disabledbackground"))
         #self.clic.db.deleteSolde()
+        
+    def deleteTransfert(self):
+        self.entry5_var.set('')
     
     def getStatut(self):
         return self.statut
@@ -254,12 +299,12 @@ class Fac(Frame):
             self.buttonEffacer.configure(state=NORMAL)
             self.buttonValider.configure(state=NORMAL)
             self.entry3.configure(state=NORMAL)
-            self.entry5.configure(state=NORMAL)
+            self.entry5.configure(state=DISABLED)
             self.entryRecu.configure(state=NORMAL)
             self.buttonModifier.configure(state=DISABLED)
             self.buttonFacturer.configure(state=NORMAL)
             self.buttonTerminer.configure(state=DISABLED, text = "TERMINER")
-            self.button5.configure(state=NORMAL)
+            self.button5.configure(state=DISABLED)
             self.listBox.configure(state=NORMAL)
             # modification dans la database
             self.clic.db.recordStatut(self.id, VERT2)
@@ -327,11 +372,17 @@ class Fac(Frame):
         b += self.entryPrix_var.get().strip()
         return b == ''
     
+    def focusValider(self):
+        self.buttonValider.focus_set()
+    
     def setListBox_var(self, list_recordF):
         """établit la liste dans la box, sur base de la self.list_recordF déjà construite
         """       
         liste=[] # liste qui contiendra les éléments de listBox_var
-        list_transfert = []
+        
+        list_transfert = [] # liste des indice des items transférés
+        list_normal = []    # liste des indice des items non transférés
+        
         for i, tup in enumerate(list_recordF):
             id, code_id, pu, qte, remise, prix, transfert = tup
             code, description = self.db.getArticle(code_id)
@@ -339,10 +390,16 @@ class Fac(Frame):
             liste.append(F(chaine))
             if transfert:
                 list_transfert.append(i)
-        for i in list_transfert:
-            self.listBox.itemconfig(i, foreground=FOREGROUND_TRANSFERT)
+            else:
+                list_normal.append(i)
                 
         self.listBox_var.set(liste)
+           
+        for i in list_transfert:
+            self.listBox.itemconfig(i, foreground=self.clic.th.getForegroundListBox(transfert=1))
+        
+        for i in list_normal:
+            self.listBox.itemconfig(i, foreground=self.clic.th.getForegroundListBox())
         
     def deleteLB23(self):
         """efface la list des box 2 et 3
@@ -429,10 +486,10 @@ class Fac(Frame):
         self.entryDescription = Entry(line3, textvariable=self.entryDescription_var, width = LENGTH_DESCRIPTION, state=DISABLED, **KW_ENTRY)
         self.entryPU = Entry(line3, textvariable=self.entryPU_var, width = LENGTH_PU, **KW_ENTRY)
         self.entryQTE = Entry(line3, textvariable=self.entryQTE_var, width = LENGTH_QTE, **KW_ENTRY)
-        self.entryRemise = Entry(line3, textvariable=self.entryRemise_var, width = LENGTH_PU, **KW_ENTRY)
+        self.entryRemise = Entry(line3, textvariable=self.entryRemise_var, width = LENGTH_PU, takefocus=0, **KW_ENTRY)
         self.entryPrix = Entry(line3, textvariable=self.entryPrix_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
         
-        self.buttonEffacer = Button(line4, text = "SUPPRIMER", width= 14, **KW_BUTTON)
+        self.buttonEffacer = Button(line4, text = "SUPPRIMER", width= 14, takefocus=0, **KW_BUTTON)
         self.buttonValider = Button(line4, text = "VALIDER", width= 14, **KW_BUTTON)
        
         # intégration des widgets
@@ -607,4 +664,8 @@ class Fac(Frame):
         self.root.th.add_widget("canvas", sepV3)
         self.root.th.add_widget("canvas", canvas)
         
-    
+    def colorValider(self, evt):
+        if self.focus_get() == self.buttonValider:
+            self.buttonValider.configure(background="tomato")
+        else:
+            self.buttonValider.configure(background="grey60")
