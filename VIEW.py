@@ -527,8 +527,8 @@ class Contenu(Frame):
         elif self.item == "facturation":
             # affichage de la facture
             # cadre.pack(side = LEFT)
-            self.fac.pack(side=LEFT)
-            # ajout du canvas au root.clic
+            #self.fac.pack(side=LEFT)
+            # ajout de la facture au root.clic
             self.root.clic.setFac(self.fac)  
                           
         elif self.item == "modifier le thème": 

@@ -17,6 +17,10 @@ SEPARATEUR_DANS_CADRE = 20
 TAILLE_SMALL_CAR = 12
 TAILLE_MENU = 16
 
+# temps d'attente
+attenteLongue = 1500
+attenteCourte = 500
+
 # constantes dans la salle
 ROUGE = "#FF0000"  # encaisséE
 VERT = "#FFFFFF"   # en cours
@@ -241,8 +245,8 @@ f_nameImport = join("MEM_FILE", "nameImport_file.txt")
 f_ticket = join("MEM_FILE", "ticket_file.txt")
 
 # temps d'attente
-attenteLongue = 1000
-attenteCourte = 700
+attenteLongue = 1500
+attenteCourte = 500
 
 # réglage distance entre les entry sous les listbox
 reglage_1 = 33

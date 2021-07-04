@@ -192,6 +192,13 @@ class Theme:
         else:
             return  self.dic_theme[self.theme]['listBoxTransfert']['fg']
 
+    def getValiderFocus(self, valider):
+        """renvoie le background du bouton valider
+        """
+        if valider == 0:
+                return  self.dic_theme[self.theme]['validerFocusOut']['bg']
+        else:
+            return  self.dic_theme[self.theme]['validerFocusIn']['bg']
 # ##################################################
 # kw_master = {'bg': color_30}
 

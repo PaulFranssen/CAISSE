@@ -127,7 +127,7 @@ class Clic:
         if kw['b']['state'] == DISABLED:
             return
         # annulle les box 2 et 3 (service et article)
-        self.fac.deleteLB23()
+        #self.fac.deleteLB23()
         
         service = kw['service'].get().strip()
         code = kw['code'].get().strip()
@@ -240,20 +240,19 @@ class Clic:
             
             # commentaire OK
             self.com.set('OK')
-            self.boss.master.after(attenteLongue, self.clearCom)
+            self.boss.master.after(attenteCourte, self.clearCom)
+            self.fac.focusEntryCode()
     
     def commandFacturer(self, **kw):
        
         if kw['b']['state'] == DISABLED:
             return
         
-        # annulle les box 2 et 3 (service et article)
-        self.fac.deleteLB23()
-        
         service = kw['service'].get().strip()
         recu = kw['recu'].get().strip()
         nbr = kw['nbr'].get().strip()
         statut = self.fac.getStatut()
+        
         try:
             test = "nbr"
             nbr1 = int(nbr)
@@ -312,10 +311,15 @@ class Clic:
                 # récupérer le id facture
                 fact_id = self.fac.getId()
                 
+                # enregistrement du service et de la tableName dans la facture
+                self.db.recordService(fact_id, service)
+                self.db.recordTable(fact_id, tablename)
+                
                 # mise en forme du reçu et enregistrement dans la base
                 recu = 0 if recu == '' else int(recu.replace('.',''))          
                 self.db.setRecu(fact_id, recu)
                 kw['recu'].set(self.formatNumber(recu))
+                
                 
                 # modification 
                 if statut == VERT2:
@@ -341,7 +345,7 @@ class Clic:
             return
         
         # annulle les box 2 et 3 (service et article)
-        self.fac.deleteLB23()
+        #self.fac.deleteLB23()
         
         # effacer l'éventuel solde
         self.fac.deleteSolde()
@@ -363,7 +367,7 @@ class Clic:
             return   
         
         # annulle les box 2 et 3 (service et article)
-        self.fac.deleteLB23()
+        #self.fac.deleteLB23()
         
         # terminer n'est activé que quand je suis en statut orange
         fact_id = self.fac.getId()
@@ -434,8 +438,8 @@ class Clic:
                     # impression facture si le solde n'a pas changé      
                     if solde == solde_old: # le solde est resté identique après le premier clic
                         self.db.recordSolde(fact_id, solde) # fixer le solde dans la facture définitive
-                        self.db.recordTable(fact_id, kw['table'].get().strip())
-                        self.db.recordService(fact_id, kw['service'].get().strip())
+                        # self.db.recordTable(fact_id, kw['table'].get().strip())
+                        # self.db.recordService(fact_id, kw['service'].get().strip())
                         
                         self.fac.setStatut(ROUGE) # passage au rouge 
                         self.bac.setColorFacture(nbr, ROUGE) # passage de la facture nbr au rouge dans le bac
@@ -603,13 +607,15 @@ class Clic:
         
         if not remise:
             remise='0'
+            
+        # mise en forme du pu et de la remise
         
         res = True
         
-      
+        boolPu, boolQte, boolRemise = self.isNumber(pu), self.isNumber(qte),self.isNumber(remise)
         if not pu or not qte:
             res=False
-        elif not self.isNumber(pu) or not self.isNumber(qte) or not self.isNumber(remise): 
+        elif not boolPu or not boolQte or not boolRemise: 
             res=False
         elif len(qte)>LENGTH_QTE:
             res=False
@@ -625,11 +631,29 @@ class Clic:
                 #kw['entryPrix'].focus_set()
             else:
                 res=False
-        
+                         
         if not res:
             # prix annulé
             kw['prix'].set('')
             
+            # focus sur le probleme
+            if not boolPu or pu == '':
+                kw['entryPU'].focus_set()
+                kw['entryPU'].icursor(END)
+            elif not boolQte or qte == '':
+                kw['entryQTE'].focus_set()
+                kw['entryQTE'].icursor(END)
+            elif not boolRemise:
+                kw['entryRemise'].focus_set()
+                kw['entryRemise'].icursor(END)
+            else:
+                kw['entryPrix'].focus_set()
+                
+        # mise en forme du pu et de la remise
+        if boolPu:
+            kw['pu'].set(self.formatNumber(pu))
+        if boolRemise:
+            kw['remise'].set(self.formatNumber(remise))  
                  
     def displayFactures(self, factures):
         # afficher toutes les factures se trouvant dans la database   
@@ -699,6 +723,8 @@ class Clic:
         
         # re-calcul du total
         self.fac.setTotal(self.formatNumber(self.db.getTotal(fact_id)))
+        
+        
             
         
     def getFacture(self, nbr):
@@ -723,11 +749,11 @@ class Clic:
             E(self.com, "N°FACTURE", 'non-conforme').affiche()
             self.boss.master.after(attenteLongue, self.clearCom)  
         else:  
+            tablename = ''
             # récupérer la table si la facture n'est pas rouge
-            if couleur != "ROUGE":  # cas d'une facture rouge 
+            if couleur == VERT or couleur == VERT2:  
                 tablename = self.bac.getTableName(x1, y1)
                 #self.fac.setId(facture, tablename) 
- 
             self.gofacture(facture, tablename)
     
     def imprimerFactureFinale(self, fact_id):
@@ -784,8 +810,8 @@ class Clic:
             KW['bac'].focus_set()
             
         elif KW['item'] == "facturation":
-            # actualiser la table et le service correspondant
-            pass
+           
+            self.fac.pack(side=LEFT)
             
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
@@ -919,7 +945,7 @@ class Clic:
                 # supprimer dans la database
                 self.db.deleteTable(tableName)
                 self.com.set('OK')
-                self.boss.master.after(attenteLongue, self.clearCom)
+                self.boss.master.after(attenteCourte, self.clearCom)
                 # effacer le entry
                 contenu.entry2_var.set('')
                 contenu.focus_set()
@@ -944,7 +970,7 @@ class Clic:
                 self.db.deleteArticle(code_id)
                 
                 self.com.set('OK')
-                self.boss.master.after(attenteLongue, self.clearCom)
+                self.boss.master.after(attenteCourte, self.clearCom)
                 # effacer le entry
                 contenu.entry2_var.set('')
                 contenu.focus_set()
@@ -970,7 +996,7 @@ class Clic:
                 self.db.deleteWorker(work_id)
                 
                 self.com.set('OK')
-                self.boss.master.after(attenteLongue, self.clearCom)
+                self.boss.master.after(attenteCourte, self.clearCom)
                 # effacer le entry
                 contenu.entry2_var.set('')
                 contenu.focus_set()
@@ -1048,7 +1074,7 @@ class Clic:
                 
                 self.com.set('OK')
                 bouton1.configure(state=DISABLED)
-                self.boss.master.after(attenteLongue, self.clearCom) 
+                self.boss.master.after(attenteCourte, self.clearCom) 
                  
                 # afficher la salle
                 # self.boss.cadreGestion.corps.display("afficher la salle")
@@ -1066,7 +1092,7 @@ class Clic:
                 # cloture effective de la caisse
                 print('IMPRIMER TICKET FINAL')
                 self.com.set('OK')
-                self.boss.master.after(attenteLongue, self.clearCom)
+                self.boss.master.after(attenteCourte, self.clearCom)
                 self.db.clotureCaisse()
                 self.db.deleteServe()  # suppression de l'association service-table
                 bouton1.configure(text="TICKET")

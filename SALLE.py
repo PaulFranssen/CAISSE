@@ -247,6 +247,7 @@ class Bac(Canvas):
         """
         insideBox_id = self.find_overlapping(x1, y1, x1,y1)
         tables_id = self.find_withtag("table")
+        
         # récupérer un élément commun de ces deux ensembles
         tablename = ''
         if insideBox_id and tables_id:
@@ -254,6 +255,8 @@ class Bac(Canvas):
             if tables_id:
                 # récupérer le nom de la table
                 tablename = self.gettags(tables_id.pop())[2]
+
+        print(tablename, "getFacture dans salle")
         return tablename        
         
             
