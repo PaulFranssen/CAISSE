@@ -762,16 +762,16 @@ class Clic:
                
     def displayContenu(self, **KW):
         
-        if KW['item'] == "sélectionner":
-            # récupérer les valeurs dans les caisses
-            liste_caisse = self.db.getCaisse(MEMORY)
-            if liste_caisse:
-                liste_var = [str(elem[1])[:19] for elem in liste_caisse] 
-            else:
-                liste_var = []
+        # if KW['item'] == "sélectionner":
+        #     # récupérer les valeurs dans les caisses
+        #     liste_caisse = self.db.getCaisse(MEMORY)
+        #     if liste_caisse:
+        #         liste_var = [str(elem[1])[:19] for elem in liste_caisse] 
+        #     else:
+        #         liste_var = []
             
-            # fixer la liste dans le spinBox
-            KW['spinBox'].configure(values = liste_var)
+        #     # fixer la liste dans le spinBox
+        #     KW['spinBox'].configure(values = liste_var)
             
         if KW['item'] == "synthèse":
             
@@ -799,7 +799,7 @@ class Clic:
             KW['entry5_var'].set(g)
             
             
-        if KW['item'] == "ajouter une table":
+        elif KW['item'] == "ajouter une table":
             self.clearCom()
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
@@ -810,8 +810,17 @@ class Clic:
             KW['bac'].focus_set()
             
         elif KW['item'] == "facturation":
-           
-            self.fac.pack(side=LEFT)
+            
+            if not self.db.isCaisseOpen(): # pas de caisse active
+                # afficher un message 
+                self.fac.pack_forget()
+                KW['facVide'].pack()
+                self.com.set("Pas de caisse ouverte")
+                self.boss.master.after(attenteLongue, self.clearCom)
+            else:
+                self.fac.pack(side=LEFT)
+            
+            
             
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
@@ -885,7 +894,9 @@ class Clic:
                     self.com.set("Il reste des factures non cloturées")
                     self.boss.master.after(attenteLongue, self.clearCom)
             else:
-                 kw['bouton1'].configure(state = NORMAL, text = "TICKET")
+                # cloture de la caisse
+                self.db.close
+                kw['bouton1'].configure(state = NORMAL, text = "TICKET")
         
         
         elif kw['item'] == "nouvelle caisse":
@@ -1066,11 +1077,15 @@ class Clic:
                  return  
             else:
                 self.db.base1() # ouverture de caisse
-                factures = self.db.base7()
-                # affiche les factures dans la salle s'il y en a
-                if factures:
-                    # affiche les factures existantes
-                    self.displayFactures(factures)
+                
+                # factures = self.db.base7()
+                # # affiche les factures dans la salle s'il y en a
+                # if factures:
+                #     # affiche les factures existantes
+                #     self.displayFactures(factures)
+                
+                # suppression des données de l'ancienne caisse
+                self.db.deleteCaisse()
                 
                 self.com.set('OK')
                 bouton1.configure(state=DISABLED)
@@ -1094,7 +1109,7 @@ class Clic:
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom)
                 self.db.clotureCaisse()
-                self.db.deleteServe()  # suppression de l'association service-table
+                #self.db.deleteServe()  # suppression de l'association service-table
                 bouton1.configure(text="TICKET")
                 
         if contenu.item == "ajouter un employé":

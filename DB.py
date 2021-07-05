@@ -120,6 +120,19 @@ class Database:
         self.connexion.commit()
             
         return self.dat
+    
+    def deleteCaisse(self):
+        """supprime l'ancienne caisse
+        """
+        # effacement des records, modifications, serve, factures, caisse
+        self.curseur.execute("""DELETE FROM recordF""")
+        self.curseur.execute("""DELETE FROM modification""")
+        self.curseur.execute("""DELETE FROM serve""")
+        self.curseur.execute("""DELETE FROM facture""")
+        self.curseur.execute("""DELETE FROM caisse WHERE statut=0""")
+        self.connexion.commit()
+        
+        
             
     def base2(self, *tup):
         """insere une nouvelle table
@@ -465,6 +478,8 @@ class Database:
         self.curseur.execute("""DELETE FROM recordF WHERE id=?""", (recordF_id,))
         self.connexion.commit()
             
+    def isCaisseOpen(self):
+        return self.curseur.execute("""SELECT id FROM caisse WHERE statut=1""").fetchone()
         
     def isWorker(self, nom):
         """détermine si un nom se trouve dans la base

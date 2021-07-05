@@ -435,6 +435,7 @@ class Contenu(Frame):
        
         self.fac = FACTURE.Fac(self)
         self.bac = SALLE.Bac(self, width=0, height=0)
+        self.facVide = Frame(self) # cadre vide au lieu d'une facture
         # liens entre objets
         
         
@@ -527,7 +528,7 @@ class Contenu(Frame):
         elif self.item == "facturation":
             # affichage de la facture
             # cadre.pack(side = LEFT)
-            #self.fac.pack(side=LEFT)
+            # self.fac.pack(side=LEFT)
             # ajout de la facture au root.clic
             self.root.clic.setFac(self.fac)  
                           
@@ -684,6 +685,7 @@ class Contenu(Frame):
         
         self.root.th.add_widget("bac", self.bac)
         self.root.th.add_widget("frame", self.fac)
+        self.root.th.add_widget("frame", self.facVide)
         self.root.th.add_widget("spinBox", self.spinBox)   
         self.root.th.add_widget("canvas", canvas)
         self.root.th.add_widget("canvas", canvas2)
@@ -743,7 +745,8 @@ class Contenu(Frame):
                                       entryD_var=self.entryD_var,
                                       item=self.item,
                                       bac = self.bac,  
-                                      fac = self.fac,                          
+                                      fac = self.fac,  
+                                      facVide = self.facVide,                        
                                       spinBox = self.spinBox,
                                       spinBox_var = self.spinBox_var)
         
