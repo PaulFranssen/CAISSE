@@ -436,6 +436,11 @@ class Database:
         res = self.curseur.execute("""SELECT statut FROM caisse WHERE dat=?""", (self.dat,)).fetchone()
         return None if not res else res[0]
     
+    def getStatut2(self):
+        res = self.curseur.execute("""SELECT statut FROM caisse""").fetchone()
+        return None if not res else res[0]
+    
+    
     def getWorker_id(self, nom):
         res = self.curseur.execute("""SELECT id FROM workers WHERE nom=?""", (nom,)).fetchone()
         return None if not res else res[0]
@@ -451,7 +456,7 @@ class Database:
     
     def setDat(self, dat):
         self.dat = dat
-    
+        
     def recordInServe(self, tablename, service):
         """enregistre un lien table-service
         """
@@ -516,7 +521,7 @@ class Database:
         if step == 0:
             self.curseur.execute("""INSERT INTO modification (fact_id, total1) VALUES (?,?)""", (fact_id, total))   
         else: # step=1
-            self.curseur.execute("""UPDATE modification SET total2=?, fin=? WHERE id=?""", (total, 1, fact_id))
+            self.curseur.execute("""UPDATE modification SET total2=?, fin=? WHERE fact_id=? AND fin=?""", (total, 1, fact_id, 0))
         self.connexion.commit() 
     
     def insertWorker(self, nom):
@@ -577,6 +582,9 @@ class Database:
     def getOuverture(self):
         return self.dat
     
+    def getOuverture2(self):
+        return self.curseur.execute("""SELECT dat, fermeture FROM caisse""").fetchone()
+    
     def getEnCours(self):
         res = self.curseur.execute("""SELECT total FROM facture WHERE dat=? AND (couleur=? OR couleur=?)""",(self.dat, VERT, VERT2)).fetchall()     
         return 0 if res is None else sum([tup[0] for tup in res])
@@ -589,12 +597,25 @@ class Database:
         res = self.curseur.execute("""SELECT total FROM facture WHERE dat=? AND couleur=?""",(self.dat, ROUGE)).fetchall()     
         return 0 if res is None else sum([tup[0] for tup in res])
     
+    def getEnCloture2(self):
+        res = self.curseur.execute("""SELECT total FROM facture WHERE couleur=?""",(ROUGE,)).fetchall()     
+        return 0 if res is None else sum([tup[0] for tup in res])
+    
     def getImpaye(self):
         res = self.curseur.execute("""SELECT solde FROM facture WHERE dat=? AND couleur=? AND solde>?""",(self.dat, ROUGE,0)).fetchall()     
+        return (0, 0) if res is None else (sum([tup[0] for tup in res]), len(res))
+    
+    def getImpaye2(self):
+        res = self.curseur.execute("""SELECT solde FROM facture WHERE couleur=? AND solde>?""",(ROUGE,0)).fetchall()     
         return (0, 0) if res is None else (sum([tup[0] for tup in res]), len(res))
       
     def getModification(self):
         res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND facture.dat=? AND modification.fin=?""", (self.dat, 1)).fetchall()
+        print(res, "getM",  (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res)))
+        return (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res))
+    
+    def getModification2(self):
+        res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND modification.fin=?""", (1,)).fetchall()
         print(res, "getM",  (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res)))
         return (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res))
     

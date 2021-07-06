@@ -423,6 +423,7 @@ class Clic:
                 
                 # affichage du reçu 
                 kw['recu'].set(self.formatNumber(recu))
+                self.fac.focus_set()
                 
                 # adaptation du background du solde
                 if solde > 0:
@@ -453,7 +454,7 @@ class Clic:
         recu = kw['recu'].get().strip()
         if self.isNumber(recu):
             kw['recu'].set(self.formatNumber(recu))
-        self.fac.focus_set()
+            self.fac.focus_set()
                     
     def commandDelete(self):
        
@@ -509,9 +510,12 @@ class Clic:
         elif len(liste) == 1:
             # un seul nom donc l'afficher
             kw['entry3_var'].set(liste[0])
-            kw['entry3'].icursor(END)
+            
             # supprimer les éventuels mots dans la box
             kw['listBox3_var'].set([])
+            # focus sur entryCode
+            kw['entryCode'].focus_set()
+            kw['entryCode'].icursor(END)
             
         else:
             # plus d'un nom dans la liste, donc les placer dans la listbox3
@@ -570,6 +574,10 @@ class Clic:
             
         # effacer la liste de la box
         kw['listBox3_var'].set([]) 
+        
+        # focus sur le code
+        kw['entryCode'].focus_set()
+        kw['entryCode'].icursor(END)
             
             
     def commandLB2(self, **kw):
@@ -724,6 +732,12 @@ class Clic:
         # re-calcul du total
         self.fac.setTotal(self.formatNumber(self.db.getTotal(fact_id)))
         
+        # focus
+        if not self.fac.getEntryService():
+            self.fac.focusEntryService()
+        else:
+            self.fac.focusEntryCode()
+        
         
             
         
@@ -777,34 +791,49 @@ class Clic:
             
             self.clearCom()
             
-            h = self.db.getOuverture()
-            h = "-" if not h else str(h)[:19]
-            KW['entry2_var'].set(h)
-            a = self.db.getEnCours()
-            KW['entryA_var'].set(self.formatNumber(a))
-            b = self.db.getEnFacture()
-            KW['entryB_var'].set(self.formatNumber(b))
-            c = self.db.getEnCloture()
-            KW['entryC_var'].set(self.formatNumber(c))
-            KW['entryD_var'].set(self.formatNumber(a+b+c))
+            h = self.db.getOuverture2()
             
-            d = self.db.getImpaye()
-            d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
-            KW['entry3_var'].set(d)
-            e = self.db.getModification()
-            e = "-" if e==(0,0) else f"{self.formatNumber(e[0])} #{e[1]}"
-            KW['entry4_var'].set(e)
-            g = self.db.getFermeture()
-            g = "-" if not g else str(g)[:19]
-            KW['entry5_var'].set(g)
-            
+            if h: # il existe une caisse
+                ouverture, fermeture = h
+                ouverture = str(ouverture)[:19]
+                fermeture = "-" if not fermeture else str(fermeture)[:19] 
+                KW['entry2_var'].set(ouverture)
+                
+                a = self.db.getEnCours()
+                KW['entryA_var'].set(self.formatNumber(a))
+                b = self.db.getEnFacture()
+                KW['entryB_var'].set(self.formatNumber(b))
+               
+                c = self.db.getEnCloture2()
+                KW['entryC_var'].set(self.formatNumber(c))
+                KW['entryD_var'].set(self.formatNumber(a+b+c))
+                
+                d = self.db.getImpaye2()
+                d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
+                KW['entry3_var'].set(d)
+                
+                e = self.db.getModification2()
+                e = "-" if e==(0,0) else f"{self.formatNumber(e[0])} #{e[1]}"
+                KW['entry4_var'].set(e)
+                # g = self.db.getFermeture()
+                # g = "-" if not g else str(g)[:19]
+                KW['entry5_var'].set(fermeture)
+                
+            else: # pas de caisse
+                KW['entry2_var'].set("-")
+                KW['entryA_var'].set("-")
+                KW['entryB_var'].set("-")
+                KW['entryC_var'].set("-")
+                KW['entryD_var'].set("-")
+                KW['entry3_var'].set("-")
+                KW['entry4_var'].set("-")
+                KW['entry5_var'].set("-")
             
         elif KW['item'] == "ajouter une table":
             self.clearCom()
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
-            
-
+        
         elif KW['item'] == "afficher la salle":
             
             KW['bac'].focus_set()
@@ -841,16 +870,16 @@ class Clic:
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
             
-        elif KW['item'] == "éditer les employés":
-            KW['entry2_var'].set('')
-            KW['entry2']['state']=DISABLED
-            employe_lst = [' Jacques', ' Norbert', ' Andrea']
-            KW['listBox_lst'].clear()
-            KW['listBox_lst'].extend(employe_lst)
-            KW['listBox'].configure(height=min(len(employe_lst), HEIGHT_LISTBOX), width=LENGTH_CODE+2)
-            KW['listBox_var'].set(employe_lst)
-            KW['listBox'].selection_set(0)
-            KW['listBox'].focus_set()
+        # elif KW['item'] == "éditer les employés":
+        #     KW['entry2_var'].set('')
+        #     KW['entry2']['state']=DISABLED
+        #     employe_lst = [' Jacques', ' Norbert', ' Andrea']
+        #     KW['listBox_lst'].clear()
+        #     KW['listBox_lst'].extend(employe_lst)
+        #     KW['listBox'].configure(height=min(len(employe_lst), HEIGHT_LISTBOX), width=LENGTH_CODE+2)
+        #     KW['listBox_var'].set(employe_lst)
+        #     KW['listBox'].selection_set(0)
+        #     KW['listBox'].focus_set()
             
         elif KW['item'] == "modifier un article":
             self.clearCom()
@@ -878,26 +907,29 @@ class Clic:
         
         if kw['item'] == "cloture & ticket":
             self.clearCom()
+           
+            statut = self.db.getStatut2()
             
-            if self.db.getDat() is None:
+            if statut is None:
                 # désactiver le bouton1
                 kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
-                self.com.set("Pas de caisse sélectionnée")
+                self.com.set("Pas de caisse enregistrée")
                 self.boss.master.after(attenteLongue, self.clearCom)
                 
-            elif self.db.getStatut():
-                # vérifier qu'il ny a que des factures cloturées
-                if not self.db.base7bis():# détermine le nombre de factures non cloturées
-                    kw['bouton1'].configure(state = NORMAL, text = "CLOTURER")
-                else:
-                    kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
-                    self.com.set("Il reste des factures non cloturées")
-                    self.boss.master.after(attenteLongue, self.clearCom)
-            else:
-                # cloture de la caisse
-                self.db.close
+            elif statut == 0:
+                # la caisse est cloturée
                 kw['bouton1'].configure(state = NORMAL, text = "TICKET")
-        
+                
+            elif not self.db.base7bis():
+                # la caisse est active et toutes les factures sont cloturées
+                kw['bouton1'].configure(state = NORMAL, text = "CLOTURER")
+            
+            else:
+                # la caisse est active et toutes les factures sont cloturées
+                kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
+                self.com.set("Il reste des factures non cloturées")
+                self.boss.master.after(attenteLongue, self.clearCom)
+           
         
         elif kw['item'] == "nouvelle caisse":
             self.clearCom()
@@ -905,21 +937,20 @@ class Clic:
             if self.db.getDat() is None:
                     # désactiver le bouton1
                 kw['bouton1'].configure(state = NORMAL)
-                
-                
+                  
             else:
                 kw['bouton1'].configure(state = DISABLED)
                 self.com.set('Caisse déjà ouverte')
                 self.boss.master.after(attenteLongue, self.clearCom)
                 
-        elif kw['item'] == "sélectionner":
+        # elif kw['item'] == "sélectionner":
             
-            if self.db.getDat() is None:
-                kw['bouton1'].configure(state = NORMAL)        
-            else: 
-                kw['bouton1'].configure(state = DISABLED)
-                self.com.set('Inaccessible car une caisse est ouverte')
-                self.boss.master.after(attenteLongue*2, self.clearCom)
+        #     if self.db.getDat() is None:
+        #         kw['bouton1'].configure(state = NORMAL)        
+        #     else: 
+        #         kw['bouton1'].configure(state = DISABLED)
+        #         self.com.set('Inaccessible car une caisse est ouverte')
+        #         self.boss.master.after(attenteLongue*2, self.clearCom)
             
 
                    
@@ -928,12 +959,12 @@ class Clic:
         contenu = kw['contenu']
         bouton1 = kw['bouton1']
         
-        if contenu.item == "sélectionner":
-            if kw['bouton1']['state'] == DISABLED:
-                return
+        # if contenu.item == "sélectionner":
+        #     if kw['bouton1']['state'] == DISABLED:
+        #         return
             
         # considérer la sélection et fixer la date
-        date = contenu.spinBox_var.get()
+        # date = contenu.spinBox_var.get()
               
         
         if contenu.item == "supprimer une table":
@@ -1048,7 +1079,7 @@ class Clic:
                 self.boss.master.after(attenteLongue, self.clearCom)
             else:    
                 
-                # modifier l'aricle
+                # modifier l'article
                 code_id = self.db.getCode_id(codeM)
                
                 self.db.updateArticle(code, description, prix.replace('.',''), code_id)
@@ -1075,6 +1106,7 @@ class Clic:
             # récupérer la dat de la caisse en cours ou none
             if bouton1["state"] == DISABLED:
                  return  
+            
             else:
                 self.db.base1() # ouverture de caisse
                 
@@ -1102,15 +1134,18 @@ class Clic:
             
             elif bouton1['text'] == "TICKET":
                 print('IMPRIMER TICKET FINAL')
+                self.com.set('OK')
+                self.boss.master.after(attenteCourte, self.clearCom) 
                       
             else:
                 # cloture effective de la caisse
-                print('IMPRIMER TICKET FINAL')
-                self.com.set('OK')
-                self.boss.master.after(attenteCourte, self.clearCom)
+                
                 self.db.clotureCaisse()
+                print('IMPRIMER TICKET FINAL')
                 #self.db.deleteServe()  # suppression de l'association service-table
                 bouton1.configure(text="TICKET")
+                self.com.set('OK')
+                self.boss.master.after(attenteCourte, self.clearCom)
                 
         if contenu.item == "ajouter un employé":
             nom = contenu.entry2_var.get().strip()
@@ -1140,9 +1175,7 @@ class Clic:
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom)
               
-                
-                
-            
+              
         if contenu.item == "ajouter une table":
             nom, largeur, hauteur, couleur = contenu.entry2_var.get().strip(), contenu.entryA_var.get().strip(), contenu.entryB_var.get().strip(), contenu.spinBox_var.get()
             table_names = self.bac.find_withtag(nom)

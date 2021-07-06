@@ -55,6 +55,8 @@ class Fac(Frame):
         
     def liens(self):
         # ajout des liens 
+        #self.bind_all("<Control-q>", self.boss.boss.display('afficher la salle'))
+        
         self.buttonValider.bind('<FocusIn>', self.colorValider)
         self.buttonValider.bind('<FocusOut>', self.colorValider)
         
@@ -115,7 +117,8 @@ class Fac(Frame):
         self.entry3.bind('<Return>', lambda _ : self.clic.commandService(entry3_var=self.entry3_var,
                                                                          entry3=self.entry3,
                                                                          listBox3 = self.listBox3,
-                                                                         listBox3_var = self.listBox3_var))
+                                                                         listBox3_var = self.listBox3_var,
+                                                                         entryCode=self.entryCode))
         
         
         self.listBox.bind('<<ListboxSelect>>', lambda _: self.clic.commandLB(listBox=self.listBox,
@@ -135,7 +138,8 @@ class Fac(Frame):
         
         self.listBox3.bind('<Return>', lambda _: self.clic.commandLB3(service=self.entry3_var,
                                                                                 listBox3 = self.listBox3,
-                                                                                listBox3_var = self.listBox3_var)) 
+                                                                                listBox3_var = self.listBox3_var,
+                                                                                entryCode=self.entryCode)) 
         self.listBox3.bind('<FocusOut>', self.deleteLB23)
         
         self.entryCode.bind('<Return>', lambda _: self.clic.commandCode(code_var=self.entryCode_var,
@@ -148,6 +152,7 @@ class Fac(Frame):
                                                                          listBox2_var=self.listBox2_var,
                                                                          description_var=self.entryDescription_var,
                                                                          prix_var=self.entryPrix_var))
+        
         
         
        
@@ -223,7 +228,17 @@ class Fac(Frame):
         self.entryRecu.bind('<Return>', lambda _: self.clic.commandRecu(recu=self.entryRecu_var))
        
     def focusEntryCode(self):
-        self.entryCode.focus_set() 
+        if self.entryCode['state'] == NORMAL:
+            self.entryCode.focus_set() 
+            self.entryCode.icursor(END)
+            
+    def focusEntryService(self):
+        if self.entry3['state'] == NORMAL:
+            self.entry3.focus_set() 
+            self.entry3.icursor(END)
+            
+    def getEntryService(self):
+        return self.entry3_var.get()
         
     def getId(self):
         """id de la facture en cours, None si aucune
@@ -260,6 +275,7 @@ class Fac(Frame):
         
         else: # facture orange ou rouge: récupération dans la facture du service et de la table (enregistré lors de la facturation)
             serve, tableName = tup[2], tup[6] 
+            self.entry1_var.set(str(tup[1])) # indique le numéro de facture 
             self.entry2_var.set(tableName)
             self.entry3_var.set(serve)
             
@@ -449,16 +465,10 @@ class Fac(Frame):
             str: numéro de la case N°FACTURE
         """
         return self.entry1_var.get()
-    
-        
-    # def commandListBox():
-    #         pass
-        
+       
     def returnListBox():
         pass
-        
-        
-        
+          
     def compoUI(self):
         """Ajout des widgets au contenu
         """
@@ -600,7 +610,7 @@ class Fac(Frame):
         self.buttonModifier = Button(lineB, text = "MODIFIER", state = DISABLED, width= 14, **KW_BUTTON)
         self.labelC = Label(lineC,text = "TOTAL", **KW_LABEL)
         self.entryTotal = Entry(lineC, textvariable=self.entryTotal_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)
-        self.labelD = Label(lineD,text = "RECU", **KW_LABEL)
+        self.labelD = Label(lineD,text = "reçu".upper(), **KW_LABEL)
         self.entryRecu = Entry(lineD, textvariable=self.entryRecu_var, width = LENGTH_PRIX,**KW_ENTRY)
         self.labelE = Label(lineE,text = "SOLDE", **KW_LABEL)
         self.entrySolde = Entry(lineE, textvariable=self.entrySolde_var, width = LENGTH_PRIX,  state=DISABLED,**KW_ENTRY)

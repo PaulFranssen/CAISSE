@@ -3,7 +3,6 @@
     [
         "nouvelle caisse",  
         "separator",
-        "synthèse",
         "cloture & ticket"
     ],
     
@@ -20,15 +19,16 @@
         "modifier un article"
     ],
 
-    "thème" : 
-    [
-        "modifier le thème"
-    ],
+    
 
     "salle":
     [   "afficher la salle",
         "separator",
+        "synthèse",
+        "separator",
         "facturation"   
     ],
-    "first":["first"]
+
+    "first":
+    ["first"]
 }

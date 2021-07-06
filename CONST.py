@@ -55,7 +55,7 @@ CAPTURE_DANS_TABLE = "find_enclosed"#"find_overlapping" #: touche la table, "fin
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
 WIDTH_BUTTON = 12
-HEIGHT_LISTBOX = 18  # à moduler suivant les dimensions de l'écran
+HEIGHT_LISTBOX = 19  # à moduler suivant les dimensions de l'écran
 HEIGHT_LISTBOX2 = 4 # liste de choix des articles
 HEIGHT_LISTBOX3 = 2 # liste de choix des workers
 ESPACE_VERTICAL_BUTTON_VALIDER = 0

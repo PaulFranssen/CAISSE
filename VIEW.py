@@ -297,6 +297,7 @@ class Corps(Frame):
             item (str): item(intitulé d'un item du menu)
         """
         # oublier le titre, contenu et bouton de l'item précédent
+       
         self.titre[self.boss.item.get()].hide()
         self.contenu[self.boss.item.get()].hide()
         self.bouton[self.boss.item.get()].hide()
