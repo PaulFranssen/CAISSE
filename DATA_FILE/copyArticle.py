@@ -17,6 +17,7 @@ class Database:
 
     def copier(self):
         # récupérer les articles dans la base initiale
+        res = self.curseur.execute("""SELECT * FROM tiers""")
         res = self.curseur.execute("""SELECT code, des, pv FROM article WHERE envente=?""",(1,)).fetchall()
         
         self.connexion.close()
