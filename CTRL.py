@@ -90,7 +90,7 @@ class Clic:
             chain=str(chain)
         ch = chain.replace('.','').strip()
         
-        if ch[0] == "-":
+        if ch and ch[0] == "-":
             # cas négatif
             print(ch)
             if len(ch) > 7:

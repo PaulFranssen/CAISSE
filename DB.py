@@ -261,7 +261,7 @@ class Database:
                                         """,(self.dat, tablename)).fetchone()
         else:
             res=None
-        print(res)
+        
         
         return '' if not res else res[0]
     
@@ -283,12 +283,12 @@ class Database:
         """recupère la liste des code commençants par begin
         """
         res = self.curseur.execute("""SELECT code FROM articles""").fetchall()
-        print(res, 'res', begin)
+        # print(res, 'res', begin)
         if res:
             length = len(begin)
             liste = [nom[0] for nom in res if len(nom[0])>=length and begin==nom[0][:length]]
             liste.sort()
-            print(liste)
+            # print(liste)
         else:
             liste = []
         return liste
