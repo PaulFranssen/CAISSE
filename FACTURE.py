@@ -73,6 +73,7 @@ class Fac(Frame):
                                                                           nbr=self.entry1_var,
                                                                           recu = self.entryRecu_var,
                                                                           listBox_var=self.listBox_var,
+                                                                          listBox2_var = self.listBox2_var,
                                                                           b=self.buttonFacturer))
         
         self.buttonTerminer.bind('<ButtonRelease-1>', lambda _:self.clic.commandTerminer(solde=self.entrySolde_var,

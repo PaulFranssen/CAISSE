@@ -3,8 +3,10 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
-# import CTRL  # les vues sont contrôlées par la base se trouvant dans control
+import CTRL  # les vues sont contrôlées par la base se trouvant dans control
+
 import VIEW
+
 
 if __name__ == '__main__':
      
