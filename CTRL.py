@@ -252,6 +252,9 @@ class Clic:
         recu = kw['recu'].get().strip()
         nbr = kw['nbr'].get().strip()
         statut = self.fac.getStatut()
+
+        # self.fac.deleteLB23()
+        kw['listBox2_var'].set([]) # effacer la listbox2 (proposition d'aricles)
         
         try:
             test = "nbr"
@@ -940,7 +943,7 @@ class Clic:
                   
             else:
                 kw['bouton1'].configure(state = DISABLED)
-                self.com.set('Caisse déjà ouverte')
+                self.com.set('Caisse en cours')
                 self.boss.master.after(attenteLongue, self.clearCom)
                 
         # elif kw['item'] == "sélectionner":
@@ -1109,6 +1112,8 @@ class Clic:
             
             else:
                 self.db.base1() # ouverture de caisse
+
+                self.bac.setNumber(0)  # mise à 0 du numéro de factures
                 
                 # factures = self.db.base7()
                 # # affiche les factures dans la salle s'il y en a
@@ -1119,6 +1124,7 @@ class Clic:
                 # suppression des données de l'ancienne caisse
                 self.db.deleteCaisse()
                 
+
                 self.com.set('OK')
                 bouton1.configure(state=DISABLED)
                 self.boss.master.after(attenteCourte, self.clearCom) 
