@@ -341,6 +341,44 @@ class Clic:
     def imprimerFacture(self, fact_id, modification=False):
         
         print("IMPRESSION FACTURE, modification :", fact_id, modification)
+
+        fichier = open(TICKET_FILE, "w")
+        fichier.write(f"")
+
+        dico =self.db.getInfoTicket(fact_id)
+
+        fichier.write('{:^31}'.format(ETOILE))
+        fichier.write('\n{:^31}'.format(NOM_BAR))
+        fichier.write('\n{:^31}'.format(ETOILE))
+        fichier.write('\n'+'{:^31}'.format(NUM_TEL))          
+        fichier.write('\n\n'+'{:^31}'.format('TICKET DE CAISSE'))
+        fichier.write('\n'+BARRE)
+        fichier.write('\n\n{:^31}'.format(self.id+'    FACTURE #'+str(self.numeroFacture)))        
+        fichier.write('\n'+TIRET)
+
+        for ligne in dico['recordF']:
+            fichier.write('\n'+ligne['des'][:31])            
+            pu=ligne['pu']
+            qte=str(ligne['qte'])
+            ttc=ligne['total']
+
+            if ligne['remise']=="0" or not ligne['remise']:
+                "pas de remise"
+                lig='  {:>16}{:>13}'.format(qte+"x"+pu,ttc)
+                fichier.write('\n'+lig)
+            else :
+                remise='-'+ligne['remise']
+                lig='  {:>16}'.format(qte+"x"+pu)
+                fichier.write('\n'+lig)
+                lig='  {:>16}{:>13}'.format(remise,ttc)
+                fichier.write('\n'+lig)
+            
+            fichier.write('\n'+TIRET)
+            fichier.write('\n'+'  {:>16}{:>13}'.format('TOTAL TTC ',self.totalTtc.get().strip()))
+
+# à poursuivre ici ligne 1728 dans excaisse
+
+
         
     def commandModifier(self, **kw):
         
@@ -1147,7 +1185,7 @@ class Clic:
                 # cloture effective de la caisse
                 
                 self.db.clotureCaisse()
-                print('IMPRIMER TICKET FINAL')
+                print('cloture effectuée')
                 #self.db.deleteServe()  # suppression de l'association service-table
                 bouton1.configure(text="TICKET")
                 self.com.set('OK')

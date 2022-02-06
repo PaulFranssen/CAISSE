@@ -83,6 +83,7 @@ class Database:
                                     prix INTEGER,
                                     transfert INTEGER DEFAULT 0)""")
             
+            
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS modification (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     fact_id INTEGER,
@@ -119,6 +120,7 @@ class Database:
         self.curseur.execute("""INSERT INTO caisse(dat, statut) VALUES(?,?)""", (self.dat, 1))
         self.connexion.commit()
             
+
         return self.dat
     
     def deleteCaisse(self):
@@ -131,6 +133,8 @@ class Database:
         self.curseur.execute("""DELETE FROM facture""")
         self.curseur.execute("""DELETE FROM caisse WHERE statut=0""")
         self.connexion.commit()
+
+        
         
         
             
@@ -622,7 +626,29 @@ class Database:
     def getFermeture(self):
         res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
         return res if res is None else res[0]
-    
+
+    def getInfoTicket(self, fact_id):
+        """informations sur la facture pour l'impression du ticket
+        """
+        infoTik = dict()
+        # récupération dans la table facture
+        res = self.curseur.execute("""SELECT nbr, serve, tableName FROM facture WHERE id=?""",(fact_id,)).fetchone()
+        if res:
+            infoTik['nbr'], infoTik['serve'], infoTik['tableName'], infoTik['total']  = res[0], res[1], res[2], res[3]
+        else:
+            print('erreur : pas de facture de cet id pour infoTicket!')
+
+        # récupération dans recordF
+        infoTik['recordF'] = []
+        res = self.curseur.execute("""SELECT des, pu, qte, remise, prix FROM article, recordF WHERE code_id=art_id, fact_id=?""",(fact_id,)).fetchall()
+        if res:
+            for rec in res:
+                infoTik['recordF'].append(dict(des=rec[0], pu=rec[1], qte=rec[2], remise=rec[3], prix=rec[4]))
+
+        # récupération de la modification (à faire)
+        
+        return infoTik
+
     
         
     
