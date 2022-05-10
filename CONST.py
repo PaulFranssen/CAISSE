@@ -1,3 +1,7 @@
+from tkinter import *
+import sys
+from os.path import join
+
 # -*- coding: utf-8 -*-
 
 # directory
@@ -85,6 +89,15 @@ TAILLE_FIRST = 110
 # nombre de jours de mémoire pour la caisse
 MEMORY = 3
 
+# constantes pour ticket
+
+TIRET='-'*31
+BARRE="_"*31
+TICKET_FILE = "ticket"
+ETOILE='*'*31
+NOM_BAR=' T G V   L O U N G E   B A R '
+NUM_TEL='TEL:62291515/95566592'
+POLITESSE="Merci et à bientôt au TGV!"
 
 
 
@@ -94,9 +107,8 @@ MEMORY = 3
 
 
 
-from tkinter import *
-import sys
-from os.path import join
+
+
 
 # détermination des paramètres de l'affichage
 fenetre = Tk()
