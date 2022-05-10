@@ -632,7 +632,7 @@ class Database:
         """
         infoTik = dict()
         # récupération dans la table facture
-        res = self.curseur.execute("""SELECT nbr, serve, tableName FROM facture WHERE id=?""",(fact_id,)).fetchone()
+        res = self.curseur.execute("""SELECT nbr, serve, tableName, total FROM facture WHERE id=?""",(fact_id,)).fetchone()
         if res:
             infoTik['nbr'], infoTik['serve'], infoTik['tableName'], infoTik['total']  = res[0], res[1], res[2], res[3]
         else:
@@ -640,7 +640,7 @@ class Database:
 
         # récupération dans recordF
         infoTik['recordF'] = []
-        res = self.curseur.execute("""SELECT des, pu, qte, remise, prix FROM article, recordF WHERE code_id=art_id, fact_id=?""",(fact_id,)).fetchall()
+        res = self.curseur.execute("""SELECT descript, pu, qte, remise, recordF.prix FROM articles, recordF WHERE code_id=articles.id AND fact_id=?""",(fact_id,)).fetchall()
         if res:
             for rec in res:
                 infoTik['recordF'].append(dict(des=rec[0], pu=rec[1], qte=rec[2], remise=rec[3], prix=rec[4]))
