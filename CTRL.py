@@ -327,9 +327,10 @@ class Clic:
                 # modification 
                 if statut == VERT2:
                     modification=True # modification activée pour l'impression
-                    self.db.recordModification(fact_id = fact_id, step=1, total = self.db.getTotal(fact_id))
+                    total1 = self.db.recordModification(fact_id = fact_id, step=1, total = self.db.getTotal(fact_id))
                 else:
                     modification = False
+                    total1 = False
                     
                 # établissement du nouveau statut
                 self.fac.setStatut(ORANGE)
@@ -337,40 +338,49 @@ class Clic:
                 
                 
                 # impression facture
-                self.imprimerFacture(fact_id = fact_id, modification=modification)
+                self.imprimerFacture(fact_id = fact_id, modification=modification, total1=total1)
             
-    def imprimerFacture(self, fact_id, modification=False):
+    def imprimerFacture(self, fact_id, modification=False, total1=0):
 
         def contenu():
-            fichier.write(f"")
+            """imprime le contenu d'une facture"""
+            #fichier.write(f"")
             fichier.write('{:^31}'.format(ETOILE))
             fichier.write('\n{:^31}'.format(NOM_BAR))
             fichier.write('\n{:^31}'.format(ETOILE))
             fichier.write('\n'+'{:^31}'.format(NUM_TEL))          
             fichier.write('\n\n'+'{:^31}'.format('TICKET DE CAISSE'))
             fichier.write('\n'+BARRE)
-            fichier.write('\n\n{:^31}'.format("TABLE"+" "+dico['tableName']+'    FACTURE #'+str(fact_id)))        
+            fichier.write('\n\n{:^31}'.format("TABLE"+" "+dico['tableName']+'    FACTURE N°'+str(fact_id)))        
             fichier.write('\n'+TIRET)
 
             for ligne in dico['recordF']:
                 fichier.write('\n'+ligne['des'][:31])            
-                pu=str(ligne['pu'])
-                qte=str(ligne['qte'])
-                ttc=str(ligne['prix'])
+                pu=fpx(ligne['pu'])
+                qte=fpx(ligne['qte'])
+                ttc=fpx(ligne['prix'])
 
                 if ligne['remise']=="0" or not ligne['remise']:
                     "pas de remise"
                     lig='  {:>16}{:>13}'.format(qte+"x"+pu,ttc)
                     fichier.write('\n'+lig)
                 else :
-                    remise='-'+str(ligne['remise'])
+                    remise='-'+fpx(ligne['remise'])
                     lig='  {:>16}'.format(qte+"x"+pu)
                     fichier.write('\n'+lig)
                     lig='  {:>16}{:>13}'.format(remise,ttc)
                     fichier.write('\n'+lig)
                 
             fichier.write('\n'+TIRET)
-            fichier.write('\n'+'  {:>16}{:>13}'.format('TOTAL TTC ',str(dico['total'])))
+            fichier.write('\n'+'  {:>16}{:>13}'.format('TOTAL TTC ',fpx(dico['total'])))
+
+            fichier.write('\n'+TIRET)    
+            fichier.write('\n{:^31}'.format('A votre service : '+self.db.getWorkerFromFacture(fact_id).capitalize()[:13]))
+            # fichier.write('\n{:^31}'.format(politesse))
+        
+            dat=str(datetime.datetime.today())
+            fichier.write('\n'+'{:^31}'.format(dat[8:10]+'/'+dat[5:7]+'/'+dat[0:4]+'   '+dat[11:16]))
+            fichier.write(f"\n{POLITESSE:^31}")
         
         print("IMPRESSION FACTURE, modification :", fact_id, modification)
         dico =self.db.getInfoTicket(fact_id)
@@ -379,19 +389,25 @@ class Clic:
 
             fichier = open(TICKET_FILE+".txt", "w")
             contenu()
-            # startfile(?)
-            # fichier.close()
+           
+            fichier.close()
+            startfile(TICKET_FILE+".txt", "edit")
+            
             
         else: # imprimer 2 tickets modifiés : 1 pour le client et 1 pour la caisse
             
             fichier = open(TICKET_FILE+".txt", "w")
-            fichier.write(f"")
-            fichier.write('{:^31}'.format('FACTURE MODIFIÉE '+'Numero de facture'))
+            fichier.write(f"{'FACTURE N° ' + str(fact_id) +' MODIFIÉE ':^31}")
+            fichier.write('\n{:^31}'.format('ANCIEN TOTAL : '+ fpx(total1)))
+            fichier.write('\n\n')
             #récupérer les infos de la modification
             contenu()
 
-            # startfile(?) x 2
-            # fichier.close()
+            fichier.close()
+
+            startfile(TICKET_FILE+".txt", "edit")
+            startfile(TICKET_FILE+".txt", "edit")
+          
 
             
            

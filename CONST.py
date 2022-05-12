@@ -279,6 +279,10 @@ encoDoc = 'latin-1'
 
 encoTic = 'latin-1'
 
+# fonction lambda pour les prix
+
+fpx = lambda p : "{:,}".format(int(p)).replace(",", ".")
+
 
 
 

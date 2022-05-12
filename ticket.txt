@@ -1,3 +1,6 @@
+    FACTURE N° 39 MODIFIÉE     
+     ANCIEN TOTAL : 61.000     
+
 *******************************
   T G V   L O U N G E   B A R  
 *******************************
@@ -6,9 +9,17 @@
        TICKET DE CAISSE        
 _______________________________
 
-  TABLE COMPTE    FACTURE #37  
+  TABLE jaune    FACTURE N°39  
 -------------------------------
-coca 33cl
-            3x2000         6000
+cigare cohiba habano
+           2x5.000       10.000
+bout grand palais rouge
+           2x3.000        6.000
+magnum les remparts du Virou
+          1x45.000       45.000
 -------------------------------
-        TOTAL TTC          6000
+        TOTAL TTC        61.000
+-------------------------------
+    A votre service : Jean     
+      12/05/2022   14:52       
+  Merci et à bientôt au TGV!   

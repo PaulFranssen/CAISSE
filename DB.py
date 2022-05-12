@@ -448,7 +448,11 @@ class Database:
     def getWorker_id(self, nom):
         res = self.curseur.execute("""SELECT id FROM workers WHERE nom=?""", (nom,)).fetchone()
         return None if not res else res[0]
-    
+
+    def getWorkerFromFacture(self, id):
+        res = self.curseur.execute("""SELECT serve FROM facture WHERE id=?""", (id,)).fetchone()
+        return None if not res else res[0]
+
     def clotureCaisse(self):
         fermeture = datetime.datetime.now()
         self.curseur.execute("""UPDATE caisse SET fermeture=?, statut=? WHERE dat=?""",(fermeture, 0, self.dat))
@@ -522,11 +526,24 @@ class Database:
     
              
     def recordModification(self, fact_id, step, total):
+        """enregistre une modification à l'étape 0  ou à l'étape 1 (refacturation après modification)
+        retourne le total avant modification si étape 1
+
+        """
+        res = 0
         if step == 0:
-            self.curseur.execute("""INSERT INTO modification (fact_id, total1) VALUES (?,?)""", (fact_id, total))   
+            # on enregistre une nouvelle modification et on la fin=0
+            self.curseur.execute("""INSERT INTO modification (fact_id, total1) VALUES (?,?)""", (fact_id, total))  
+            
         else: # step=1
+            # récupérer l'ancien total qui apparaitra sur la facture
+            res = self.curseur.execute("""SELECT total1 FROM modification WHERE fact_id=? AND fin=?""", (fact_id, 0)).fetchone()
+            # enregistrement final
             self.curseur.execute("""UPDATE modification SET total2=?, fin=? WHERE fact_id=? AND fin=?""", (total, 1, fact_id, 0))
+
         self.connexion.commit() 
+        return 0 if not res else res[0]
+
     
     def insertWorker(self, nom):
         """insère un worker
