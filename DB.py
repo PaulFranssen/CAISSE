@@ -56,7 +56,7 @@ class Database:
                                     tablename TEXT,
                                     total INTEGER DEFAULT 0,
                                     recu INTEGER DEFAULT 0,
-                                    solde INTEGER)""")
+                                    solde INTEGER DEFAULT 0)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS articles (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
@@ -649,9 +649,9 @@ class Database:
         """
         infoTik = dict()
         # récupération dans la table facture
-        res = self.curseur.execute("""SELECT nbr, serve, tableName, total FROM facture WHERE id=?""",(fact_id,)).fetchone()
+        res = self.curseur.execute("""SELECT nbr, serve, tableName, total, recu, solde FROM facture WHERE id=?""",(fact_id,)).fetchone()
         if res:
-            infoTik['nbr'], infoTik['serve'], infoTik['tableName'], infoTik['total']  = res[0], res[1], res[2], res[3]
+            infoTik['nbr'], infoTik['serve'], infoTik['tableName'], infoTik['total'], infoTik['recu'], infoTik['solde']  = res[0], res[1], res[2], res[3], res[4], res[5]
         else:
             print('erreur : pas de facture de cet id pour infoTicket!')
 

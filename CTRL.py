@@ -340,18 +340,28 @@ class Clic:
                 # impression facture
                 self.imprimerFacture(fact_id = fact_id, modification=modification, total1=total1)
             
-    def imprimerFacture(self, fact_id, modification=False, total1=0):
+    def imprimerFacture(self, fact_id, modification=False, total1=0, finale=False):
+        """lance l'impression d'une facture
+
+        Args:
+            fact_id (int): id de la facture
+            modification (bool): _True si il s'agit d'imprimer une facture qui a été modifiée_. Defaults to False.
+            total1 (int, optional): _valeur du total avant modification_. Defaults to 0.
+            finale(bool): _True si le client a payé et que c'est sa facture finale_.Defaults to 0.
+        """
+
 
         def contenu():
             """imprime le contenu d'une facture"""
-            #fichier.write(f"")
+          
             fichier.write('{:^31}'.format(ETOILE))
             fichier.write('\n{:^31}'.format(NOM_BAR))
             fichier.write('\n{:^31}'.format(ETOILE))
             fichier.write('\n'+'{:^31}'.format(NUM_TEL))          
             fichier.write('\n\n'+'{:^31}'.format('TICKET DE CAISSE'))
             fichier.write('\n'+BARRE)
-            fichier.write('\n\n{:^31}'.format("TABLE"+" "+dico['tableName']+'    FACTURE N°'+str(fact_id)))        
+            fichier.write('\n\n')
+            fichier.write(f"{dico['tableName']:<13}{'FACTURE N°'+str(fact_id):>18}")
             fichier.write('\n'+TIRET)
 
             for ligne in dico['recordF']:
@@ -374,13 +384,19 @@ class Clic:
             fichier.write('\n'+TIRET)
             fichier.write('\n'+'  {:>16}{:>13}'.format('TOTAL TTC ',fpx(dico['total'])))
 
+            if finale: # afficher le montant reçu et le solde
+                fichier.write('\n'+'  {:>16}{:>13}'.format('RECU ',fpx(dico['recu']))) 
+                texte = "RESTE A PAYER " if dico['solde']>0 else "SOLDE "
+                fichier.write('\n'+'  {:>16}{:>13}'.format(texte,fpx(dico['solde'])))
+                 
             fichier.write('\n'+TIRET)    
             fichier.write('\n{:^31}'.format('A votre service : '+self.db.getWorkerFromFacture(fact_id).capitalize()[:13]))
-            # fichier.write('\n{:^31}'.format(politesse))
-        
+
             dat=str(datetime.datetime.today())
             fichier.write('\n'+'{:^31}'.format(dat[8:10]+'/'+dat[5:7]+'/'+dat[0:4]+'   '+dat[11:16]))
-            fichier.write(f"\n{POLITESSE:^31}")
+            
+            if finale:
+                fichier.write(f"\n{POLITESSE:^31}")
         
         print("IMPRESSION FACTURE, modification :", fact_id, modification)
         dico =self.db.getInfoTicket(fact_id)
@@ -388,25 +404,33 @@ class Clic:
         if modification==False:
 
             fichier = open(TICKET_FILE+".txt", "w")
-            contenu()
-           
+            if finale and dico['solde']>0:
+                fichier.write(f"{'FACTURE N°' + str(fact_id) +' CRÉDITÉE':^31}")
+                fichier.write('\n')
+                fichier.write(f"{'MONTANT CRÉDITÉ : '+ fpx(dico['solde']):^31}")
+                fichier.write('\n\n')
+
+            contenu()  
             fichier.close()
-            startfile(TICKET_FILE+".txt", "edit")
-            
+            startfile(TICKET_FILE+".txt", IMPR)
+            if finale and dico['solde']>0 : 
+                 startfile(TICKET_FILE+".txt", IMPR)
+
             
         else: # imprimer 2 tickets modifiés : 1 pour le client et 1 pour la caisse
             
             fichier = open(TICKET_FILE+".txt", "w")
-            fichier.write(f"{'FACTURE N° ' + str(fact_id) +' MODIFIÉE ':^31}")
-            fichier.write('\n{:^31}'.format('ANCIEN TOTAL : '+ fpx(total1)))
+            fichier.write(f"{'FACTURE N°' + str(fact_id) +' MODIFIÉE':^31}")
+            fichier.write('\n')
+            fichier.write(f"{'ANCIEN TOTAL : '+ fpx(total1):^31}")
             fichier.write('\n\n')
             #récupérer les infos de la modification
             contenu()
 
             fichier.close()
 
-            startfile(TICKET_FILE+".txt", "edit")
-            startfile(TICKET_FILE+".txt", "edit")
+            startfile(TICKET_FILE+".txt", IMPR)
+            startfile(TICKET_FILE+".txt", IMPR)
           
 
             
@@ -488,7 +512,7 @@ class Clic:
         else: # validation effectuée correctement
             
             if self.fac.getStatut() == ROUGE: # cas de l'impression ticket direct
-                self.imprimerFactureFinale(fact_id)
+                self.imprimerFacture(fact_id, finale=True)
                 
             else: # orange et passage au rouge si second clic
                 
@@ -530,7 +554,7 @@ class Clic:
                         self.bac.setColorFacture(nbr, ROUGE) # passage de la facture nbr au rouge dans le bac
                         # suppression des associations table-serveur
                         kw['entrySolde'].configure(disabledbackground = self.th.getColorNormal(choix = "disabledbackground"))
-                        self.imprimerFactureFinale(fact_id) # imprimée 2x si le solde est positif
+                        self.imprimerFacture(fact_id, finale=True) # imprimée 2x si le solde est positif
                 else:
                     self.clicTerminer = 1 # second passage à venir
     
@@ -854,10 +878,11 @@ class Clic:
                 #self.fac.setId(facture, tablename) 
             self.gofacture(facture, tablename)
     
+    """
     def imprimerFactureFinale(self, fact_id):
         print('FACTURE FINALE', fact_id)
         # à imprimer 2x si le solde correspondant à cette facture est positif
-               
+    """         
     def displayContenu(self, **KW):
         
         # if KW['item'] == "sélectionner":

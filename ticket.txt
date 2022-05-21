@@ -1,5 +1,5 @@
-    FACTURE N° 39 MODIFIÉE     
-     ANCIEN TOTAL : 61.000     
+     FACTURE N°47 CRÉDITÉE     
+   MONTANT CRÉDITÉ : 130.000   
 
 *******************************
   T G V   L O U N G E   B A R  
@@ -9,17 +9,19 @@
        TICKET DE CAISSE        
 _______________________________
 
-  TABLE jaune    FACTURE N°39  
+vert               FACTURE N°47
 -------------------------------
-cigare cohiba habano
-           2x5.000       10.000
 bout grand palais rouge
-           2x3.000        6.000
+               3x0            0
 magnum les remparts du Virou
-          1x45.000       45.000
+          2x45.000       90.000
+maïs doux, boite de 300g
+          4x10.000       40.000
 -------------------------------
-        TOTAL TTC        61.000
+        TOTAL TTC       130.000
+             RECU             0
+    RESTE A PAYER       130.000
 -------------------------------
-    A votre service : Jean     
-      12/05/2022   14:52       
+     A votre service : Tom     
+      21/05/2022   11:55       
   Merci et à bientôt au TGV!   
