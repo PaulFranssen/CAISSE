@@ -878,11 +878,11 @@ class Clic:
                 #self.fac.setId(facture, tablename) 
             self.gofacture(facture, tablename)
     
-    """
-    def imprimerFactureFinale(self, fact_id):
-        print('FACTURE FINALE', fact_id)
-        # à imprimer 2x si le solde correspondant à cette facture est positif
-    """         
+    
+    def imprimerTicketCloture(self):
+        pass
+        
+            
     def displayContenu(self, **KW):
         
         # if KW['item'] == "sélectionner":
@@ -1286,6 +1286,10 @@ class Clic:
                 self.db.insertWorker(nom)
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom)
+
+                # effacer le entry
+                contenu.entry2_var.set('')
+                contenu.focus_set()
               
               
         if contenu.item == "ajouter une table":

@@ -420,7 +420,8 @@ class Database:
     
     def getArticle2(self, code_id):
         res = self.curseur.execute("""SELECT code, descript, prix FROM articles WHERE id=?""",(code_id,)).fetchone()
-        return res 
+        return res
+
     
     def updateArticle(self, code, descript, prix, code_id):
         self.curseur.execute("""UPDATE articles
@@ -637,8 +638,10 @@ class Database:
     
     def getModification2(self):
         res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND modification.fin=?""", (1,)).fetchall()
-        print(res, "getM",  (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res)))
-        return (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res))
+        
+        print(list(res))
+        print("M", (0, 0) if res is None else (sum([tup[1] - tup[0] for tup in res]), len(res)))
+        return (0, 0) if res is None else (sum([tup[1] - tup[0] for tup in res]), len(res))
     
     def getFermeture(self):
         res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
@@ -665,6 +668,20 @@ class Database:
         # récupération de la modification (à faire)
         
         return infoTik
+
+    def getFinalTicket(self):
+        """ renvoi un dictionnaire trié des ventes, la clé étant un tuple (code, pu) 
+        """
+        res = self.curseur.execute("""SELECT code, qte, prix FROM articles, recordF WHERE articles.id=recordF.code_id""").fetchall()
+        dico = dict()
+        if res:
+            for code, qte, prix in res:
+                pu=round(prix/qte)
+                if (code, pu) not in dico:
+                    dico[(code, pu)]= qte, prix
+                else:
+                    dico[(code, pu)] = dico[(code, pu)][0] + qte, dico[(code, pu)][1] + prix
+        return sorted(dico.items(), key=lambda t:t[0])
 
     
         
