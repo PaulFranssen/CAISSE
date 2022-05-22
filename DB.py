@@ -241,11 +241,15 @@ class Database:
         Args:
             nbr (int): nombre de la facture
         """
+
+        
+        # res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1, y1, tablename, recu, solde FROM facture WHERE dat=? AND nbr=?""",(self.dat, nbr)).fetchone()
+        
+        # ne tient pas compte de la date
         res = self.curseur.execute("""SELECT id, nbr, serve, couleur, x1, y1, tablename, recu, solde 
                                        FROM facture 
-                                       WHERE dat=? 
-                                       AND nbr=?
-                                       """,(self.dat, nbr)).fetchone()
+                                       WHERE nbr=?
+                                       """,(nbr, )).fetchone()
         
         return res
     
@@ -670,9 +674,9 @@ class Database:
         return infoTik
 
     def getFinalTicket(self):
-        """ renvoi un dictionnaire trié des ventes, la clé étant un tuple (code, pu) 
+        """ renvoi une liste triée des ventes, la clé étant un tuple (code, pu) 
         """
-        res = self.curseur.execute("""SELECT code, qte, prix FROM articles, recordF WHERE articles.id=recordF.code_id""").fetchall()
+        res = self.curseur.execute("""SELECT code, qte, recordF.prix FROM articles, recordF WHERE articles.id=recordF.code_id""").fetchall()
         dico = dict()
         if res:
             for code, qte, prix in res:

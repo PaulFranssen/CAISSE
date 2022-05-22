@@ -339,6 +339,45 @@ class Clic:
                 
                 # impression facture
                 self.imprimerFacture(fact_id = fact_id, modification=modification, total1=total1)
+
+    def imprimerTicketCloture(self):
+
+        def contenu():
+            fichier.write('{:^31}'.format(ETOILE))
+            fichier.write('\n{:^31}'.format(NOM_BAR))
+            fichier.write('\n{:^31}'.format(ETOILE))         
+            fichier.write('\n\n'+'{:^31}'.format('TICKET DE CLOTURE'))
+            fichier.write('\n\n'+TIRET)
+            fichier.write('\n')
+            fichier.write(f'{"CODE":^15}{"QTE":>5}{"PRIX":>11}') 
+            fichier.write('\n'+TIRET)
+            fichier.write('\n')
+
+            # afficher les modifications
+            # afficher les impayés 
+            #fichier.write(f"{dico['tableName']:<13}{'FACTURE N°'+str(fact_id):>18}")
+        
+            total = 0
+            for ligne in liste:
+                code, qte, prix = ligne[0][0], fpx(ligne[1][0]), fpx(ligne[1][1])
+                fichier.write(f'{code:>15}{qte:>5}{prix:>11}')
+                fichier.write('\n')
+                total += ligne[1][1]
+                          
+            fichier.write(TIRET)
+            fichier.write('\n')
+            fichier.write(f"{'TOTAL TTC':>20}{fpx(total):>11}")
+           
+            fichier.write('\n'+TIRET)    
+            
+            dat=str(datetime.datetime.today())
+            fichier.write('\n'+'{:^31}'.format(dat[8:10]+'/'+dat[5:7]+'/'+dat[0:4]+'   '+dat[11:16]))
+            
+        liste = self.db.getFinalTicket()
+        fichier = open(TICKET_FILE+".txt", "w")  
+        contenu()  
+        fichier.close()
+        startfile(TICKET_FILE+".txt", IMPR)
             
     def imprimerFacture(self, fact_id, modification=False, total1=0, finale=False):
         """lance l'impression d'une facture
@@ -879,8 +918,8 @@ class Clic:
             self.gofacture(facture, tablename)
     
     
-    def imprimerTicketCloture(self):
-        pass
+    
+
         
             
     def displayContenu(self, **KW):
@@ -949,6 +988,9 @@ class Clic:
             
         elif KW['item'] == "facturation":
             
+            self.fac.pack(side=LEFT)
+
+            """
             if not self.db.isCaisseOpen(): # pas de caisse active
                 # afficher un message 
                 self.fac.pack_forget()
@@ -958,7 +1000,7 @@ class Clic:
             else:
                 self.fac.pack(side=LEFT)
             
-            
+            """
             
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
@@ -1246,6 +1288,7 @@ class Clic:
             
             elif bouton1['text'] == "TICKET":
                 print('IMPRIMER TICKET FINAL')
+                self.imprimerTicketCloture()
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom) 
                       
