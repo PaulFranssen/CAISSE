@@ -99,6 +99,7 @@ NOM_BAR=' T G V   L O U N G E   B A R '
 NUM_TEL='TEL:62291515/95566592'
 POLITESSE="Merci et à bientôt au TGV!"
 IMPR = 'edit' # 'print'
+JOUR_SEM = [ 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 
 
 

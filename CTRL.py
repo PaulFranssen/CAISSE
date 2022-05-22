@@ -347,6 +347,7 @@ class Clic:
             fichier.write('\n{:^31}'.format(NOM_BAR))
             fichier.write('\n{:^31}'.format(ETOILE))         
             fichier.write('\n\n'+'{:^31}'.format('TICKET DE CLOTURE'))
+            fichier.write('\n' + f'{JOUR_SEM[datetime.datetime.today().weekday()]:^31}')
             fichier.write('\n\n'+TIRET)
             fichier.write('\n')
             fichier.write(f'{"CODE":^15}{"QTE":>5}{"PRIX":>11}') 
