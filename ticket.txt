@@ -1,20 +1,14 @@
 *******************************
   T G V   L O U N G E   B A R  
 *******************************
-     TEL:62291515/95566592     
 
-       TICKET DE CAISSE        
-_______________________________
+       TICKET DE CLOTURE       
 
-REDSKIN            FACTURE N°59
 -------------------------------
-cocktail dapaong
-           5x4.000       20.000
+     CODE        QTE       PRIX
 -------------------------------
-        TOTAL TTC        20.000
-             RECU        20.000
-            SOLDE             0
+           coca    6     12.000
 -------------------------------
-    A votre service : Garva    
-      22/05/2022   12:22       
-  Merci et à bientôt au TGV!   
+           TOTAL TTC     12.000
+-------------------------------
+      22/05/2022   12:45       
