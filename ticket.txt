@@ -1,15 +1,23 @@
+          FACTURE N°1          
+        IMPAYE : 6.000         
+
 *******************************
   T G V   L O U N G E   B A R  
 *******************************
+     TEL:62291515/95566592     
 
-       TICKET DE CLOTURE       
-           Dimanche            
+       TICKET DE CAISSE        
+_______________________________
 
+brun                FACTURE N°1
 -------------------------------
-     CODE        QTE       PRIX
+coca 33cl
+           3x2.000        6.000
 -------------------------------
-           coca    6     12.000
+        TOTAL TTC         6.000
+             RECU             0
+    RESTE A PAYER         6.000
 -------------------------------
-           TOTAL TTC     12.000
--------------------------------
-      22/05/2022   13:27       
+   A votre service : Lambert   
+      29/05/2022   11:47       
+  Merci et à bientôt au TGV!   

@@ -114,6 +114,11 @@ class CadreGestion(Frame):
         
         # ajout des tables initiales au bac
         self.corps.contenu['afficher la salle'].bac.displayTablesInit()
+
+        self.bind_all("<Escape>", lambda e: self.corps.display('afficher la salle'))
+        
+
+       
         
     def display(self):
         # affichage du cadre
@@ -148,6 +153,9 @@ class Entete(Frame):
         """construction du menu
         """
         lst = self.boss.item_lst # liste des items du menu   
+
+        
+
         nbr_item = len(lst) # separator inclus
         menuButton_lst=[] # liste des menubutton     
         barre_lst  = [] # liste des barres verticales
@@ -220,10 +228,11 @@ class Entete(Frame):
         # ajout à droite de la gestion de fenêtre   
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
         self.b1.pack(**PAD_FERMETURE)
-        
-       
+             
         self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
         self.b2.pack(**PAD_FERMETURE)
+
+        
         
         # ajout des widgets au thème
         self.root.th.add_widget("frame", self)
@@ -427,10 +436,6 @@ class Contenu(Frame):
         canvas6 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas7 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         
-        # canvasA = Canvas(cadre1, width=SEPARATEUR_DANS_CADRE, height=1, **KW_CANVAS) #séparateur horizontal
-        # canvasB = Canvas(cadre1, width=SEPARATEUR_DANS_CADRE, height=1, **KW_CANVAS)
-        # canvasC = Canvas(cadre1, width=SEPARATEUR_DANS_CADRE, height=1, **KW_CANVAS)
-        ## salle : contenu particulier car il n' a ni titre ni bouton 
         
        # facture
        
@@ -604,20 +609,6 @@ class Contenu(Frame):
             label5.pack()
             self.entry5.configure(width = LENGTH_DATE)
             self.entry5.pack()
-            
-        # elif self.item == "éditer les employés":
-        #     cadreBox.pack(side=LEFT)           
-        #     canvas.pack(side=LEFT)
-        #     cadre.pack(side=LEFT)
-            
-        #     label1.configure(text = "sélection + enter".upper())
-        #     label1.pack(**PAD_LABEL)   
-        #     self.listBox.configure(width=LENGTH_CODE)
-        #     self.listBox.pack(**PAD_LISTBOX)
-        #     label2.configure(text="nom de l'employé".upper())
-        #     label2.pack(**PAD_LABEL)
-        #     self.entry2.configure(width = LENGTH_CODE)
-        #     self.entry2.pack()
             
         elif self.item == "ajouter un article":
             
@@ -850,11 +841,6 @@ class Bouton(Frame):
             self.bouton1.configure(text="ajouter".upper())
             self.bouton1.pack(**PAD_BUTTON)
             
-        # if self.item == "éditer les employés":
-        #     self.bouton1.configure(text="supprimer".upper())
-        #     self.bouton1.pack(**PAD_BUTTON)
-        #     self.bouton2.configure(text="modifier".upper())
-        #     self.bouton2.pack(**PAD_BUTTON)
         
         if self.item == "modifier un article":
             self.bouton1.configure(text="valider".upper())

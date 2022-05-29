@@ -27,7 +27,7 @@ class Database:
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS caisse (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
                                     dat TIMESTAMP,
-                                    fermeture INTEGER,
+                                    fermeture TIMESTAMP,
                                     statut INTEGER DEFAULT 1)""")
             
             self.curseur.execute("""CREATE TABLE IF NOT EXISTS workers (
@@ -253,7 +253,7 @@ class Database:
         
         return res
     
-    
+
     
     def base10(self, tablename):
         """récupère le service correspondant à tablename
@@ -466,7 +466,16 @@ class Database:
         
     def getDat(self):
         return self.dat
-    
+
+    def getDatesCloture(self):
+        res = self.curseur.execute("""SELECT dat, fermeture FROM caisse""").fetchone()
+        if res:
+            print(res[1], type(res[1]))
+            ouverture = JOUR_SEM[res[0].weekday()] + " "+res[0].strftime("%d/%m/%y %H:%M")
+            fermeture = JOUR_SEM[res[1].weekday()] + " "+res[1].strftime("%d/%m/%y %H:%M")
+            return (ouverture, fermeture)
+
+
     def setDat(self, dat):
         self.dat = dat
         

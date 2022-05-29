@@ -343,20 +343,21 @@ class Clic:
     def imprimerTicketCloture(self):
 
         def contenu():
+            ouverture, fermeture = self.db.getDatesCloture()
             fichier.write('{:^31}'.format(ETOILE))
             fichier.write('\n{:^31}'.format(NOM_BAR))
             fichier.write('\n{:^31}'.format(ETOILE))         
             fichier.write('\n\n'+'{:^31}'.format('TICKET DE CLOTURE'))
-            fichier.write('\n' + f'{JOUR_SEM[datetime.datetime.today().weekday()]:^31}')
+            fichier.write('\n')
+            fichier.write('\n' + f'{"Du "+ouverture:^31}')
+            fichier.write('\n' + f'{"Au "+fermeture:^31}')
+           
+            
             fichier.write('\n\n'+TIRET)
             fichier.write('\n')
             fichier.write(f'{"CODE":^15}{"QTE":>5}{"PRIX":>11}') 
             fichier.write('\n'+TIRET)
             fichier.write('\n')
-
-            # afficher les modifications
-            # afficher les impayés 
-            #fichier.write(f"{dico['tableName']:<13}{'FACTURE N°'+str(fact_id):>18}")
         
             total = 0
             for ligne in liste:
@@ -371,8 +372,15 @@ class Clic:
            
             fichier.write('\n'+TIRET)    
             
-            dat=str(datetime.datetime.today())
-            fichier.write('\n'+'{:^31}'.format(dat[8:10]+'/'+dat[5:7]+'/'+dat[0:4]+'   '+dat[11:16]))
+            fichier.write('\n')
+            e = self.db.getModification2()
+            e = "-" if e==(0,0) else f"{self.formatNumber(e[0])} #{e[1]}"
+            fichier.write('\n'+f"{'MODIFICATIONS ' +e:^31}")
+            fichier.write('\n')
+
+            d = self.db.getImpaye2()
+            d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
+            fichier.write('\n'+f"{'IMPAYES ' + d:^31}")
             
         liste = self.db.getFinalTicket()
         fichier = open(TICKET_FILE+".txt", "w")  
@@ -401,7 +409,7 @@ class Clic:
             fichier.write('\n\n'+'{:^31}'.format('TICKET DE CAISSE'))
             fichier.write('\n'+BARRE)
             fichier.write('\n\n')
-            fichier.write(f"{dico['tableName']:<13}{'FACTURE N°'+str(fact_id):>18}")
+            fichier.write(f"{dico['tableName']:<13}{'FACTURE N°'+fpx(dico['nbr']):>18}")
             fichier.write('\n'+TIRET)
 
             for ligne in dico['recordF']:
@@ -427,7 +435,7 @@ class Clic:
             if finale: # afficher le montant reçu et le solde
                 fichier.write('\n'+'  {:>16}{:>13}'.format('RECU ',fpx(dico['recu']))) 
                 texte = "RESTE A PAYER " if dico['solde']>0 else "SOLDE "
-                fichier.write('\n'+'  {:>16}{:>13}'.format(texte,fpx(dico['solde'])))
+                fichier.write('\n'+'  {:>16}{:>13}'.format(texte,fpx(abs(dico['solde']))))
                  
             fichier.write('\n'+TIRET)    
             fichier.write('\n{:^31}'.format('A votre service : '+self.db.getWorkerFromFacture(fact_id).capitalize()[:13]))
@@ -438,16 +446,15 @@ class Clic:
             if finale:
                 fichier.write(f"\n{POLITESSE:^31}")
         
-        print("IMPRESSION FACTURE, modification :", fact_id, modification)
         dico =self.db.getInfoTicket(fact_id)
 
         if modification==False:
 
             fichier = open(TICKET_FILE+".txt", "w")
             if finale and dico['solde']>0:
-                fichier.write(f"{'FACTURE N°' + str(fact_id) +' CRÉDITÉE':^31}")
+                fichier.write(f"{'FACTURE N°' + fpx(dico['nbr']):^31}")
                 fichier.write('\n')
-                fichier.write(f"{'MONTANT CRÉDITÉ : '+ fpx(dico['solde']):^31}")
+                fichier.write(f"{'IMPAYE : '+ fpx(dico['solde']):^31}")
                 fichier.write('\n\n')
 
             contenu()  
@@ -460,7 +467,7 @@ class Clic:
         else: # imprimer 2 tickets modifiés : 1 pour le client et 1 pour la caisse
             
             fichier = open(TICKET_FILE+".txt", "w")
-            fichier.write(f"{'FACTURE N°' + str(fact_id) +' MODIFIÉE':^31}")
+            fichier.write(f"{'FACTURE N°' + fpx(dico['nbr']) +' MODIFIÉE':^31}")
             fichier.write('\n')
             fichier.write(f"{'ANCIEN TOTAL : '+ fpx(total1):^31}")
             fichier.write('\n\n')
@@ -471,20 +478,6 @@ class Clic:
 
             startfile(TICKET_FILE+".txt", IMPR)
             startfile(TICKET_FILE+".txt", IMPR)
-          
-
-            
-           
-       
-
-        # à poursuivre ici ligne 1728 dans excaisse
-
-        
-     
-
-
-
-
 
         
     def commandModifier(self, **kw):
@@ -1479,14 +1472,7 @@ class Clic:
             color = self.th.getColorT(colorKey)
             kw['spinBox'].configure(readonlybackground=color)
                
-    # def returnListBox(self, **KW):
-        
-    #     if KW['item'] == "éditer les employés":
-    #         index = int(KW['listBox'].curselection()[0])
-    #         employe = KW['listBox'].get(index).strip()
-    #         KW['entry2']['state'] = NORMAL
-    #         KW['entry2_var'].set(employe)
-    #         KW['entry2'].focus_set()
+   
     
     def goTransfert(self, **kw):
         

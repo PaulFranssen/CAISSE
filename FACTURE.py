@@ -55,7 +55,7 @@ class Fac(Frame):
         
     def liens(self):
         # ajout des liens 
-        #self.bind_all("<Control-q>", self.boss.boss.display('afficher la salle'))
+        # self.bind_all("<Control-q>", lambda e: self.boss.boss.display('afficher la salle'))
         
         self.buttonValider.bind('<FocusIn>', self.colorValider)
         self.buttonValider.bind('<FocusOut>', self.colorValider)
