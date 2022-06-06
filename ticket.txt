@@ -1,23 +1,23 @@
-          FACTURE N°1          
-        IMPAYE : 6.000         
-
-*******************************
-  T G V   L O U N G E   B A R  
-*******************************
-     TEL:62291515/95566592     
-
-       TICKET DE CAISSE        
-_______________________________
-
-brun                FACTURE N°1
+          HISTORIQUE           
 -------------------------------
-coca 33cl
-           3x2.000        6.000
+<>     Lundi 06/06/22 14:29    
+><     Lundi 06/06/22 14:35    
+TTC           12.000           
+
+IMPAYE            -            
+MODIF.        -3.000 #1        
 -------------------------------
-        TOTAL TTC         6.000
-             RECU             0
-    RESTE A PAYER         6.000
+<>     Lundi 06/06/22 14:26    
+><     Lundi 06/06/22 14:28    
+TTC              0             
+
+IMPAYE            -            
+MODIF.            -            
 -------------------------------
-   A votre service : Lambert   
-      29/05/2022   11:47       
-  Merci et à bientôt au TGV!   
+<>     Lundi 06/06/22 13:12    
+><     Lundi 06/06/22 13:14    
+TTC           90.000           
+
+IMPAYE            -            
+MODIF.        40.000 #1        
+-------------------------------

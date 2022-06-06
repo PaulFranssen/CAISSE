@@ -93,8 +93,6 @@ class CadreGestion(Frame):
         for liste in self.item_dic.values():
             self.item_lst += liste
             
-       
-        
         ## structure générale : entete, cadre, comment
         
         self.entete = Entete(self)
@@ -103,8 +101,7 @@ class CadreGestion(Frame):
     
         # affichage du corps initial
         self.corps.display(self.item.get())
-        
-        
+              
         # calcul et fixation des dimensions du bac 
         marge = self.entete.b1.winfo_reqheight() + MARGE_HAUTE_SALLE + self.comment.label.winfo_reqheight() + PAD_COMMENT["pady"]*2
         height = self.boss.master.winfo_screenheight() - marge
@@ -116,10 +113,7 @@ class CadreGestion(Frame):
         self.corps.contenu['afficher la salle'].bac.displayTablesInit()
 
         self.bind_all("<Escape>", lambda e: self.corps.display('afficher la salle'))
-        
-
-       
-        
+               
     def display(self):
         # affichage du cadre
         self.pack(fill = BOTH, expand = 1)
@@ -224,6 +218,8 @@ class Entete(Frame):
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[18]))
                         elif nbr_item > 19 and item == lst[19]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[19]))
+                        elif nbr_item > 20 and item == lst[20]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[20]))
         
         # ajout à droite de la gestion de fenêtre   
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
@@ -231,9 +227,7 @@ class Entete(Frame):
              
         self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
         self.b2.pack(**PAD_FERMETURE)
-
-        
-        
+      
         # ajout des widgets au thème
         self.root.th.add_widget("frame", self)
         for mb in menuButton_lst:
@@ -245,26 +239,6 @@ class Entete(Frame):
         for barre in barre_lst:
             self.root.th.add_widget("barre", barre)
             
-    # def desactive_item(self, item):
-        
-    #     """désactive l'item dans le menu
-
-    #     Args:
-    #         item (str): item à désactiver
-    #     """
-    #     i, j = self.dic_position[item]
-    #     self.menu_lst[i].entryconfig(j, state = 'disabled')
-        
-    # def active_item(self, item):
-    #     """désactive l'item dans le menu
-
-    #     Args:
-    #         item (str): item à activer
-            
-    #     """
-    #     i, j = self.dic_position[item]
-    #     self.menu_lst[i].entryconfig(j, state = 'normal')
-          
 class Corps(Frame):
     """éléments du cadre Gestion et contenant un dictionnaire de Titre, Contenu et Bouton, item étant la clé
 
@@ -442,9 +416,7 @@ class Contenu(Frame):
         self.fac = FACTURE.Fac(self)
         self.bac = SALLE.Bac(self, width=0, height=0)
         self.facVide = Frame(self) # cadre vide au lieu d'une facture
-        # liens entre objets
-        
-        
+      
         # intégration des widgets selon l'item
         if self.item == "first":
             cadre.pack(side=LEFT)
@@ -532,9 +504,6 @@ class Contenu(Frame):
             self.root.clic.setBac(self.bac)
             
         elif self.item == "facturation":
-            # affichage de la facture
-            # cadre.pack(side = LEFT)
-            # self.fac.pack(side=LEFT)
             # ajout de la facture au root.clic
             self.root.clic.setFac(self.fac)  
                           

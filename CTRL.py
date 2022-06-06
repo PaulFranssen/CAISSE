@@ -7,14 +7,14 @@ from MODEL import Theme
 import DB
 from CONST import *
 import datetime
-import time
-from random import choice, randint, randrange
+# import time
+# from random import choice, randint, randrange
 from os import startfile, listdir, getcwd, mkdir, rename
 # from os.path import isdir, exists, splitext, isfile, join
-import shutil
+# import shutil
 from collections import OrderedDict
-import json
-import os.path
+# import json
+# import os.path
 
 class E(Exception):
     
@@ -398,7 +398,6 @@ class Clic:
             finale(bool): _True si le client a payé et que c'est sa facture finale_.Defaults to 0.
         """
 
-
         def contenu():
             """imprime le contenu d'une facture"""
           
@@ -479,7 +478,32 @@ class Clic:
             startfile(TICKET_FILE+".txt", IMPR)
             startfile(TICKET_FILE+".txt", IMPR)
 
-        
+    def showBackUp(self):
+        fichier = open(TICKET_FILE+".txt", "w")
+        liste = self.db.getBackUp()
+        print("BACKUPLISTE", liste)
+        titre = "HISTORIQUE"
+        fichier.write(f"{titre:^31}")
+        fichier.write('\n')
+        fichier.write(TIRET)
+        for ouvre, ferme, ttc, impaye, modif in liste:
+            ouvre = JOUR_SEM[ouvre.weekday()] + " "+ouvre.strftime("%d/%m/%y %H:%M")
+            ferme = JOUR_SEM[ferme.weekday()] + " "+ferme.strftime("%d/%m/%y %H:%M")
+            fichier.write('\n')
+            fichier.write(f"<> {ouvre:^28}")
+            fichier.write('\n')
+            fichier.write(f">< {ferme:^28}")
+            fichier.write('\n')
+            fichier.write(f"TTC {self.formatNumber(ttc):^27}")
+            fichier.write('\n\n')
+            fichier.write(f"IMPAYE {impaye:^24}")
+            fichier.write('\n')
+            fichier.write(f"MODIF. {modif:^24}")
+            fichier.write('\n'+TIRET)
+        fichier.close()
+        startfile(TICKET_FILE+".txt", "edit")
+
+
     def commandModifier(self, **kw):
         
         if kw['b']['state'] == DISABLED:
@@ -910,25 +934,11 @@ class Clic:
                 tablename = self.bac.getTableName(x1, y1)
                 #self.fac.setId(facture, tablename) 
             self.gofacture(facture, tablename)
-    
-    
-    
-
-        
-            
+         
     def displayContenu(self, **KW):
+
+        print("displayContenu", KW['item'])
         
-        # if KW['item'] == "sélectionner":
-        #     # récupérer les valeurs dans les caisses
-        #     liste_caisse = self.db.getCaisse(MEMORY)
-        #     if liste_caisse:
-        #         liste_var = [str(elem[1])[:19] for elem in liste_caisse] 
-        #     else:
-        #         liste_var = []
-            
-        #     # fixer la liste dans le spinBox
-        #     KW['spinBox'].configure(values = liste_var)
-            
         if KW['item'] == "synthèse":
             
             self.clearCom()
@@ -984,18 +994,6 @@ class Clic:
             
             self.fac.pack(side=LEFT)
 
-            """
-            if not self.db.isCaisseOpen(): # pas de caisse active
-                # afficher un message 
-                self.fac.pack_forget()
-                KW['facVide'].pack()
-                self.com.set("Pas de caisse ouverte")
-                self.boss.master.after(attenteLongue, self.clearCom)
-            else:
-                self.fac.pack(side=LEFT)
-            
-            """
-            
         elif KW['item'] == "modifier le thème":
             theme_lst = [" "+item for item in self.boss.th.dic_theme.keys()]
             theme = " " + self.boss.th.theme
@@ -1015,17 +1013,6 @@ class Clic:
             KW['entry2_var'].set('')
             KW['entry2'].focus_set()
             
-        # elif KW['item'] == "éditer les employés":
-        #     KW['entry2_var'].set('')
-        #     KW['entry2']['state']=DISABLED
-        #     employe_lst = [' Jacques', ' Norbert', ' Andrea']
-        #     KW['listBox_lst'].clear()
-        #     KW['listBox_lst'].extend(employe_lst)
-        #     KW['listBox'].configure(height=min(len(employe_lst), HEIGHT_LISTBOX), width=LENGTH_CODE+2)
-        #     KW['listBox_var'].set(employe_lst)
-        #     KW['listBox'].selection_set(0)
-        #     KW['listBox'].focus_set()
-            
         elif KW['item'] == "modifier un article":
             self.clearCom()
             KW['entry2_var'].set('')
@@ -1039,14 +1026,16 @@ class Clic:
             KW['entryC'].configure(state=DISABLED)
             
             KW['entry2'].focus_set()
-            
-          
+                    
         elif KW['item'] == "ajouter un article":
             self.clearCom()
             KW['entry2_var'].set('')
             KW['entry3_var'].set('')
             KW['entry4_var'].set('')
-            KW['entry2'].focus_set()  
+            KW['entry2'].focus_set() 
+
+        elif KW['item'] == "historique":
+            self.showBackUp()
     
     def displayButton(self, **kw):
         
@@ -1070,7 +1059,7 @@ class Clic:
                 kw['bouton1'].configure(state = NORMAL, text = "CLOTURER")
             
             else:
-                # la caisse est active et toutes les factures sont cloturées
+                # la caisse est active et toutes les factures ne sont pas cloturées
                 kw['bouton1'].configure(state = DISABLED, text = "CLOTURER")
                 self.com.set("Il reste des factures non cloturées")
                 self.boss.master.after(attenteLongue, self.clearCom)
@@ -1088,29 +1077,10 @@ class Clic:
                 self.com.set('Caisse en cours')
                 self.boss.master.after(attenteLongue, self.clearCom)
                 
-        # elif kw['item'] == "sélectionner":
-            
-        #     if self.db.getDat() is None:
-        #         kw['bouton1'].configure(state = NORMAL)        
-        #     else: 
-        #         kw['bouton1'].configure(state = DISABLED)
-        #         self.com.set('Inaccessible car une caisse est ouverte')
-        #         self.boss.master.after(attenteLongue*2, self.clearCom)
-            
-
-                   
     def commandBouton(self, **kw):
         numeroBouton = kw['numeroBouton']
         contenu = kw['contenu']
         bouton1 = kw['bouton1']
-        
-        # if contenu.item == "sélectionner":
-        #     if kw['bouton1']['state'] == DISABLED:
-        #         return
-            
-        # considérer la sélection et fixer la date
-        # date = contenu.spinBox_var.get()
-              
         
         if contenu.item == "supprimer une table":
             try:
@@ -1169,8 +1139,7 @@ class Clic:
                 work_id = self.db.getWorker_id(code)
                 if not work_id:
                     raise E(self.com, "NOM", "inexistant")         
-                 
-                
+           
             except E as e:
                 e.affiche() 
                 self.boss.master.after(attenteLongue, self.clearCom)
@@ -1257,12 +1226,6 @@ class Clic:
 
                 self.bac.setNumber(0)  # mise à 0 du numéro de factures
                 
-                # factures = self.db.base7()
-                # # affiche les factures dans la salle s'il y en a
-                # if factures:
-                #     # affiche les factures existantes
-                #     self.displayFactures(factures)
-                
                 # suppression des données de l'ancienne caisse
                 self.db.deleteCaisse()
                 
@@ -1281,17 +1244,29 @@ class Clic:
                 return
             
             elif bouton1['text'] == "TICKET":
-                print('IMPRIMER TICKET FINAL')
                 self.imprimerTicketCloture()
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom) 
                       
             else:
-                # cloture effective de la caisse
+               
+                fermeture = datetime.datetime.now()
+                # récupération des impayés et modifications
+                d = self.db.getImpaye2()
+                d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"                  
+                e = self.db.getModification2()
+                e = "-" if e==(0,0) else f"{self.formatNumber(e[0])} #{e[1]}"
+                c = self.db.getEnCloture2()
                 
-                self.db.clotureCaisse()
-                print('cloture effectuée')
-                #self.db.deleteServe()  # suppression de l'association service-table
+                # enregistrement dans le backUp   
+                self.db.recordBackUp(impaye = d, modif = e, ttc=c, fermeture=fermeture)
+             
+                # cloture effective de la caisse 
+                self.db.clotureCaisse(fermeture)
+
+              
+                
+
                 bouton1.configure(text="TICKET")
                 self.com.set('OK')
                 self.boss.master.after(attenteCourte, self.clearCom)

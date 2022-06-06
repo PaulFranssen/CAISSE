@@ -74,8 +74,6 @@ LENGTH_DATE = 21
 F = lambda x : f"{x[0]:^15}   {x[1]:^30}   {x[2]:^10}   {x[3]:^5}   {x[4]:^10}   {x[5]:^10}" 
 FOREGROUND_TRANSFERT = "grey25" # devrait se trouver dans le theme
 
-
-
 # écarts
 ECART_DOUBLE_CADRE_VERTICAL = 100
 
@@ -101,14 +99,9 @@ POLITESSE="Merci et à bientôt au TGV!"
 IMPR = 'edit' # 'print'
 JOUR_SEM = [ 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 
+# fonction lambda pour les prix
 
-
-
-
-
-
-
-
+fpx = lambda p : "{:,}".format(int(p)).replace(",", ".")
 
 
 
@@ -120,6 +113,8 @@ w, h = fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()
 if h not in {1080, 900}:
     print(f"paramètres d'affichage {w}x{h} non pris en compte")
     sys.exit()
+
+"""
 
 # liste des couleurs non-utilisées
 color_1 = 'wheat1'
@@ -281,10 +276,7 @@ encoDoc = 'latin-1'
 
 encoTic = 'latin-1'
 
-# fonction lambda pour les prix
-
-fpx = lambda p : "{:,}".format(int(p)).replace(",", ".")
-
+"""
 
 
 
