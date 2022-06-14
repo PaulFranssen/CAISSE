@@ -3,6 +3,8 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
+from csv import QUOTE_NONE
+from tarfile import ENCODING
 from MODEL import Theme
 import DB
 from CONST import *
@@ -15,6 +17,7 @@ from os import startfile, listdir, getcwd, mkdir, rename
 from collections import OrderedDict
 # import json
 # import os.path
+import csv
 
 class E(Exception):
     
@@ -381,11 +384,25 @@ class Clic:
             d = self.db.getImpaye2()
             d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
             fichier.write('\n'+f"{'IMPAYES ' + d:^31}")
+            return total
             
         liste = self.db.getFinalTicket()
+        #liste [(('coca', 2000), (3, 6000)), (('spagBolo', 4000), (2, 8000))]
+
         fichier = open(TICKET_FILE+".txt", "w")  
-        contenu()  
+        
+        total = contenu()  
         fichier.close()
+
+        # enregistrer les ventes dans un csv
+        try:
+            with open(VENTEX, 'w', newline='', encoding='utf-8') as csvfile:
+                fiche = csv.writer(csvfile, delimiter='\t', quoting = QUOTE_NONE)
+                for ligne in liste:
+                    fiche.writerow([ligne[0][0], ligne[1][0], ligne[1][1]])
+        except csv.Error:
+            print("erreur enregistrement vente")
+        
         startfile(TICKET_FILE+".txt", IMPR)
             
     def imprimerFacture(self, fact_id, modification=False, total1=0, finale=False):
