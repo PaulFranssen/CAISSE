@@ -4,18 +4,19 @@
 
        TICKET DE CLOTURE       
 
-    Du Mardi 14/06/22 21:59    
-    Au Mardi 14/06/22 22:00    
+    Du Jeudi 16/06/22 20:45    
+    Au Jeudi 16/06/22 20:47    
 
 -------------------------------
      CODE        QTE       PRIX
 -------------------------------
-           coca    3      6.000
+           coca    5     10.000
+         fereix    1     40.000
        spagBolo    2      8.000
 -------------------------------
-           TOTAL TTC     14.000
+           TOTAL TTC     58.000
 -------------------------------
 
         MODIFICATIONS -        
 
-           IMPAYES -           
+       IMPAYES 18.000 #1       

@@ -355,7 +355,6 @@ class Clic:
             fichier.write('\n' + f'{"Du "+ouverture:^31}')
             fichier.write('\n' + f'{"Au "+fermeture:^31}')
            
-            
             fichier.write('\n\n'+TIRET)
             fichier.write('\n')
             fichier.write(f'{"CODE":^15}{"QTE":>5}{"PRIX":>11}') 
@@ -384,20 +383,21 @@ class Clic:
             d = self.db.getImpaye2()
             d = "-" if d==(0,0) else f"{self.formatNumber(d[0])} #{d[1]}"
             fichier.write('\n'+f"{'IMPAYES ' + d:^31}")
-            return total
+            return total, fermeture
             
         liste = self.db.getFinalTicket()
         #liste [(('coca', 2000), (3, 6000)), (('spagBolo', 4000), (2, 8000))]
 
         fichier = open(TICKET_FILE+".txt", "w")  
         
-        total = contenu()  
+        total, fermeture = contenu()  
         fichier.close()
 
         # enregistrer les ventes dans un csv
         try:
             with open(VENTEX, 'w', newline='', encoding='utf-8') as csvfile:
                 fiche = csv.writer(csvfile, delimiter='\t', quoting = QUOTE_NONE)
+                fiche.writerow([self.db.getOuvre().strftime("%d %b %Y"), 'CAISSIER', total])
                 for ligne in liste:
                     fiche.writerow([ligne[0][0], ligne[1][0], ligne[1][1]])
         except csv.Error:

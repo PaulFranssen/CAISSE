@@ -659,6 +659,11 @@ class Database:
         res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
         return res if res is None else res[0]
 
+    def getOuvre(self):
+        res = self.curseur.execute("""SELECT dat FROM caisse""").fetchone()
+        return res if res is None else res[0]
+
+
     def getInfoTicket(self, fact_id):
         """informations sur la facture pour l'impression du ticket
         """
