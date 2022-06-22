@@ -95,7 +95,6 @@ class Clic:
         
         if ch and ch[0] == "-":
             # cas négatif
-            print(ch)
             if len(ch) > 7:
                     ch = ch[:-6] + '.' + ch[-6:-3] + '.' + ch[-3:]
             elif len(ch) > 4:
@@ -498,7 +497,6 @@ class Clic:
     def showBackUp(self):
         fichier = open(TICKET_FILE+".txt", "w")
         liste = self.db.getBackUp()
-        print("BACKUPLISTE", liste)
         titre = "HISTORIQUE"
         fichier.write(f"{titre:^31}")
         fichier.write('\n')
@@ -520,6 +518,20 @@ class Clic:
         fichier.close()
         startfile(TICKET_FILE+".txt", "edit")
 
+    def showArticles(self):
+        fichier = open(ARTICLES_FILE+".txt", "w")
+        liste = self.db.getArticles()
+        titre = "LISTE DES ARTICLES"
+        fichier.write(f"{titre:<59}")
+        fichier.write("\n\n")
+        fichier.write(f'{"CODE":<17}{"DESCRIPTION":^32}{"P.U.":>10}')
+        fichier.write("\n"+"-"*59)
+        fichier.write('\n')
+        for code, description, price in liste:
+            fichier.write(f"\n{code:<17}{description:^32}{self.formatNumber(price):>10}")
+           
+        fichier.close()
+        startfile(ARTICLES_FILE+".txt", "edit")
 
     def commandModifier(self, **kw):
         
@@ -954,8 +966,6 @@ class Clic:
          
     def displayContenu(self, **KW):
 
-        print("displayContenu", KW['item'])
-        
         if KW['item'] == "synthèse":
             
             self.clearCom()
@@ -1053,6 +1063,9 @@ class Clic:
 
         elif KW['item'] == "historique":
             self.showBackUp()
+
+        elif KW['item'] == "afficher les articles":
+            self.showArticles()
     
     def displayButton(self, **kw):
         

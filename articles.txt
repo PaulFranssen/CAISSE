@@ -1,0 +1,487 @@
+LISTE DES ARTICLES                                         
+
+CODE                       DESCRIPTION                 P.U.
+-----------------------------------------------------------
+
+FACTUREVIDE           facture sans articles               0
+aber                      bout aberlour                   0
+absenta                      absenta                      0
+absentaC                1 conso de absenta            3.000
+affinity              champagne sans alcool          30.000
+agavita                  tequila agavita                  0
+agavitaC              conso de bout agavita           3.000
+agbama                une portion de agbama               0
+agneau                viande agneau sans os           5.000
+agneauOs              viande agneau avec os               0
+agneauSauce           agneau sauce arachide               0
+agneauSauté                agneau sauté                   0
+akassan                      akassan                  1.000
+akpakpa                  cocktail akpakpa             3.500
+alexanderGreat    vin rouge alexander the great      15.000
+alloco                 1 portion de alloco            1.000
+amour                     cocktail Amour              4.000
+armEmil             bout A-R st emilion rouge             0
+assokui                    sauce légume               5.000
+atieke                  atiéké une portion            1.000
+atomic                     atomic 33cl                2.000
+attieke               une portion de attieke          1.000
+baileys                      baileys                 30.000
+baileysC                1 conso de baileys            3.000
+balast              bout haut balastard rouge             0
+baumeB                 bout dom baume blanc               0
+baumeR            bout domaine de la baume rouge     30.000
+bePink             cannette de vin rosé Be Pink       2.500
+bePinkPack           4 cannettes de vin Rosé          7.500
+beignetCrevet         Beignets de crevettes               0
+ben                       bout benriach                   0
+beni                      beninoise 33cl              2.000
+bf                        beaufort 33cl               2.000
+bièreNA             bière non alcoolisée 25cl         2.000
+blackColaEnergy      black cola Energy drink          2.000
+blackLab             bout black label 70 cl          40.000
+blackLab1              bout black label 1L           55.000
+blackLabC             conso black label 0.7L          4.000
+blancPoulet        blanc de poulet une portion            0
+boeuf                   1 portion de boeuf                0
+bols                     vodka bols 70cl                  0
+bordEru            bout bordeaux sup eru rouge            0
+boris                      vodka boris                    0
+bottega                liqueur bottega 70cl               0
+bouey                bout maison bouey rouge         30.000
+boyau                   1 portion de boyau            5.000
+brizL                liqueur marie brizard mp             0
+broBoeuf              une brochette de boeuf          4.000
+broMerguez             brochette de merguez           2.000
+broMixte               mini brochette mixte           2.000
+broPoisson          1 portion darne de poisson        5.000
+broPoulet             1 brochette de poulet           2.000
+cHabano                cigare cohiba habano           5.000
+cHabanoCM                cigare habano cm                 0
+cHoyo                   cigare cohiba hoyo                0
+cadiot                     cadiot 2016               30.000
+cafeCap                  café en capsule              1.000
+cafeSac                   sachet de café              1.000
+calamar                calamar une portion                0
+calend            bout les calendières vin rosé           0
+calvaVSOP               calvados vsop 70cl           80.000
+calvetRes         bout calvet grde reserve rouge          0
+campari                 liqueur campari 1L           30.000
+campariC                1/16 de campari 1L            4.000
+camusVS                   camus vs 70cl              80.000
+camusVSOP                bout camus VSOP             90.000
+cappuccino            1 tasse de cappuccino           1.500
+cardhu                     bout cardhu               60.000
+carilloR           bout. vin rouge carillonade       25.000
+cast                       castel 33cl                2.000
+celeneCRBrut          bouteil de vin mouseux         35.000
+champNA              champagne non alcoolisé         30.000
+champNARo          champagne non alcoolisé rosé           0
+champagneV            une coupe de champagne         10.000
+chastMerl               chastagnac merlot            15.000
+chastR            chastagnac  cabernet sauvignon     15.000
+chastSauvB         bout chastagnac Sauv. blanc       20.000
+chastSyRo           bout chastagnac syrah rosé            0
+chatBelAir               chateau Bel Air             25.000
+chatCol            bout chateau colombier rouge      25.000
+chatFer            bout chateau ferrande rouge       20.000
+chatFerboy                chateau Ferboy             15.000
+chatGrandJardin    vin rouge chat grand jardin       20.000
+chatHautRoulet         chateau Haut Roulet           20.000
+chatMarl            bouteille chateau marlene        12.000
+chatMartin          bout chateau martin rouge        20.000
+chatMoinesMen         chateau moines menodin         20.000
+chateauLary                chateau lary              20.000
+chawPoulet               chawarma poulet              3.000
+chawTGV                    chawarma tgv               3.000
+chawViande              chawarma de viande            3.000
+cheeseBurger              cheese burger               2.500
+chevalierLand       chevalier Landerac bx sup        20.000
+chicha                        chicha                      0
+chickenBurg               chicken burger              3.000
+chivas12             bout chivas 12 ans 70cl         40.000
+chivas12-1            bout chivas 12 ans 1L          45.000
+chivas12-1C             conso chivas12 1L             4.000
+chivas12C              conso chivas12 0.7L            4.000
+chivas18             bout chivas 18 ans 70cl         45.000
+chivas18-1            bout chivas 18 ans 1L          70.000
+chivasEx              bout chivas extra 70cl              0
+choucMouton            choucouya de mouton            3.000
+choucPoule             choucouyta de poulet           2.500
+choucPoulet            choucouya de poulet            2.000
+chretBM             chretienne blanc moelleux        15.000
+chretMerl          bout chretienne merlot rouge           0
+chretR                bout chretienne rouge          15.000
+coca                        coca 33cl                 2.000
+cocaSS             cannette de coca sans sucre        2.000
+cointreau               liqueur cointreau                 0
+cointreau350             cointreau 350 cl                 0
+cointreauC               conso cointreau              2.000
+comteJoseph                comte Joseph             110.000
+comteJosephHA         comte Joseph Hors Age         120.000
+comteJosephVS            comte Joseph VS             55.000
+coolR               bouteille de vin mousseux        15.000
+cotLayon                 coteaux du Layon            25.000
+crabe                    portion de crabe                 0
+cremAlsM           bou crément Alsace mousseux       30.000
+crepe                    un plat de crepe             1.000
+crevette              1 portion de crevette           5.000
+cuisPoulet           cuisse de poulet braisée         4.000
+cuissPoulet              cuisse de poulet             4.000
+dapaong                  cocktail dapaong             4.000
+darnePoisson             darne de poisson             4.000
+despe                    desperados 33cl              2.500
+dimple                   bouteille dimple            60.000
+dimpleC                  conso a-r Dimple             6.000
+diplomatico              rhum diplomatico                 0
+disaronno                   disaronno                50.000
+doppel                 Doppel Munich Lager            2.000
+doubleB1               bout double black 1L               0
+doubleBlack           bout double black 70cl         80.000
+doubleHamb               double hamburger             4.000
+droitBouchon             droit de bouchon            10.000
+duoBroBoeuf            duo brochette boeuf            4.000
+duoBroMerguez         duo brochette merguez           4.000
+duoBroPoulet         duo brochette au poulet          4.000
+eau                          eau 50cl                 1.000
+eau1.5                       eau 1.5L                 2.000
+eauGaz                  eau gazefiee 50cl             1.000
+eggCheese               egg cheese burger             3.500
+eku                          eku 33cl                 2.000
+elom                      cocktail elom               4.000
+eminceBoeufSc        emince boeuf sauce creme         5.000
+eminceP                un émince de poulet                0
+emincePoul               emincé de poulet             4.000
+emincePoule              emincé de poulet             4.000
+emincePoulet            emincée de poulet             4.000
+escalPoulet             escalope de poulet            5.000
+escalPouletSC      escalope poulet sauce creme        4.000
+fereix             champagne fereixnet prosecco      40.000
+filetBoeuf         1 portion de filet de boeuf        5.000
+filetBoeufSauP    filet de boeuf sauce piquante       5.000
+filetPoisson             filet de poisson             5.000
+filetPoissonSc      filet poisson sauce creme         5.000
+filetPoissons         plat filet de poisson           5.000
+fiolePap              bout fiole pape rouge          40.000
+frite                  1 portion de frites            1.000
+fromage                 fromage en tranche                0
+gPalais              bout grand palais rouge              0
+gPuch                 bout grand puch rouge               0
+gadget                        tshirt                  5.000
+gadgetStval       coffret, coeur petit et grand           0
+gambas                 1 portion de gambas           12.000
+ganhi                     cocktail ganhi              4.000
+gateauRiz            1 portion gateau de riz              0
+gbekuin                       légume                  5.000
+gesier                 1 portion de gesier                0
+get27                         Get 27                  2.500
+gingerC            un verre de gingembre dilué        1.000
+gingerShort           une short de gingmbre             500
+glenB12           bout glenf. blanc 12 ans 70cl      60.000
+glenB12C            conso glenfiddich 12 ans          6.000
+glenB12L           glenfiddich 12 ans un litre       80.000
+glenRo15           bout glenf. rosé 15 ans 70cl           0
+glenRo18           bout glenf. rosé 18 ans 70cl      80.000
+glenlivet              bout glenlivet 70cl                0
+goldBar                 bout gold bar 70cl           80.000
+goldLab                bout gold label 70cl         100.000
+gordons                    bout gordons              20.000
+gordonsC                1 conso de gordons            4.000
+grandNoir               bout le grd noir             25.000
+granitierBM          granitier blanc moelleux        20.000
+grants                    liqueur grants                  0
+grdMarnier              bout grand marnier                0
+grdMarnierC            conso grand marnier            5.000
+grimbergen            grimbergen bière kriet          2.000
+gui                       guinness 33cl               2.500
+hMedoc               bout le haut medoc rouge        20.000
+haieVive                cocktail haie vive            4.000
+hamburger                   hamburger                 2.000
+haricotV                   haricot vert               1.000
+haussB                 bout haussmann blanc          20.000
+haussCabS          haussmann cabernet sauvignon      15.000
+haussCabSauv       haussmann cabernet sauvignon      20.000
+haussMerl             haussmann merlot rouge         15.000
+haussR                 bout haussmann rouge          20.000
+haussSyRo              haussmann Syrah Rosé          15.000
+hein25                    heineken 25 cl              2.500
+hennessyVS               hennessy vs 70cl            55.000
+hennessyVS1L         bouteille 1L hennessyVS         70.000
+hennessyVSC            1 conso hennessy vs            5.000
+hennessyVSOP              hennessy vsop              60.000
+hennessyVSOP1L           hennessy vsop 1L           135.000
+jAnanas                   jus ananas 1L                   0
+jBanane                   jus banane 1L                   0
+jGoyave                   jus goyave 1L                   0
+jMangue                   jus mangue 1L                   0
+jOrange                   jus orange 1L                   0
+jPamplem               jus pamplemousse 1L                0
+jPomme                     jus pomme 1L                   0
+jRaisin                   jus raisin 1L                   0
+jTamarin25               jus tamarin 25cl                 0
+jack                  bout jack daniel 70cl          40.000
+jack1                  bout jack daniel 1L                0
+jackBar               bout jack barrel 70cl          60.000
+jackC                1 conso de jack daniels          5.000
+jackGent             bout jack gentleman 70cl             0
+jackHo                 bout jack honey 70cl          40.000
+jackSilv              bout jack silver 70cl               0
+jb                         bout jb 70cl              30.000
+jbC                          jb conso                 3.000
+jbRes               bout de jb réserve 15 ans        60.000
+jelzin                  vodka jelzin 70cl                 0
+jourSpB            bout journée spéciale blanc            0
+jourSpRo           bout journée spéciale rosée       12.000
+jpB                    bout jp chenet blanc          20.000
+jpRo                   bout jp chenet rosé           20.000
+jpRo1.5                jp chenet rosé 1.5 L          30.000
+jus1L                        1 L jus                      0
+jusCaraf                  caraffe de jus              2.500
+jusCarafe                 carafe de jus               2.500
+jusV                      1 verre de jus              2.000
+kamel                    rhum kamel 70cl                  0
+lagaBrut1.5L           lagache brut M 1.5L                0
+lagaBrutRes           lagache brut réservée          50.000
+lagaNatB               lagache nature blanc          80.000
+lagaPrestD1.5L        lagache prestige d1.5L              0
+lagaRo                    lagache rosée              80.000
+lait                         lait 1L                      0
+laitCoco            une boite de lait de coco             0
+langueB            1 portion de langue de boeuf           0
+langueBoeuf        1 portion de langue de boeuf       5.000
+laurentPer               laurent perrier             65.000
+leBellevue                  Le Belleue               12.000
+lef25                      leffe 25 cl                2.000
+legumeSaut          1 portion de légume sauté         1.000
+lipton                  1 sachet de lipton                0
+litchiL                   liqueur litchi                  0
+loireMarchaisCa      Cabernet Loire Marchais         12.000
+lucBelFantome       bout luc bellaire fantome        60.000
+lucBelRo                luc bellaire rosé            65.000
+luisEsB                bout luis esch blanc               0
+luisEsR             bout luis eschenauer rouge            0
+magnumRempVir      magnum les remparts du Virou      45.000
+mais300G             maïs doux, boite de 300g             0
+maisDoux              1 portion de maïs doux              0
+malesan             bout malesan bordeau rouge            0
+malibu                        malibu                      0
+malibuOrange       cocktail malibu avec du jus        3.000
+mangPaL               liqueur mangue passion              0
+marBernB             bout marquis bern blanc              0
+marBois              bout marquis bois rouge              0
+marsanB               bout chat marsan blanc              0
+marsanR             bout chateau marsan rouge             0
+martiPeRo          bout martini pétillant rosé       20.000
+martiniB                 martini blanc 1L            20.000
+martiniBC              conso martini blanc            4.000
+martiniR                  martini rouge              20.000
+martiniRC             1 conso martini rouge           4.000
+martiniRo                  martini rosé                   0
+mazMerl           bout roche mazet merlot rouge           0
+mazSauv            bout roche mazet sauv rouge            0
+merguez                 1 portion merguez                 0
+messidor                     messidor                25.000
+miniBroBoeuf     1 plat de 4 mini broch de boeuf          0
+miniBroMergez         mini brochette mergez           4.000
+moetB1.5L                 moet brut 1.5L                  0
+moetBrut                 moet brut simple            65.000
+moetIceImp              moet ice impérial           120.000
+moetNect               moet chandon nectar          115.000
+moetNectRo               meot nectar Rosé           115.000
+moetNectar             bout moet c. nectar           80.000
+moetRo                      moet rosé                90.000
+mojitoClassic        cocktail mojito classic          4.000
+mojitoParf          cocktail de mojito parfumé        4.000
+mojitoVierge            mojito sans alcool            3.000
+molinari                 bout de molinari            25.000
+monbazB               bout monbazillac blanc              0
+monsBord           bout monsieur bordeaux rouge           0
+monsBordRo            monsieur Bordeaux rosé         20.000
+monsBordSup       monsieur de bordeau superieur      25.000
+moutCadNor        bout mouton cadet normal rouge     20.000
+moutCadRes          bout mouton cadet reserve             0
+musca                 bout muscador mousseux              0
+muscadetAntique          muscadet antiqe             20.000
+nemBoeuf           1 portion de 4 nems de boeuf       2.000
+nemPoulet                 nems de poulet              2.000
+noirMerl          bout le grd noir merlot rouge      25.000
+oeuf                         un oeuf                      0
+omelFromage            omelette au fromage            2.500
+omelNature               omelette nature              1.500
+orangeSec                  orange sec                     0
+orangeSecC               conso orange Sec             3.000
+oustric             bout domaine oustric rouge            0
+pachuca                tequila pachuca 70cl               0
+pachucaC                1 conso de Pachuca            2.500
+pain                     pain pour soupe                500
+painChaw            1 portion de pain chawarma            0
+painHamb           1 portion de pain hamburger            0
+painSandw           1 portion de pain sandwich            0
+panach25                  panachee 25cl               2.000
+patNoire             1 portion de patte noire         1.000
+patRouge              portion de pate rouge           1.000
+patRouges                  patte rouge                1.000
+pateBlanche          portion de pate blanche          1.000
+pateRouge                   pate rouge                1.000
+pateRougeB                  pate rouge                1.000
+perrier                    perrier 33cl               2.000
+petitPoisPain            plat petit pois              2.000
+petitPoisPlat           plat de petit pois            2.000
+picnicR                  vin rouge picnic            12.000
+pils                        pils 33cl                 2.000
+pinkMiami              1 cocktail pinkmiami           2.500
+pintade                1 portion de pintade           5.000
+piron                     plat de piron               1.000
+planB                     coctail plan B              6.000
+planteur                cocktail planteur             2.500
+podere                    bout de podere             25.000
+poisson                1 portion de poisson           5.000
+poissonFume                poisson fumé                   0
+pommeSaute               portion de pomme             1.000
+poulet                 1 portion de poulet                0
+pouletBi            1portion poulet bicyclette        5.000
+pouletBraise              poulet braisé               2.500
+pouletCuisse            cuisses de poulet             3.000
+power                      black power                2.000
+premius                 vin blanc Premius            25.000
+princessFr             princesse de france           60.000
+prosecco             bouteil de vin mousseux         35.000
+puissantEleg       puissant et elegant cabSauv       15.000
+punchCaraib         cocktail punch caraibénne         3.000
+purePomme                 purée de pomme              1.000
+quartierJac           cocktail quartier Jac           3.000
+redBull                   red bull 33cl               2.000
+redLab70               bout red label 70cl                0
+redLab75                 red label 0.75 L            35.000
+redLabC                1 conso de red label           5.000
+rempVirou               remparts du virou            25.000
+remyTresBrut             remy trésor brut            50.000
+ricard                    liqueur ricard                  0
+ricardC                 1 conso de ricard             2.000
+riz                      1 portion de riz             1.000
+rizCant             1 portion de riz cantonais        2.000
+rizCanto                  riz cantonais               1.000
+rizCantonais               riz cantonai              10.000
+rocheMazB             bout roche mazet blanc              0
+rocheMazR             bout roche mazet rouge         15.000
+rocheMazRo            bout roche mazet rosé               0
+rox                          rox 33cl                 2.000
+ruinBlBl              ruinart blanc de blanc        150.000
+ruinBrut                   ruinart brut             110.000
+ruinRo                     ruinart rosé             150.000
+sBanane                  sirop banane 1L                  0
+sCanne                    sirop de canne                  0
+sCassis                  sirop de cassis                  0
+sFraise                  sirop fraise 1L                  0
+sGinger1L              sirop gingembre 1 L                0
+sGinger1V             verre de sirop ginger           1.000
+sGrenadine              sirop grenadine 1L                0
+sMenthe                  sirop menthe 1L                  0
+sPamplem              sirop pamplemousse 1L               0
+sPassion                  sirop passion                   0
+sPeche                    sirop pêche 1L                  0
+sTamarin                sirop tamarin 1 L                 0
+sTomate                  sirop tomate 1L                  0
+sagesse                 bout sagesse rouge           30.000
+saladeAvoCrevet    salade avocat aux crevettes        4.000
+saladeAvoPoulet      salade avocat au poulet          3.000
+saladeCompo               salade compose              6.000
+saladeCrudite           salade de crudité             2.500
+saladeFruit            plat salade de fruit           2.000
+saladeMixte                salade mixte               3.000
+saladePoulet             salade au poulet             3.000
+saladePouletBi     salade au poulet bicyclette        4.500
+saladeTGV                   salade tgv                3.000
+sandwPoulet             sandwich de poulet            2.000
+sandwSteak                sandwich steak              2.500
+sandwViande          sandwich viande de boeuf         2.000
+sandwich                     sandwich                 2.000
+sandwichTGV                sandwich TGV               2.500
+sanjoseS              tequila sanjose silver              0
+sanjoseSC                conso de sanjose             2.000
+sauceArachide             sauce arachide              5.000
+sauceBlokoto             sauce de blokoto             5.000
+sauceCreme                  sauceCreme                4.000
+sauceCrinCrin             sauce crincrin              5.000
+sauceGombo                sauce de gombo              5.000
+savoy                      vodka savoy                    0
+seigneurieEnclo    seigneurie de l'enclos 2015       20.000
+sexAple                 cocktail sex apple            2.500
+single                 bout singleton 75cl                0
+sirop1L                     bout sirop                    0
+sirop1V                       sirop                   2.000
+siropC                  1 conso de sirop              1.000
+skol                        skol 33cl                 2.000
+smirnof                   vodka smirnof                   0
+soupeBoyau                soupe de boyau              5.000
+soupePoisson             soupe de poisson             4.000
+spagBolo               spaghetti bolognaise           4.000
+spagh                1 portion de spaghettis          1.000
+speedEnergy                speed energy               2.000
+sprite                        sprite                  1.000
+spriteP               sprite plastique 33cl               0
+stJamesB            rhum saint james blanc 1L        30.000
+stJamesBC              conso st james Blanc           4.000
+stJamesR            rhum saint james rouge 1L        30.000
+stJamesRC               conso saint James             4.000
+stPaul                 rhum saint paul 70cl               0
+stRemyVSOP             saint remy vsop 70cl          20.000
+stadeAmitie          cocktail stade d'amitié          4.000
+steakChamp             steak au champignon            4.000
+stoli                 vodka stolichnaya 70cl         30.000
+stoliC                     conso stoli                4.000
+sucreCan             bout sucre de canne 0.7L             0
+suze                       liqueur suze              25.000
+suzeC                     conso de suze               4.000
+tBlanc                  tequila blanc 70cl           25.000
+tBlancC                conso tequila blanco           4.000
+tChoco                   tequila chocolat            25.000
+tElCobrizo              tequila el cobrizo           20.000
+tOnOffHecho       bout tequ. on off hecho 70 cl      20.000
+taraniB                 bout tarani blanc            15.000
+taraniBM              tarani blanc Moeulleux         15.000
+taraniR                 bout tarani rouge            15.000
+taraniRo                 bout tarani rosé            15.000
+tgv1                      cocktail tgv1               4.000
+tgv2                      cocktail tgv2               4.000
+tgv3                tequila, grenatdine, vodka        4.000
+tgvNA               cocktail TGV non alcoolisé        3.000
+tgvRoyal                cocktail tgv royal            8.000
+theCitron              thé lipton au citron           1.500
+thon                    1 portion de thon                 0
+thé                     un thé avec lipton            1.000
+théCitron                1 thé de citron              1.500
+théTGV                   thé spécial TGV              2.500
+tilapiaG                 poisson tilapia              5.000
+tilapiaM              poisson tilapia moyen           4.000
+toiMoi                 cocktail toi et moi            4.000
+tonic                       tonic 33cl                1.000
+toso                           toso                       0
+trioBroBoeuf         trio brochette de boeuf          4.000
+trioBroMerguez      trio brochette de merguez         5.000
+trioBroPoisson      trio brochette de poisson         7.500
+trioBroPoulet        trio brochette de poulet         5.000
+tripleSec            liqueur triple sec 70cl              0
+tripleSecC             conso de triple sec            4.000
+tropical               cocktal NA tropical            3.000
+trouillard             champagne trouillard          60.000
+tvg1                      cocktail tgv1               4.000
+verreBW              verre a bierre ou wisky          2.000
+verreCV                 verre à vin casse             2.000
+verreMousCC           1/14 bout vin mousseux          2.500
+verreMoussCC            1/14 vin mousseux             2.500
+veuveClicot                veuve clicot              80.000
+viandeBro         1portion boeuf pour 1brochette          0
+viandeChaw             viande pour chawarma               0
+viandeH             viande hachée une portion             0
+viandeNem         1 portion de viande pour nems           0
+vinB1V                un verre de vin blanc               0
+vinR1V                un verre de vin rouge           5.000
+vinRouge1V           une coupe de chret rouge         5.000
+vodkaFili                  vodka filirt              20.000
+vodkaKavenina                 vodka                  20.000
+vodkaPoliakov             vodka poliakov             20.000
+wangache              1 portion de wangache               0
+will                bout williams lawson 70cl        30.000
+willC                 conso bout de william           5.000
+xxl                          xxl 33cl                 2.000
+yeniRaki                bout de yeni raki            25.000

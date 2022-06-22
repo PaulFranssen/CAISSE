@@ -13,6 +13,8 @@ THEME_FILE = "theme_file.json"
 LAST_THEME_FILE = "last_theme.txt"
 DATABASE_FILE = "bdd.db"
 VENTEX = "DOCUMENTS/ventex.csv"
+ARTICLES_FILE="articles"
+
 
 # tailles des caractères
 TAILLE_TITRE = 25
