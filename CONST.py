@@ -80,7 +80,7 @@ POLICE_FIRST = "consolas" # écran d'acceuil
 TAILLE_FIRST = 110
 
 # nombre de jours de mémoire pour la caisse
-MEMORY = 3
+MEMORY = 7
 
 # constantes pour ticket
 

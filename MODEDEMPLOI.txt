@@ -1,7 +1,7 @@
 CaisseX
 
 historique : 
-affiche l'historique des caisses des 31 derniers jours :
+affiche l'historique des caisses des 7 derniers jours :
 date d'ouverture et de fermeture, total de la facture, modifications (montant # nbr factures modifiées), et impayés (montant impayé # nbr factures impayées)
 
 cloture & ticket :
