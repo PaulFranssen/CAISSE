@@ -259,7 +259,7 @@ class Database:
         """récupère le service correspondant à tablename
         """
         if tablename:
-            print('nomTAble', tablename)
+         
             res = self.curseur.execute("""SELECT workers.nom FROM workers, serve, tables, caisse 
                                         WHERE workers.id = serve.work_id
                                         AND caisse.dat=? 
@@ -469,7 +469,7 @@ class Database:
     def getDatesCloture(self):
         res = self.curseur.execute("""SELECT dat, fermeture FROM caisse""").fetchone()
         if res:
-            print(res[1], type(res[1]))
+           
             ouverture = JOUR_SEM[res[0].weekday()] + " "+res[0].strftime("%d/%m/%y %H:%M")
             fermeture = JOUR_SEM[res[1].weekday()] + " "+res[1].strftime("%d/%m/%y %H:%M")
             return (ouverture, fermeture)
@@ -645,19 +645,23 @@ class Database:
       
     def getModification(self):
         res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND facture.dat=? AND modification.fin=?""", (self.dat, 1)).fetchall()
-        print(res, "getM",  (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res)))
+      
         return (0, 0) if res is None else (sum([tup[1]-tup[0] for tup in res]), len(res))
     
     def getModification2(self):
         res = self.curseur.execute("""SELECT total1, total2 FROM modification, facture WHERE facture.id=modification.fact_id AND modification.fin=?""", (1,)).fetchall()
         
-        print(list(res))
-        print("M", (0, 0) if res is None else (sum([tup[1] - tup[0] for tup in res]), len(res)))
+    
         return (0, 0) if res is None else (sum([tup[1] - tup[0] for tup in res]), len(res))
     
     def getFermeture(self):
         res = self.curseur.execute("""SELECT fermeture FROM caisse WHERE dat=? AND statut=?""",(self.dat,0)).fetchone()
         return res if res is None else res[0]
+
+    def getOuvre(self):
+        res = self.curseur.execute("""SELECT dat FROM caisse""").fetchone()
+        return res if res is None else res[0]
+
 
     def getInfoTicket(self, fact_id):
         """informations sur la facture pour l'impression du ticket
@@ -705,12 +709,21 @@ class Database:
                 dico[-id] = (ouvre, ferme, ttc, impaye, modif)
         return [t[1] for t in sorted(dico.items())]
 
+    def getArticles(self):
+        """renvoi des éléments des articles sous forme d'une liste triée selon le id en décroissant
+        """
+        dico = dict()
+        res = self.curseur.execute("""SELECT code, descript, prix FROM articles""").fetchall()
+        if res:
+            for code, descript, price in res:
+                dico[code] = (code, descript, price)
+        return [t[1] for t in sorted(dico.items())]
+
     def recordBackUp(self, impaye, modif, ttc, fermeture):
         """Enregistre la caisse qui se cloture et limite le backUp aux x derniers jours
         """
         res = self.curseur.execute("""SELECT dat FROM caisse WHERE statut=?""", (1,)).fetchone()
         if res:
-            print((res[0], fermeture, ttc, impaye, modif))
             self.curseur.execute("""INSERT INTO mem(ouvre, ferme, ttc, impaye, modif) VALUES (?,?,?,?,?)""", (res[0], fermeture, ttc, impaye, modif)) 
             self.connexion.commit()
             # suppression des caisses trop vieilles

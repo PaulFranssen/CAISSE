@@ -46,10 +46,6 @@ KW_LISTBOX2 = dict(selectmode='browse',
                   relief='flat',
                   justify='center',
                   bd=0)
-# kw_28 = {'selectmode': 'browse', 'bg': color_33, 'font': (police_1, taille_4),
-#          'selectbackground': color_6, 'selectforeground': color_30, 'takefocus': 0,
-#          'activestyle': 'none', 'highlightthickness': 0,
-#          'relief': 'flat'}
 
 PAD_LISTBOX = dict(pady=0)
 
@@ -178,6 +174,7 @@ class Theme:
         """
         if transfert == 0:
             return  self.dic_theme[self.theme]['listBoxNormal']['fg']
+            
         else:
             return  self.dic_theme[self.theme]['listBoxTransfert']['fg']
 

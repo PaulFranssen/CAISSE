@@ -18,7 +18,9 @@
         "separator",
         "ajouter un article",
         "supprimer un article",
-        "modifier un article"
+        "modifier un article",
+        "separator",
+        "afficher les articles"
     ],
 
     

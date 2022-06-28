@@ -2,10 +2,6 @@ from tkinter import *
 from random import randrange
 from CONST import *
 
-
-# LARGEUR_FENETRE = 500
-# HAUTEUR_FENETRE = 400
-
 class Bac(Canvas):
     def __init__(self, boss, width, height, bd=0, cursor=CURSOR):
         Canvas.__init__(self, boss, width = width, height = height, bd=bd, cursor=cursor, highlightthickness=0)
@@ -105,23 +101,6 @@ class Bac(Canvas):
                     else:
                         self.clic.gofacture(self.db.base9(nbr), '')
             
-    # def displayFactures(self, factures):
-    #     # afficher toutes les factures se trouvant dans la database   
-    #     for nbr, serve, couleur,x1, y1 in factures:
-    #         self.id_lastFacture = self.create_text(x1, y1,
-    #                                                 fill=couleur, 
-    #                                                 font = self.font_facture, 
-    #                                                 text=str(nbr), 
-    #                                                 tags=("facture", couleur, str(nbr)))   
-    #         self.id_lastObject = self.id_lastFacture
-    #         self.number = max(self.number, nbr)
-    #         self.tag_bind(self.id_lastFacture, '<Button-2>', lambda _ : self.gofacture(self.id_lastFacture))
-            
-    # def gofacture(self, id):
-    #     print('aller à la facture', id)
-    #     self.clic.displayFacture(id)
-            
-    
         
     def getNbrMaxTable(self, dim):
         """retourne  le nombre max d'unités de tables en largeur ou en hauteur
@@ -256,7 +235,6 @@ class Bac(Canvas):
                 # récupérer le nom de la table
                 tablename = self.gettags(tables_id.pop())[2]
 
-        print(tablename, "getFacture dans salle")
         return tablename        
         
             
@@ -316,23 +294,3 @@ class Bac(Canvas):
             #     print(f'la facture {self.gettags(self.tup_selected[0])[2]} a été déplacée à la position ({self.x1}, {self.y1})')
             self.tup_selected = None
             
-# if __name__ == '__main__':
-    
-#     couleurs = ('grey80', 'wheat1', 'wheat2', 'wheat3')
-#     fen = Tk()
-#     bac = Bac(fen, width=LARGEUR_FENETRE, height=HAUTEUR_FENETRE, bg='ivory')
-#     bac.pack(padx=5, pady=3)
-#     b_fin = Button(fen, text='terminer', bg='royal blue', fg='white', font=("Helvetica", 10,'bold'), command=fen.quit)
-#     b_fin.pack(pady=2)
-    
-#     wgt = [None for _ in range(5)]
-#     nbr = [None for _ in range(5)]
-#     for i in range(1):
-        
-#         coul = couleurs[randrange(len(couleurs))]
-#         x1, y1 = randrange(30), randrange(20)
-#         x2, y2 = x1 + randrange(20,50), y1 + randrange(30, 50)
-#         bac.create_table(x1, y1, x2, y2, coul, "salon blanc" if i==0 else "table2")
-#         bac.create_facture(20, 30, str(49+randrange(50)))
-
-#     fen.mainloop()

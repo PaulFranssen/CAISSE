@@ -1,0 +1,27 @@
+CaisseX
+
+historique : 
+affiche l'historique des caisses des 7 derniers jours :
+date d'ouverture et de fermeture, total de la facture, modifications (montant # nbr factures modifiées), et impayés (montant impayé # nbr factures impayées)
+
+cloture & ticket :
+cloture la caisse en cours (si pas de factures actives) et enregistrement de la caisse dans l'historique
+impression du ticket de cloture 
+
+afficher la salle :
+accessible via le menu ou par la touche <esc>
+nouvelle facture dans la salle par les touches <CTRL+f>
+accès à la facture depuis la salle par <clic-center> (souris) ou via le menu
+
+enregistrer une facture vide:
+encoder un article factice (FACTUREVIDE) car une quantité nulle d'articles est refusée
+
+synthèse:
+affiche la situation actuelle:
+date d'ouverture et de fermeture de la caisse (si la caisse est fermée)
+en cours = montant des commandes non encore facturées, 
+facturé = montant facturé mais pas encore encaissé, 
+encaissé = montant encaissé
+
+effacement de la caisse:
+lorsqu'une nouvelle caisse démarre, les données de la caisse précédente sont effacées
