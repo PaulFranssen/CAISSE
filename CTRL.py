@@ -517,6 +517,9 @@ class Clic:
             fichier.write('\n'+TIRET)
         fichier.close()
         startfile(TICKET_FILE+".txt", "edit")
+        
+    def showEmploi(self):
+        startfile(EMPLOI_FILE + ".txt", "edit")
 
     def showArticles(self):
         fichier = open(ARTICLES_FILE+".txt", "w")
@@ -1063,6 +1066,9 @@ class Clic:
 
         elif KW['item'] == "historique":
             self.showBackUp()
+            
+        elif KW['item'] == "mode d'emploi":
+            self.showEmploi()
 
         elif KW['item'] == "afficher les articles":
             self.showArticles()

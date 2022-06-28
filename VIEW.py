@@ -220,6 +220,14 @@ class Entete(Frame):
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[19]))
                         elif nbr_item > 20 and item == lst[20]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[20]))
+                        elif nbr_item > 21 and item == lst[21]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[21]))
+                        elif nbr_item > 22 and item == lst[22]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[22]))
+                        elif nbr_item > 23 and item == lst[23]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[23]))
+                        elif nbr_item > 24 and item == lst[24]:
+                            me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[24]))
         
         # ajout à droite de la gestion de fenêtre   
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
