@@ -14,7 +14,7 @@ LAST_THEME_FILE = "last_theme.txt"
 DATABASE_FILE = "bdd.db"
 VENTEX = "DOCUMENTS/ventex.csv"
 ARTICLES_FILE="articles"
-EMPLOI_FILE=DATA_FILE+"/MODEDEMPLOI"
+EMPLOI_FILE=join(DATA_FILE, "MODEDEMPLOI.txt")
 
 # tailles des caractères
 TAILLE_TITRE = 25

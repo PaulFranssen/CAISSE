@@ -519,7 +519,7 @@ class Clic:
         startfile(TICKET_FILE+".txt", "edit")
         
     def showEmploi(self):
-        startfile(EMPLOI_FILE + ".txt", "edit")
+        startfile(EMPLOI_FILE, "edit")
 
     def showArticles(self):
         fichier = open(ARTICLES_FILE+".txt", "w")
