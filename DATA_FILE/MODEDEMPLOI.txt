@@ -29,3 +29,7 @@ synthèse:
 
 effacement de la caisse:
 	lorsqu'une nouvelle caisse démarre, les données de la caisse précédente sont effacées
+
+ticket de cloture numérique
+	émis dans le sous-dossier "DOCUMENTS" du dossier de la caisse
+	format csv avec la tabulation comme séparateur
