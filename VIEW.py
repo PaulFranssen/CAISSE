@@ -233,8 +233,8 @@ class Entete(Frame):
         self.b1 = Button(self, text="X ", command=self.root.croix, **KW_FERMETURE)
         self.b1.pack(**PAD_FERMETURE)
              
-        self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
-        self.b2.pack(**PAD_FERMETURE)
+        # self.b2 = Button(self, text=" —", command=self.root.barre, **KW_FERMETURE)
+        # self.b2.pack(**PAD_FERMETURE)
       
         # ajout des widgets au thème
         self.root.th.add_widget("frame", self)
@@ -243,7 +243,7 @@ class Entete(Frame):
         for me in self.menu_lst:
             self.root.th.add_widget("menu", me)
         self.root.th.add_widget("exit", self.b1)
-        self.root.th.add_widget("exit", self.b2)
+        # self.root.th.add_widget("exit", self.b2)
         for barre in barre_lst:
             self.root.th.add_widget("barre", barre)
             
