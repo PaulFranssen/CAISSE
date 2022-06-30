@@ -14,15 +14,15 @@ agbama                une portion de agbama               0
 agneau                viande agneau sans os           5.000
 agneauOs              viande agneau avec os               0
 agneauSauce           agneau sauce arachide               0
-agneauSauté                agneau sauté                   0
+agneauSautÃ©                agneau sautÃ©                   0
 akassan                      akassan                  1.000
 akpakpa                  cocktail akpakpa             3.500
 alexanderGreat    vin rouge alexander the great      15.000
 alloco                 1 portion de alloco            1.000
 amour                     cocktail Amour              4.000
 armEmil             bout A-R st emilion rouge             0
-assokui                    sauce légume               5.000
-atieke                  atiéké une portion            1.000
+assokui                    sauce lÃ©gume               5.000
+atieke                  atiÃ©kÃ© une portion            1.000
 atomic                     atomic 33cl                2.000
 attieke               une portion de attieke          1.000
 baileys                      baileys                 30.000
@@ -30,13 +30,13 @@ baileysC                1 conso de baileys            3.000
 balast              bout haut balastard rouge             0
 baumeB                 bout dom baume blanc               0
 baumeR            bout domaine de la baume rouge     30.000
-bePink             cannette de vin rosé Be Pink       2.500
-bePinkPack           4 cannettes de vin Rosé          7.500
+bePink             cannette de vin rosÃ© Be Pink       2.500
+bePinkPack           4 cannettes de vin RosÃ©          7.500
 beignetCrevet         Beignets de crevettes               0
 ben                       bout benriach                   0
 beni                      beninoise 33cl              2.000
 bf                        beaufort 33cl               2.000
-bièreNA             bière non alcoolisée 25cl         2.000
+biÃ¨reNA             biÃ¨re non alcoolisÃ©e 25cl         2.000
 blackColaEnergy      black cola Energy drink          2.000
 blackLab             bout black label 70 cl          40.000
 blackLab1              bout black label 1L           55.000
@@ -59,10 +59,10 @@ cHabano                cigare cohiba habano           5.000
 cHabanoCM                cigare habano cm                 0
 cHoyo                   cigare cohiba hoyo                0
 cadiot                     cadiot 2016               30.000
-cafeCap                  café en capsule              1.000
-cafeSac                   sachet de café              1.000
+cafeCap                  cafÃ© en capsule              1.000
+cafeSac                   sachet de cafÃ©              1.000
 calamar                calamar une portion                0
-calend            bout les calendières vin rosé           0
+calend            bout les calendiÃ¨res vin rosÃ©           0
 calvaVSOP               calvados vsop 70cl           80.000
 calvetRes         bout calvet grde reserve rouge          0
 campari                 liqueur campari 1L           30.000
@@ -74,13 +74,13 @@ cardhu                     bout cardhu               60.000
 carilloR           bout. vin rouge carillonade       25.000
 cast                       castel 33cl                2.000
 celeneCRBrut          bouteil de vin mouseux         35.000
-champNA              champagne non alcoolisé         30.000
-champNARo          champagne non alcoolisé rosé           0
+champNA              champagne non alcoolisÃ©         30.000
+champNARo          champagne non alcoolisÃ© rosÃ©           0
 champagneV            une coupe de champagne         10.000
 chastMerl               chastagnac merlot            15.000
 chastR            chastagnac  cabernet sauvignon     15.000
 chastSauvB         bout chastagnac Sauv. blanc       20.000
-chastSyRo           bout chastagnac syrah rosé            0
+chastSyRo           bout chastagnac syrah rosÃ©            0
 chatBelAir               chateau Bel Air             25.000
 chatCol            bout chateau colombier rouge      25.000
 chatFer            bout chateau ferrande rouge       20.000
@@ -122,10 +122,10 @@ comteJosephVS            comte Joseph VS             55.000
 coolR               bouteille de vin mousseux        15.000
 cotLayon                 coteaux du Layon            25.000
 crabe                    portion de crabe                 0
-cremAlsM           bou crément Alsace mousseux       30.000
+cremAlsM           bou crÃ©ment Alsace mousseux       30.000
 crepe                    un plat de crepe             1.000
 crevette              1 portion de crevette           5.000
-cuisPoulet           cuisse de poulet braisée         4.000
+cuisPoulet           cuisse de poulet braisÃ©e         4.000
 cuissPoulet              cuisse de poulet             4.000
 dapaong                  cocktail dapaong             4.000
 darnePoisson             darne de poisson             4.000
@@ -149,10 +149,10 @@ eggCheese               egg cheese burger             3.500
 eku                          eku 33cl                 2.000
 elom                      cocktail elom               4.000
 eminceBoeufSc        emince boeuf sauce creme         5.000
-eminceP                un émince de poulet                0
-emincePoul               emincé de poulet             4.000
-emincePoule              emincé de poulet             4.000
-emincePoulet            emincée de poulet             4.000
+eminceP                un Ã©mince de poulet                0
+emincePoul               emincÃ© de poulet             4.000
+emincePoule              emincÃ© de poulet             4.000
+emincePoulet            emincÃ©e de poulet             4.000
 escalPoulet             escalope de poulet            5.000
 escalPouletSC      escalope poulet sauce creme        4.000
 fereix             champagne fereixnet prosecco      40.000
@@ -171,16 +171,16 @@ gadgetStval       coffret, coeur petit et grand           0
 gambas                 1 portion de gambas           12.000
 ganhi                     cocktail ganhi              4.000
 gateauRiz            1 portion gateau de riz              0
-gbekuin                       légume                  5.000
+gbekuin                       lÃ©gume                  5.000
 gesier                 1 portion de gesier                0
 get27                         Get 27                  2.500
-gingerC            un verre de gingembre dilué        1.000
+gingerC            un verre de gingembre diluÃ©        1.000
 gingerShort           une short de gingmbre             500
 glenB12           bout glenf. blanc 12 ans 70cl      60.000
 glenB12C            conso glenfiddich 12 ans          6.000
 glenB12L           glenfiddich 12 ans un litre       80.000
-glenRo15           bout glenf. rosé 15 ans 70cl           0
-glenRo18           bout glenf. rosé 18 ans 70cl      80.000
+glenRo15           bout glenf. rosÃ© 15 ans 70cl           0
+glenRo18           bout glenf. rosÃ© 18 ans 70cl      80.000
 glenlivet              bout glenlivet 70cl                0
 goldBar                 bout gold bar 70cl           80.000
 goldLab                bout gold label 70cl         100.000
@@ -191,7 +191,7 @@ granitierBM          granitier blanc moelleux        20.000
 grants                    liqueur grants                  0
 grdMarnier              bout grand marnier                0
 grdMarnierC            conso grand marnier            5.000
-grimbergen            grimbergen bière kriet          2.000
+grimbergen            grimbergen biÃ¨re kriet          2.000
 gui                       guinness 33cl               2.500
 hMedoc               bout le haut medoc rouge        20.000
 haieVive                cocktail haie vive            4.000
@@ -202,7 +202,7 @@ haussCabS          haussmann cabernet sauvignon      15.000
 haussCabSauv       haussmann cabernet sauvignon      20.000
 haussMerl             haussmann merlot rouge         15.000
 haussR                 bout haussmann rouge          20.000
-haussSyRo              haussmann Syrah Rosé          15.000
+haussSyRo              haussmann Syrah RosÃ©          15.000
 hein25                    heineken 25 cl              2.500
 hennessyVS               hennessy vs 70cl            55.000
 hennessyVS1L         bouteille 1L hennessyVS         70.000
@@ -227,23 +227,23 @@ jackHo                 bout jack honey 70cl          40.000
 jackSilv              bout jack silver 70cl               0
 jb                         bout jb 70cl              30.000
 jbC                          jb conso                 3.000
-jbRes               bout de jb réserve 15 ans        60.000
+jbRes               bout de jb rÃ©serve 15 ans        60.000
 jelzin                  vodka jelzin 70cl                 0
-jourSpB            bout journée spéciale blanc            0
-jourSpRo           bout journée spéciale rosée       12.000
+jourSpB            bout journÃ©e spÃ©ciale blanc            0
+jourSpRo           bout journÃ©e spÃ©ciale rosÃ©e       12.000
 jpB                    bout jp chenet blanc          20.000
-jpRo                   bout jp chenet rosé           20.000
-jpRo1.5                jp chenet rosé 1.5 L          30.000
+jpRo                   bout jp chenet rosÃ©           20.000
+jpRo1.5                jp chenet rosÃ© 1.5 L          30.000
 jus1L                        1 L jus                      0
 jusCaraf                  caraffe de jus              2.500
 jusCarafe                 carafe de jus               2.500
 jusV                      1 verre de jus              2.000
 kamel                    rhum kamel 70cl                  0
 lagaBrut1.5L           lagache brut M 1.5L                0
-lagaBrutRes           lagache brut réservée          50.000
+lagaBrutRes           lagache brut rÃ©servÃ©e          50.000
 lagaNatB               lagache nature blanc          80.000
 lagaPrestD1.5L        lagache prestige d1.5L              0
-lagaRo                    lagache rosée              80.000
+lagaRo                    lagache rosÃ©e              80.000
 lait                         lait 1L                      0
 laitCoco            une boite de lait de coco             0
 langueB            1 portion de langue de boeuf           0
@@ -251,17 +251,17 @@ langueBoeuf        1 portion de langue de boeuf       5.000
 laurentPer               laurent perrier             65.000
 leBellevue                  Le Belleue               12.000
 lef25                      leffe 25 cl                2.000
-legumeSaut          1 portion de légume sauté         1.000
+legumeSaut          1 portion de lÃ©gume sautÃ©         1.000
 lipton                  1 sachet de lipton                0
 litchiL                   liqueur litchi                  0
 loireMarchaisCa      Cabernet Loire Marchais         12.000
 lucBelFantome       bout luc bellaire fantome        60.000
-lucBelRo                luc bellaire rosé            65.000
+lucBelRo                luc bellaire rosÃ©            65.000
 luisEsB                bout luis esch blanc               0
 luisEsR             bout luis eschenauer rouge            0
 magnumRempVir      magnum les remparts du Virou      45.000
-mais300G             maïs doux, boite de 300g             0
-maisDoux              1 portion de maïs doux              0
+mais300G             maÃ¯s doux, boite de 300g             0
+maisDoux              1 portion de maÃ¯s doux              0
 malesan             bout malesan bordeau rouge            0
 malibu                        malibu                      0
 malibuOrange       cocktail malibu avec du jus        3.000
@@ -270,12 +270,12 @@ marBernB             bout marquis bern blanc              0
 marBois              bout marquis bois rouge              0
 marsanB               bout chat marsan blanc              0
 marsanR             bout chateau marsan rouge             0
-martiPeRo          bout martini pétillant rosé       20.000
+martiPeRo          bout martini pÃ©tillant rosÃ©       20.000
 martiniB                 martini blanc 1L            20.000
 martiniBC              conso martini blanc            4.000
 martiniR                  martini rouge              20.000
 martiniRC             1 conso martini rouge           4.000
-martiniRo                  martini rosé                   0
+martiniRo                  martini rosÃ©                   0
 mazMerl           bout roche mazet merlot rouge           0
 mazSauv            bout roche mazet sauv rouge            0
 merguez                 1 portion merguez                 0
@@ -284,18 +284,18 @@ miniBroBoeuf     1 plat de 4 mini broch de boeuf          0
 miniBroMergez         mini brochette mergez           4.000
 moetB1.5L                 moet brut 1.5L                  0
 moetBrut                 moet brut simple            65.000
-moetIceImp              moet ice impérial           120.000
+moetIceImp              moet ice impÃ©rial           120.000
 moetNect               moet chandon nectar          115.000
-moetNectRo               meot nectar Rosé           115.000
+moetNectRo               meot nectar RosÃ©           115.000
 moetNectar             bout moet c. nectar           80.000
-moetRo                      moet rosé                90.000
+moetRo                      moet rosÃ©                90.000
 mojitoClassic        cocktail mojito classic          4.000
-mojitoParf          cocktail de mojito parfumé        4.000
+mojitoParf          cocktail de mojito parfumÃ©        4.000
 mojitoVierge            mojito sans alcool            3.000
 molinari                 bout de molinari            25.000
 monbazB               bout monbazillac blanc              0
 monsBord           bout monsieur bordeaux rouge           0
-monsBordRo            monsieur Bordeaux rosé         20.000
+monsBordRo            monsieur Bordeaux rosÃ©         20.000
 monsBordSup       monsieur de bordeau superieur      25.000
 moutCadNor        bout mouton cadet normal rouge     20.000
 moutCadRes          bout mouton cadet reserve             0
@@ -335,26 +335,26 @@ planB                     coctail plan B              6.000
 planteur                cocktail planteur             2.500
 podere                    bout de podere             25.000
 poisson                1 portion de poisson           5.000
-poissonFume                poisson fumé                   0
+poissonFume                poisson fumÃ©                   0
 pommeSaute               portion de pomme             1.000
 poulet                 1 portion de poulet                0
 pouletBi            1portion poulet bicyclette        5.000
-pouletBraise              poulet braisé               2.500
+pouletBraise              poulet braisÃ©               2.500
 pouletCuisse            cuisses de poulet             3.000
 power                      black power                2.000
 premius                 vin blanc Premius            25.000
 princessFr             princesse de france           60.000
 prosecco             bouteil de vin mousseux         35.000
 puissantEleg       puissant et elegant cabSauv       15.000
-punchCaraib         cocktail punch caraibénne         3.000
-purePomme                 purée de pomme              1.000
+punchCaraib         cocktail punch caraibÃ©nne         3.000
+purePomme                 purÃ©e de pomme              1.000
 quartierJac           cocktail quartier Jac           3.000
 redBull                   red bull 33cl               2.000
 redLab70               bout red label 70cl                0
 redLab75                 red label 0.75 L            35.000
 redLabC                1 conso de red label           5.000
 rempVirou               remparts du virou            25.000
-remyTresBrut             remy trésor brut            50.000
+remyTresBrut             remy trÃ©sor brut            50.000
 ricard                    liqueur ricard                  0
 ricardC                 1 conso de ricard             2.000
 riz                      1 portion de riz             1.000
@@ -363,11 +363,11 @@ rizCanto                  riz cantonais               1.000
 rizCantonais               riz cantonai              10.000
 rocheMazB             bout roche mazet blanc              0
 rocheMazR             bout roche mazet rouge         15.000
-rocheMazRo            bout roche mazet rosé               0
+rocheMazRo            bout roche mazet rosÃ©               0
 rox                          rox 33cl                 2.000
 ruinBlBl              ruinart blanc de blanc        150.000
 ruinBrut                   ruinart brut             110.000
-ruinRo                     ruinart rosé             150.000
+ruinRo                     ruinart rosÃ©             150.000
 sBanane                  sirop banane 1L                  0
 sCanne                    sirop de canne                  0
 sCassis                  sirop de cassis                  0
@@ -378,14 +378,14 @@ sGrenadine              sirop grenadine 1L                0
 sMenthe                  sirop menthe 1L                  0
 sPamplem              sirop pamplemousse 1L               0
 sPassion                  sirop passion                   0
-sPeche                    sirop pêche 1L                  0
+sPeche                    sirop pÃªche 1L                  0
 sTamarin                sirop tamarin 1 L                 0
 sTomate                  sirop tomate 1L                  0
 sagesse                 bout sagesse rouge           30.000
 saladeAvoCrevet    salade avocat aux crevettes        4.000
 saladeAvoPoulet      salade avocat au poulet          3.000
 saladeCompo               salade compose              6.000
-saladeCrudite           salade de crudité             2.500
+saladeCrudite           salade de cruditÃ©             2.500
 saladeFruit            plat salade de fruit           2.000
 saladeMixte                salade mixte               3.000
 saladePoulet             salade au poulet             3.000
@@ -425,7 +425,7 @@ stJamesR            rhum saint james rouge 1L        30.000
 stJamesRC               conso saint James             4.000
 stPaul                 rhum saint paul 70cl               0
 stRemyVSOP             saint remy vsop 70cl          20.000
-stadeAmitie          cocktail stade d'amitié          4.000
+stadeAmitie          cocktail stade d'amitiÃ©          4.000
 steakChamp             steak au champignon            4.000
 stoli                 vodka stolichnaya 70cl         30.000
 stoliC                     conso stoli                4.000
@@ -440,17 +440,17 @@ tOnOffHecho       bout tequ. on off hecho 70 cl      20.000
 taraniB                 bout tarani blanc            15.000
 taraniBM              tarani blanc Moeulleux         15.000
 taraniR                 bout tarani rouge            15.000
-taraniRo                 bout tarani rosé            15.000
+taraniRo                 bout tarani rosÃ©            15.000
 tgv1                      cocktail tgv1               4.000
 tgv2                      cocktail tgv2               4.000
 tgv3                tequila, grenatdine, vodka        4.000
-tgvNA               cocktail TGV non alcoolisé        3.000
+tgvNA               cocktail TGV non alcoolisÃ©        3.000
 tgvRoyal                cocktail tgv royal            8.000
-theCitron              thé lipton au citron           1.500
+theCitron              thÃ© lipton au citron           1.500
 thon                    1 portion de thon                 0
-thé                     un thé avec lipton            1.000
-théCitron                1 thé de citron              1.500
-théTGV                   thé spécial TGV              2.500
+thÃ©                     un thÃ© avec lipton            1.000
+thÃ©Citron                1 thÃ© de citron              1.500
+thÃ©TGV                   thÃ© spÃ©cial TGV              2.500
 tilapiaG                 poisson tilapia              5.000
 tilapiaM              poisson tilapia moyen           4.000
 toiMoi                 cocktail toi et moi            4.000
@@ -466,13 +466,13 @@ tropical               cocktal NA tropical            3.000
 trouillard             champagne trouillard          60.000
 tvg1                      cocktail tgv1               4.000
 verreBW              verre a bierre ou wisky          2.000
-verreCV                 verre à vin casse             2.000
+verreCV                 verre Ã  vin casse             2.000
 verreMousCC           1/14 bout vin mousseux          2.500
 verreMoussCC            1/14 vin mousseux             2.500
 veuveClicot                veuve clicot              80.000
 viandeBro         1portion boeuf pour 1brochette          0
 viandeChaw             viande pour chawarma               0
-viandeH             viande hachée une portion             0
+viandeH             viande hachÃ©e une portion             0
 viandeNem         1 portion de viande pour nems           0
 vinB1V                un verre de vin blanc               0
 vinR1V                un verre de vin rouge           5.000

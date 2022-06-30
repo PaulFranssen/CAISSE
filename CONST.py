@@ -16,6 +16,8 @@ VENTEX = "DOCUMENTS/ventex.csv"
 ARTICLES_FILE="articles"
 EMPLOI_FILE=join(DATA_FILE, "MODEDEMPLOI.txt")
 
+ENCODEINFO="utf-8"
+
 # tailles des caractères
 TAILLE_TITRE = 25
 TAILLE_CAR = 18

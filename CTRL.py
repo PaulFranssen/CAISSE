@@ -387,7 +387,7 @@ class Clic:
         liste = self.db.getFinalTicket()
         #liste [(('coca', 2000), (3, 6000)), (('spagBolo', 4000), (2, 8000))]
 
-        fichier = open(TICKET_FILE+".txt", "w")  
+        fichier = open(TICKET_FILE+".txt", "w", encoding=ENCODEINFO)  
         
         total, fermeture = contenu()  
         fichier.close()
@@ -465,7 +465,7 @@ class Clic:
 
         if modification==False:
 
-            fichier = open(TICKET_FILE+".txt", "w")
+            fichier = open(TICKET_FILE+".txt", "w", encoding=ENCODEINFO)
             if finale and dico['solde']>0:
                 fichier.write(f"{'FACTURE N°' + fpx(dico['nbr']):^31}")
                 fichier.write('\n')
@@ -481,7 +481,7 @@ class Clic:
             
         else: # imprimer 2 tickets modifiés : 1 pour le client et 1 pour la caisse
             
-            fichier = open(TICKET_FILE+".txt", "w")
+            fichier = open(TICKET_FILE+".txt", "w", encoding=ENCODEINFO)
             fichier.write(f"{'FACTURE N°' + fpx(dico['nbr']) +' MODIFIÉE':^31}")
             fichier.write('\n')
             fichier.write(f"{'ANCIEN TOTAL : '+ fpx(total1):^31}")
@@ -495,7 +495,7 @@ class Clic:
             startfile(TICKET_FILE+".txt", IMPR)
 
     def showBackUp(self):
-        fichier = open(TICKET_FILE+".txt", "w")
+        fichier = open(TICKET_FILE+".txt", "w", encoding=ENCODEINFO)
         liste = self.db.getBackUp()
         titre = "HISTORIQUE"
         fichier.write(f"{titre:^31}")
@@ -522,7 +522,7 @@ class Clic:
         startfile(EMPLOI_FILE, "edit")
 
     def showArticles(self):
-        fichier = open(ARTICLES_FILE+".txt", "w")
+        fichier = open(ARTICLES_FILE+".txt", "w", encoding=ENCODEINFO)
         liste = self.db.getArticles()
         titre = "LISTE DES ARTICLES"
         fichier.write(f"{titre:<59}")
