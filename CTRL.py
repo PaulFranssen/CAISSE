@@ -363,7 +363,7 @@ class Clic:
             total = 0
             for ligne in liste:
                 code, qte, prix = ligne[0][0], fpx(ligne[1][0]), fpx(ligne[1][1])
-                fichier.write(f'{code:>15}{qte:>5}{prix:>11}')
+                fichier.write(f'{code:^15}{qte:>5}{prix:>11}')
                 fichier.write('\n')
                 total += ligne[1][1]
                           
