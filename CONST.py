@@ -13,10 +13,13 @@ THEME_FILE = "theme_file.json"
 LAST_THEME_FILE = "last_theme.txt"
 DATABASE_FILE = "bdd.db"
 VENTEX = "DOCUMENTS/ventex.csv"
-ARTICLES_FILE="articles"
-EMPLOI_FILE=join(DATA_FILE, "MODEDEMPLOI.txt")
+ARTICLES_FILE = "articles"
+EMPLOI_FILE = join(DATA_FILE, "MODEDEMPLOI.txt")
 
 ENCODEINFO="utf-8"
+
+#image de départ
+IMG_FIRST = "cappuccino.png"
 
 # tailles des caractères
 TAILLE_TITRE = 25
