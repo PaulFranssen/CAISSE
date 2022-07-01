@@ -51,7 +51,7 @@ CURSOR = "crosshair"
 LENGTH_TABLE = 12  # longeur maximale d'un nom de table
 LENGTH_WORKER = 15  # longeur maximale d'un worker
 LENGTH_DIMENSION_TABLE = 4
-CAPTURE_DANS_TABLE = "find_enclosed"#"find_overlapping" #: touche la table, "find_enclosed" : intérieur à la table
+CAPTURE_DANS_TABLE = "find_overlapping" #"find_overlapping" #: touche la table, "find_enclosed" : intérieur à la table
 
 # largeur et hauteur widgets
 HEIGHT_BUTTON = 1
