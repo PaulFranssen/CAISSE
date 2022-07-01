@@ -381,6 +381,10 @@ class Contenu(Frame):
         cadre = Frame(self)  
         
         titre = Label(cadre)
+        self.photo1 = PhotoImage(file=IMG_FIRST)
+        self.photo2 = PhotoImage(file=IMG_CLOTURE)
+        self.photo3 = PhotoImage(file=IMG_BEGIN)
+        
         label2 = Label(cadre,**KW_LABEL)
         self.entry2 = Entry(cadre, textvariable=self.entry2_var,**KW_ENTRY)
         label3 = Label(cadre,**KW_LABEL)
@@ -420,13 +424,21 @@ class Contenu(Frame):
         # intégration des widgets selon l'item
         if self.item == "first":
             cadre.pack(side=LEFT)
-            self.photo=PhotoImage(file=IMG_FIRST)
-            titre.configure(image = self.photo)
+            titre.configure(image = self.photo1)
             #titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
             titre.pack()
             
-        elif self.item == 'nouvelle caisse':       
-            pass
+        elif self.item == 'nouvelle caisse':
+            cadre.pack(side=LEFT)
+            titre.configure(image = self.photo3)
+            #titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
+            titre.pack()
+        
+        elif self.item == "cloture & ticket":
+            cadre.pack(side=LEFT)
+            titre.configure(image = self.photo2)
+            #titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
+            titre.pack()
         
         elif self.item == 'sélectionner':
             cadre.pack(side=LEFT)

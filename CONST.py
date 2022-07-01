@@ -20,7 +20,8 @@ ENCODEINFO="utf-8"
 
 #image de départ
 IMG_FIRST = "caisse-enregistreuse.png"
-
+IMG_CLOTURE = "pencils.png"
+IMG_BEGIN = "bar.png"
 #log
 LOG_FILE = "IN.txt"
 
