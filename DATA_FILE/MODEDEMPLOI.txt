@@ -1,11 +1,5 @@
 MODE D'EMPLOI - CaisseX
 
-historique : 
-	affiche l'historique des caisses des 7 derniers jours :
-		date d'ouverture et de fermeture, 
-		total de la facture, 
-		modifications (montant # nbr factures modifiées) 
-		impayés (montant impayé # nbr factures impayées)
 
 cloture & ticket :
 	cloture la caisse en cours (si pas de factures actives) 
@@ -33,3 +27,10 @@ effacement de la caisse:
 ticket de cloture numérique
 	émis dans le sous-dossier "DOCUMENTS" du dossier de la caisse
 	format csv avec la tabulation comme séparateur
+
+historique : 
+	affiche l'historique des caisses des 31 derniers jours :
+		date d'ouverture et de fermeture, 
+		total de la facture, 
+		modifications (montant # nbr factures modifiées) 
+		impayés (montant impayé # nbr factures impayées)

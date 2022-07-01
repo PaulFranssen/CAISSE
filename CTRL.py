@@ -402,7 +402,8 @@ class Clic:
         except csv.Error:
             print("erreur enregistrement vente")
         
-        startfile(TICKET_FILE+".txt", IMPR)
+        if self.boss.login.get() !=2:
+            startfile(TICKET_FILE+".txt", IMPR)
             
     def imprimerFacture(self, fact_id, modification=False, total1=0, finale=False):
         """lance l'impression d'une facture
@@ -969,7 +970,7 @@ class Clic:
          
     def displayContenu(self, **KW):
 
-        if KW['item'] == "synthèse":
+        if KW['item'] == "synthèse" and self.boss.login.get() !=2:
             
             self.clearCom()
             

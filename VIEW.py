@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # importation des modules
-from tkinter import Frame, StringVar, Label
+#from tkinter import Frame, StringVar, Label
 from tkinter.font import ITALIC
 import tkinter.tix as TIX
 import json
@@ -18,10 +18,10 @@ class PF(Frame):
     Args:
         Frame (tk): frame de départ
     """
-    def __init__(self, boss=None):
+    def __init__(self, boss=None, login=None):
         Frame.__init__(self, boss)
-       
-        
+        self.login=IntVar()
+        self.login.set(login)
         # configuration de la fenêtre principale
         self.master.configure()
         self.master.wm_attributes('-fullscreen', 'true')
@@ -42,7 +42,7 @@ class PF(Frame):
         
         # affichage du cadre principal
         self.pack(fill=BOTH, expand=Y)
-       
+    
     def display(self, cadre):
         if cadre == "cadreGestion":
             self.cadreGestion.display()
@@ -173,7 +173,9 @@ class Entete(Frame):
                 if item == "separator":
                     me.add_separator()
                 else:
-                        if nbr_item > 0 and item == lst[0]:
+                        if self.boss.boss.login.get() != 0 and item =="historique":
+                            pass
+                        elif nbr_item > 0 and item == lst[0]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[0]))
                         elif nbr_item > 1 and item == lst[1]:
                             me.add_command(label = item.capitalize(), underline=0, command=lambda:self.boss.corps.display(lst[1]))

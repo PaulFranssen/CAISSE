@@ -1,5 +1,5 @@
 from tkinter import *
-import sys
+#import sys
 from os.path import join
 
 # -*- coding: utf-8 -*-
@@ -20,6 +20,9 @@ ENCODEINFO="utf-8"
 
 #image de départ
 IMG_FIRST = "caisse-enregistreuse.png"
+
+#log
+LOG_FILE = "IN.txt"
 
 # tailles des caractères
 TAILLE_TITRE = 25
@@ -85,7 +88,7 @@ POLICE_FIRST = "consolas" # écran d'acceuil
 TAILLE_FIRST = 110
 
 # nombre de jours de mémoire pour la caisse
-MEMORY = 7
+MEMORY = 31
 
 # constantes pour ticket
 
@@ -102,6 +105,7 @@ JOUR_SEM = [ 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Diman
 # fonction lambda pour les prix
 fpx = lambda p : "{:,}".format(int(p)).replace(",", ".")
 
+""""
 # détermination des paramètres de l'affichage
 fenetre = Tk()
 w, h = fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()
@@ -110,7 +114,7 @@ w, h = fenetre.winfo_screenwidth(), fenetre.winfo_screenheight()
 if h not in {1080, 900}:
     print(f"paramètres d'affichage {w}x{h} non pris en compte")
     sys.exit()
-
+"""
 
 
 
