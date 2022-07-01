@@ -147,9 +147,6 @@ class Entete(Frame):
         """construction du menu
         """
         lst = self.boss.item_lst # liste des items du menu   
-
-        
-
         nbr_item = len(lst) # separator inclus
         menuButton_lst=[] # liste des menubutton     
         barre_lst  = [] # liste des barres verticales
@@ -161,8 +158,6 @@ class Entete(Frame):
             mb= TIX.Menubutton(self, text=key.upper(), **KW_MENUBUTTON)
             menuButton_lst.append(mb)
             mb.pack(**PAD_MENUBUTTON)
-            
-          
             
             # lien du menu avec le menuButton
             me = TIX.Menu(mb, **KW_MENU)
@@ -323,7 +318,7 @@ class Titre(Frame):
         if self.item == "afficher la salle":          
             # cas particulier de la salle
             self.canvas.pack() 
-        elif self.item == "first":
+        elif self.item == "first": #pas de titre car logo de départ
             pass 
         else:
             # cas général
@@ -345,7 +340,6 @@ class Contenu(Frame):
         Frame.__init__(self, boss)
         self.configure()
         
-       
         # attributs
         self.boss = boss
         self.root = boss.master.master
@@ -409,18 +403,14 @@ class Contenu(Frame):
         labelD = Label(cadreD,**KW_LABEL)
         self.entryD = Entry(cadreD, textvariable=self.entryD_var,**KW_ENTRY)
         
-        
-        
         canvas2 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas3 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas4 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas5 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas6 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
         canvas7 = Canvas(cadre, width=10, height=SEPARATEUR_HORIZONTAL, **KW_CANVAS) #séparateur horizontal
-        
-        
-       # facture
-       
+               
+       # facture    
         self.fac = FACTURE.Fac(self)
         self.bac = SALLE.Bac(self, width=0, height=0)
         self.facVide = Frame(self) # cadre vide au lieu d'une facture
@@ -428,7 +418,8 @@ class Contenu(Frame):
         # intégration des widgets selon l'item
         if self.item == "first":
             cadre.pack(side=LEFT)
-            titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
+            titre.configure(image = PhotoImage(file=IMG_FIRST))
+            #titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
             titre.pack()
             
         elif self.item == 'nouvelle caisse':       
