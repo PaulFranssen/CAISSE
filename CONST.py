@@ -19,7 +19,7 @@ EMPLOI_FILE = join(DATA_FILE, "MODEDEMPLOI.txt")
 ENCODEINFO="utf-8"
 
 #image de départ
-IMG_FIRST = "cappuccino.png"
+IMG_FIRST = "caisse-enregistreuse.png"
 
 # tailles des caractères
 TAILLE_TITRE = 25

@@ -418,7 +418,8 @@ class Contenu(Frame):
         # intégration des widgets selon l'item
         if self.item == "first":
             cadre.pack(side=LEFT)
-            titre.configure(image = PhotoImage(file=IMG_FIRST))
+            self.photo=PhotoImage(file=IMG_FIRST)
+            titre.configure(image = self.photo)
             #titre.configure(text="CAISSEX".upper(), font=(POLICE_FIRST, TAILLE_FIRST, ITALIC))
             titre.pack()
             

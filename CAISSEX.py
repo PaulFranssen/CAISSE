@@ -7,8 +7,11 @@ import CTRL  # les vues sont contrôlées par la base se trouvant dans control
 
 import VIEW
 
+acces=input("ACCES")
 
 if __name__ == '__main__':
+    
+    
      
     # création du cadre principal et du lien : cadre > database et clic
     pf = VIEW.PF()
