@@ -71,7 +71,7 @@ camusVS                   camus vs 70cl              80.000
 camusVSOP                bout camus VSOP             90.000
 cappuccino            1 tasse de cappuccino           1.500
 cardhu                     bout cardhu               60.000
-carilloR           bout. vin rouge carillonade       25.000
+carilloR         bouteille de vin rouge carillonade    25.000
 cast                       castel 33cl                2.000
 celeneCRBrut          bouteil de vin mouseux         35.000
 champNA              champagne non alcoolisé         30.000
@@ -154,7 +154,7 @@ emincePoul               emincé de poulet             4.000
 emincePoule              emincé de poulet             4.000
 emincePoulet            emincée de poulet             4.000
 escalPoulet             escalope de poulet            5.000
-escalPouletSC      escalope poulet sauce creme        4.000
+escalPouletSC     escalope de poulet sauce creme      4.000
 fereix             champagne fereixnet prosecco      40.000
 filetBoeuf         1 portion de filet de boeuf        5.000
 filetBoeufSauP    filet de boeuf sauce piquante       5.000
@@ -338,7 +338,7 @@ poisson                1 portion de poisson           5.000
 poissonFume                poisson fumé                   0
 pommeSaute               portion de pomme             1.000
 poulet                 1 portion de poulet                0
-pouletBi            1portion poulet bicyclette        5.000
+pouletBi          1 portie de poulet bicyclette       5.000
 pouletBraise              poulet braisé               2.500
 pouletCuisse            cuisses de poulet             3.000
 power                      black power                2.000
@@ -393,7 +393,7 @@ saladePouletBi     salade au poulet bicyclette        4.500
 saladeTGV                   salade tgv                3.000
 sandwPoulet             sandwich de poulet            2.000
 sandwSteak                sandwich steak              2.500
-sandwViande          sandwich viande de boeuf         2.000
+sandwViande       sandwich avec viande de boeuf       2.000
 sandwich                     sandwich                 2.000
 sandwichTGV                sandwich TGV               2.500
 sanjoseS              tequila sanjose silver              0
@@ -470,7 +470,7 @@ verreCV                 verre à vin casse             2.000
 verreMousCC           1/14 bout vin mousseux          2.500
 verreMoussCC            1/14 vin mousseux             2.500
 veuveClicot                veuve clicot              80.000
-viandeBro         1portion boeuf pour 1brochette          0
+viandeBro        1 portion de boeuf pour 1 brochette         0
 viandeChaw             viande pour chawarma               0
 viandeH             viande hachée une portion             0
 viandeNem         1 portion de viande pour nems           0
