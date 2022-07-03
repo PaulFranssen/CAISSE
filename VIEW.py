@@ -87,7 +87,7 @@ class CadreGestion(Frame):
         self.item.set("first") # item de départ
         
         # récupération des différents item dans le fichier JSON
-        with open(os.path.join(CONST.DATA_FILE, CONST.MENU_FILE), "r", encoding="utf-8") as read_file:
+        with open(CONST.MENU_FILE, "r", encoding="utf-8") as read_file:
                 self.item_dic = json.load(read_file)
         self.item_lst = []  # liste contenant les item
         for liste in self.item_dic.values():

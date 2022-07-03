@@ -81,20 +81,20 @@ class Theme:
         self.widget_dic={}
         
         # récupération du dictionnaire des thèmes dans le fichier json
-        with open(os.path.join(DATA_FILE, THEME_FILE), 'r', encoding = "utf-8") as read_file:
+        with open(THEME_FILE, 'r', encoding = "utf-8") as read_file:
             self.dic_theme = json.load(read_file)
 
         # création du fichier mémoire du thème le cas échéant en y fixant le premier thème
-        if not os.path.exists(os.path.join(DATA_FILE, LAST_THEME_FILE)):
-            with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
+        if not os.path.exists(LAST_THEME_FILE):
+            with open(LAST_THEME_FILE, "w", encoding='utf-8') as write_file:
                 write_file.write(list(self.dic_theme.keys())[0])
             
         # récupération du thème courant dans le fichier txt:
-        with open(os.path.join(DATA_FILE, LAST_THEME_FILE), 'r', encoding = "utf-8") as read_file:
+        with open(LAST_THEME_FILE, 'r', encoding = "utf-8") as read_file:
             self.theme = read_file.read().strip() 
         if self.theme not in self.dic_theme:  # cas où le thème lu n'est pas dans le dictionnaire des themes (par exemple si il a été supprimé ou modifié)
             self.theme = list(self.dic_theme.keys())[0]
-            with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
+            with open(LAST_THEME_FILE, "w", encoding='utf-8') as write_file:
                 write_file.write(list(self.dic_theme.keys())[0])
             
     def add_widget(self, key, wgt):
@@ -119,7 +119,7 @@ class Theme:
 
         if theme:
             self.theme=theme
-            with open(os.path.join(DATA_FILE, LAST_THEME_FILE), "w", encoding='utf-8') as write_file:
+            with open(LAST_THEME_FILE, "w", encoding='utf-8') as write_file:
                 write_file.write(self.theme)
         
         for key, lst in self.widget_dic.items():  
