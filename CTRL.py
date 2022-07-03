@@ -4,19 +4,11 @@
 
 # importation des modules
 from csv import QUOTE_NONE
-from tarfile import ENCODING
 from MODEL import Theme
 import DB
 from CONST import *
 import datetime
-# import time
-# from random import choice, randint, randrange
 from os import startfile, listdir, getcwd, mkdir, rename
-# from os.path import isdir, exists, splitext, isfile, join
-# import shutil
-from collections import OrderedDict
-# import json
-# import os.path
 import csv
 
 class E(Exception):

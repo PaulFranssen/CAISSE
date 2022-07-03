@@ -47,4 +47,6 @@ if __name__ == '__main__':
     # boucle principale (attente des événements)
     pf.mainloop()
     
+    # fin = input("FIN ")
+    
             
